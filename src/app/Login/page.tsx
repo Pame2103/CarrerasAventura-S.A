@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import Layout from '@/app/layout';
 import Link from 'next/link';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Navbar from '../componentes/navbar';

@@ -1,12 +1,11 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from '../../../firebase/firebase';
-import Layout from '@/app/layout';
 import Link from 'next/link';
-
+import { useState } from 'react';
 
 export default function Recuperar() {
 
