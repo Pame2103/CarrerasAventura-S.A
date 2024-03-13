@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from '@/app/layout';
+
 
 interface MenuItemProps {
   link: string;
@@ -43,16 +43,16 @@ const MainMenu: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <div>
       <nav className="bg-blue-500 p-10">
         <div className="container mx-auto flex justify-center space-x-10">
-          <MenuItem link="/administradorCarreras/administradorcarreras" text="Administrar Carreras" description="Gestiona las carreras programadas" />
-          <MenuItem link="/configuraciones/configuraciones" text="Configuraciones" description="Configura ajustes generales" />
-          <MenuItem link="/resultados/resultados" text="Resultados" description="Consulta los resultados de las carreras" />
-          <MenuItem link="/historicosadmi/historicosadmi" text="Históricos" description="Revisa el historial de eventos" />
-          <MenuItem link="/administrarTiempos/administrarTiempos" text="Administrar Tiempos" description="Controla los tiempos de las carreras" />
-          <MenuItem link="/confirmacionesdepago/confirmaciones" text="Confirmación de Pagos" description="Verifica pagos realizados" />
-          <MenuItem link="/listaParticipantes/listaParticipantes" text="Lista de Participantes" description="Visualiza la lista de participantes" />
+          <MenuItem link="/Admin/administradorCarreras" text="Administrar Carreras" description="Gestiona las carreras programadas" />
+          <MenuItem link="/Admin/configuraciones" text="Configuraciones" description="Configura ajustes generales" />
+          <MenuItem link="/Admin/resultados" text="Resultados" description="Consulta los resultados de las carreras" />
+          <MenuItem link="/Admin/historicosadmin" text="Históricos" description="Revisa el historial de eventos" />
+          <MenuItem link="/Admin/administrarTiempos" text="Administrar Tiempos" description="Controla los tiempos de las carreras" />
+          <MenuItem link="/Admin/confirmaciones" text="Confirmación de Pagos" description="Verifica pagos realizados" />
+          <MenuItem link="/Admin/listaParticipantes" text="Lista de Participantes" description="Visualiza la lista de participantes" />
         </div>
       </nav>
       <div className="container mx-auto p-10 text-center">
@@ -68,7 +68,7 @@ const MainMenu: React.FC = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
