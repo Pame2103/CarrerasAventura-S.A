@@ -3,7 +3,7 @@ import React from 'react'
 export default function AdminCarreras() {
   return (
     <div>
-        <h1>Aqui AdminCarreras</h1>
+        <h1>Aqui AdminCarrerasrfdfdf</h1>
     </div>
   )
 }
