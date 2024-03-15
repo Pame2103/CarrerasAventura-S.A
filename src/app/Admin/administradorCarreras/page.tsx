@@ -19,16 +19,16 @@ function Administradorcarreras() {
     responsable: '',
     contacto: '',
   });
-
-  const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
-  const handleChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+ const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
+  
+  const handleChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     const { name, value } = event.target;
     setNuevaCarrera({ ...nuevaCarrera, [name as string]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
     try {
       await addFormDataToFirebase(nuevaCarrera);
       console.log('Form Data:', nuevaCarrera);
@@ -167,7 +167,7 @@ function Administradorcarreras() {
               variant='outlined'
               name='tipocarrera'
               value={nuevaCarrera.tipocarrera}
-           
+              onChange={handleChange}
               fullWidth
             >
               <MenuItem value='Carreras de Montaña'>Carreras de Montaña</MenuItem>
@@ -181,7 +181,7 @@ function Administradorcarreras() {
               variant='outlined'
               name='estadocarrera'
               value={nuevaCarrera.estadocarrera}
-          
+              onChange={handleChange}
               fullWidth
             >
               <MenuItem value='Activa'>Activa</MenuItem>
