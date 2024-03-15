@@ -86,7 +86,7 @@ export default function Login() {
     Iniciar Sesión 
   </button> 
   <Link 
-    href="/Recuperar" 
+    href="/Admin/recuperar" 
     className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 hover:text-black"> 
     Olvidé mi Contraseña 
   </Link> 
