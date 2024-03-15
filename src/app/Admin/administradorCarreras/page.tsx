@@ -1,9 +1,9 @@
 'use client'
-import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { TextField, Button, InputLabel, Select, MenuItem, } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { useRouter } from 'next/router';
-import React, { useState, ChangeEvent } from 'react';
+
+import React, { useState } from 'react';
 
 function Administradorcarreras() {
  
