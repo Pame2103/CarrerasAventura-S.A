@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/app/componentes/navbar';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
-
+import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 
 interface Carrera {
   id: string;
