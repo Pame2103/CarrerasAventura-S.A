@@ -1,5 +1,4 @@
 
-
 'use client'
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/app/componentes/navbar';
@@ -81,7 +80,7 @@ function Carreras() {
                 <td className="border px-4 py-2">{carrera.responsable}</td>
                 <td className="border px-4 py-2">{carrera.contacto}</td>
                 <td className="border px-4 py-2 text-center">
-                  <a href={`/inscripcion/inscripcion`}>
+                  <a href={`/Cliente/inscripciones`}>
                     <button style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', margin: 'auto' }}>
                       Inscribirse
                     </button>
