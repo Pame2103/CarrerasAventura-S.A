@@ -1,13 +1,29 @@
-import Image from "next/image";
+'use client'
 import Navbar from "./componentes/navbar";
 import Fotter from "./componentes/fotter";
+import { useState, useEffect } from "react"; // Importa useState y useEffect si no los tienes importados
+
 interface FAQItemProps {
   pregunta: string;
   respuesta: string;
 }
 
-
 export default function Home() {
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Limpia el listener del evento en el desmontaje del componente
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const FAQItem: React.FC<FAQItemProps> = ({ pregunta, respuesta }) => {
     return (
       <div className="mb-8 border-b pb-4 lg:w-1/2 lg:pr-8">

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'; 
 import Link from 'next/link'; 
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
-import Navbar from '../componentes/navbar'; 
+
 import { signInWithEmailAndPassword } from 'firebase/auth'; 
 import { auth } from '../../../firebase/firebase'; 
  
