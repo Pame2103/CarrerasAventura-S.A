@@ -2,9 +2,8 @@
 import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-
+import { useRouter } from 'next/router';
 import React, { useState, ChangeEvent } from 'react';
-
 function Administradorcarreras() {
  
 
@@ -19,21 +18,23 @@ function Administradorcarreras() {
     responsable: '',
     contacto: '',
   });
- const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
-  
-  const handleChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+
+  const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
+  const handleChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     const { name, value } = event.target;
     setNuevaCarrera({ ...nuevaCarrera, [name as string]: value });
   };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
   
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
       await addFormDataToFirebase(nuevaCarrera);
       console.log('Form Data:', nuevaCarrera);
 
+      // Correct usage of setOperacionExitosa
       setOperacionExitosa(true);
+      // Reset the form data
       setNuevaCarrera({
         nombre: '',
         fecha: '',
@@ -61,44 +62,46 @@ function Administradorcarreras() {
     }
   };
 
- 
+
   return (
     <>
     
-      {/* Estilos globales */}
-      <style>{`
-        .container {
-          max-width: 800px;
-          margin: 0 auto;
-          padding: 20px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          background: #f9f9f9;
-        }
-
-        .form-container {
-          text-align: center;
-        }
-
-        .form-container form {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          background-color: #f9f9f9;
-        }
-
-        .form-container form div {
-          margin-bottom: 10px;
-        }
-
-        .form-container form button {
-          margin-top: 10px;
-          background: #1976D2;
-          color: white;
-        }
-      `}</style>
+      <style>
+        {`
+          /* Estilos globales */
+          .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+          }
+          
+          .form-container {
+            text-align: center;
+          }
+          
+          .form-container form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+          }
+          
+          .form-container form div {
+            margin-bottom: 10px;
+          }
+          
+          .form-container form button {
+            margin-top: 10px;
+            background: #1976D2;
+            color: white;
+          }
+        `}
+      </style>
       <br />
       <br />
       <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Perfil Administradores</h2>
@@ -167,7 +170,7 @@ function Administradorcarreras() {
               variant='outlined'
               name='tipocarrera'
               value={nuevaCarrera.tipocarrera}
-              onChange={handleChange}
+            
               fullWidth
             >
               <MenuItem value='Carreras de Montaña'>Carreras de Montaña</MenuItem>
@@ -181,7 +184,7 @@ function Administradorcarreras() {
               variant='outlined'
               name='estadocarrera'
               value={nuevaCarrera.estadocarrera}
-              onChange={handleChange}
+            
               fullWidth
             >
               <MenuItem value='Activa'>Activa</MenuItem>
