@@ -4,6 +4,7 @@ import { db } from '../../../../firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import React, { useState, ChangeEvent } from 'react';
+
 function Administradorcarreras() {
  
 
@@ -11,12 +12,14 @@ function Administradorcarreras() {
     nombre: '',
     fecha: '',
     costo: '',
+   
     distancia: '',
     edicion: '',
     tipocarrera: '',
     estadocarrera: '',
     responsable: '',
     contacto: '',
+    cupo: ''
   });
 
   const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
@@ -45,6 +48,8 @@ function Administradorcarreras() {
         estadocarrera: '',
         responsable: '',
         contacto: '',
+        cupo: ''
+
       });
     } catch (error) {
       console.error('Error adding form data to Firebase:', error);
@@ -65,43 +70,42 @@ function Administradorcarreras() {
 
   return (
     <>
-    
-      <style>
-        {`
-          /* Estilos globales */
-          .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: #f9f9f9;
-          }
-          
-          .form-container {
-            text-align: center;
-          }
-          
-          .form-container form {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-          }
-          
-          .form-container form div {
-            margin-bottom: 10px;
-          }
-          
-          .form-container form button {
-            margin-top: 10px;
-            background: #1976D2;
-            color: white;
-          }
-        `}
-      </style>
+    <style>
+      {`
+        /* Estilos globales */
+        .container {
+          max-width: 400px;
+          margin: 0 auto;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          background: #f9f9f9;
+        }
+        
+        .form-container {
+          text-align: center;
+        }
+        
+        .form-container form {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          background-color: #f9f9f9;
+        }
+        
+        .form-container form div {
+          margin-bottom: 10px;
+        }
+        
+        .form-container form button {
+          margin-top: 10px;
+          background: #1976D2;
+          color: white;
+        }
+      `}
+    </style>
       <br />
       <br />
       <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Perfil Administradores</h2>
@@ -154,6 +158,17 @@ function Administradorcarreras() {
             />
           </div>
           <div>
+            <InputLabel>Límite de participantes</InputLabel>
+            <TextField
+              label='Límite de participantes'
+              variant='outlined'
+              name='limiteParticipantes'
+              value={nuevaCarrera.cupo}
+              onChange={handleChange}
+              fullWidth
+            />
+          </div>
+          <div>
             <InputLabel>Costo</InputLabel>
             <TextField
               label='Costo'
@@ -174,8 +189,8 @@ function Administradorcarreras() {
               fullWidth
             >
               <MenuItem value='Carreras de Montaña'>Carreras de Montaña</MenuItem>
-              <MenuItem value='Carrera internacional '>Carrera internacional</MenuItem>
-              <MenuItem value='Carrera ecologica'>Carrera ecologica</MenuItem>
+              <MenuItem value='Carrera Internacional '>Carrera internacional</MenuItem>
+              <MenuItem value='Carrera Ecologica'>Carrera ecologica</MenuItem>
             </Select>
           </div>
           <div>
