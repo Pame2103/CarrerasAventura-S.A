@@ -1,8 +1,14 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 
+// Supongo que MenuItem es un componente externo
+interface MenuItemProps {
+  link: string;
+  text: string;
+  description: string;
+}
 
 interface Carrera {
   id: string;
@@ -17,6 +23,16 @@ interface Carrera {
   contacto: string;
   cupo: number;
 }
+
+// Definición de MenuItem (suposición)
+const MenuItem: React.FC<MenuItemProps> = ({ link, text, description }) => (
+  <a href={link} className="text-white">
+    <div>
+      <span>{text}</span>
+      <p>{description}</p>
+    </div>
+  </a>
+);
 
 function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
   const grouped: { [key: string]: Carrera[] } = {};
@@ -82,18 +98,30 @@ function Carreras() {
 
   const handleEditarCarrera = (carreraId: string) => {
     // Redireccionar a la página de administrador de carreras
-    window.location.href = `/Admin/administradorCarreras/${carreraId}`;
+    window.location.href = `/Admin/administradorCarreras${carreraId}`;
   };
 
   const today = new Date();
 
   return (
     <>
-      <div className="text-black min-h-screen" style={{ fontFamily: 'Arial', color: '#3c78f2#', backgroundColor: '#E0E6F3' }}>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4" onClick={() => window.history.back()}>
-          Volver
-        </button>
-        <h1 style={{ textAlign: 'center', fontSize: '30px', color: 'black' }}>EVENTOS DISPONIBLES</h1>
+      <nav className="bg-blue-500 p-10">
+        <div className="container mx-auto flex justify-center space-x-10">
+        <MenuItem link="/Admin/administradorCarreras" text="Administrar Carreras" description="" />
+<MenuItem link="/Admin/administrarTiempos" text="Administrar Tiempos" description="" />
+<MenuItem link="/Admin/carreras" text="Carreras" description="" />
+<MenuItem link="/Admin/configuraciones" text="Configuraciones" description="" />
+<MenuItem link="/Admin/confirmaciones" text="Confirmación de Pagos" description="" />
+<MenuItem link="/Admin/historicosadmin" text="Históricos" description="" />
+<MenuItem link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
+<MenuItem link="/Admin/resultados" text="Resultados" description="" />
+
+        </div>
+      </nav>
+      <div className="text-black min-h-screen" style={{ fontFamily: 'Arial', backgroundColor: '#E0E6F3' }}>
+      <br />
+        <br />
+        <h1 style={{ textAlign: 'center', fontSize: '30px', color: 'black' }}>Editar Eventos </h1>
         <br />
         <br />
         <br />
@@ -141,6 +169,7 @@ function Carreras() {
                             >
                               Eliminar 
                             </button>
+                            
                           </div>
                         </div>
                       </div>
