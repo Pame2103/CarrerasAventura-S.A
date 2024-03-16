@@ -171,19 +171,21 @@ function Administradorcarreras() {
                 value={nuevaCarrera.nombre}
                 onChange={handleChange}
                 fullWidth
+                placeholder='Carrera Chirripo'
               />
             </div>
             <div className="form-field">
-              <InputLabel>Edición:</InputLabel>
-              <TextField
-                label=''
-                variant='outlined'
-                name='edicion'
-                value={nuevaCarrera.edicion}
-                onChange={handleChange}
-                fullWidth
-              />
-            </div>
+  <InputLabel>Edición:</InputLabel>
+  <TextField
+    label=''
+    variant='outlined'
+    name='edicion'
+    value={nuevaCarrera.edicion}
+    onChange={handleChange}
+    fullWidth
+    placeholder='3 TH'
+  />
+</div>
             <div className="form-field">
               <InputLabel>Fecha:</InputLabel>
               <TextField
@@ -193,6 +195,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.fecha}
                 onChange={handleChange}
                 fullWidth
+                placeholder='2024/10/31'
               />
             </div>
           </div>
@@ -206,6 +209,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.distancia}
                 onChange={handleChange}
                 fullWidth
+                placeholder='11 KM'
               />
             </div>
             
@@ -218,6 +222,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.cupo}
                 onChange={handleChange}
                 fullWidth
+                placeholder='50'
               />
             </div>
             <div className="form-field">
@@ -229,6 +234,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.costo}
                 onChange={handleChange}
                 fullWidth
+                placeholder='$12000'
               />
             </div>
             
@@ -242,6 +248,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.tipocarrera}
                 //onChange={handleChange}
                 fullWidth
+                placeholder='carreras de Montaña'
               >
                 <MenuItem value='Carreras de Montaña'>Carreras de Montaña</MenuItem>
                 <MenuItem value='Carrera Internacional'>Carrera internacional</MenuItem>
@@ -271,6 +278,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.responsable}
                 onChange={handleChange}
                 fullWidth
+                placeholder='Juan Mora'
               />
             </div>
           </div>
@@ -284,6 +292,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.contacto}
                 onChange={handleChange}
                 fullWidth
+                placeholder='Carreraschirripo@gmail.com'
               />
             </div>
             <div className="form-field">
@@ -295,6 +304,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.hora}
                 onChange={handleChange}
                 fullWidth
+                placeholder='8:00 am'
               />
             </div>
             <div className="form-field">
@@ -306,6 +316,7 @@ function Administradorcarreras() {
                 value={nuevaCarrera.lugar}
                 onChange={handleChange}
                 fullWidth
+                placeholder='Cerro chirripo ,Perez Zeledon, San Jose,Costa Rica'
               />
             </div>
           </div>
