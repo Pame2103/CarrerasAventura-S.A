@@ -52,6 +52,7 @@ const MainMenu: React.FC = () => {
           <MenuItem link="/Admin/historicosadmin" text="Históricos" description="Revisa el historial de eventos" />
           <MenuItem link="/Admin/administrarTiempos" text="Administrar Tiempos" description="Controla los tiempos de las carreras" />
           <MenuItem link="/Admin/confirmaciones" text="Confirmación de Pagos" description="Verifica pagos realizados" />
+        <MenuItem link="/Admin/carreras" text="Carreras" description="Visualiza las carreras que edito el administrador" />
           <MenuItem link="/Admin/listaParticipantes" text="Lista de Participantes" description="Visualiza la lista de participantes" />
         </div>
       </nav>

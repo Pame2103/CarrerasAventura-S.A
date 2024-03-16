@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { useRouter } from 'next/router';
+
 
 interface Carrera {
   nombre: string;
