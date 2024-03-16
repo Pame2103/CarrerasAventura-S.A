@@ -102,38 +102,42 @@ export default function Home() {
           </div>
 
           {/* Sección de Próximos Eventos */}
-          <div className="mb-8 mx-auto flex flex-col md:flex-row items-center justify-center">
-            <div className="w-full md:w-1/2 p-2 flex flex-col">
-              <h2 className="text-2xl font-bold mb-4">Categorias Femeninas</h2>
-              <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
-              <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
-              <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
-              <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
-              <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
+          <div className="mb-8 mx-auto flex items-center justify-center">
+            <div className="flex justify-center">
+              {/* División izquierda */}
+              <div className="w-1/2 p-2 flex flex-col">
+                <h2 className="text-2xl font-bold mb-4">Categorias Femeninas</h2>
+                <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
+                <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
+                <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
+                <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
+                <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
+              </div>
+
+              {/* División derecha */}
+              <div className="w-1/2 p-2 flex flex-col">
+                <h2 className="text-2xl font-bold mb-4">Categorias Masculinas</h2>
+                <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
+                <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
+                <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
+                <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
+                <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
+              </div>
             </div>
 
-            <div className="w-full md:w-1/2 p-2 flex flex-col">
-              <h2 className="text-2xl font-bold mb-4">Categorias Masculinas</h2>
-              <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
-              <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
-              <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
-              <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
-              <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-4xl font-bold mb-4">Próximos Eventos</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {upcomingEvents.map((event, index) => (
-                <div
-                  key={index}
-                  className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center event-card">
-                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-                  <p className="text-lg mb-2">Fecha: {event.date}</p>
-                  <p className="text-lg">Ubicación: {event.location}</p>
-                </div>
-              ))}
+            <div className="text-center">
+              <h2 className="text-4xl font-bold mb-4">Próximos Eventos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {upcomingEvents.map((event, index) => (
+                  <div
+                    key={index}
+                    className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center event-card">
+                    <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+                    <p className="text-lg mb-2">Fecha: {event.date}</p>
+                    <p className="text-lg">Ubicación: {event.location}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -156,7 +160,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold mb-4">Preguntas Frecuentes</h2>
             <div className="flex justify-center">
               {/* División izquierda */}
-              <div className="w-full md:w-1/2 p-4">
+              <div className="w-1/2 p-4">
                 <div className="flex flex-col items-center">
                   {faqs.map((faq, index) => (
                     <FAQItem key={index} pregunta={faq.pregunta} respuesta={faq.respuesta} />
@@ -165,7 +169,7 @@ export default function Home() {
               </div>
 
               {/* División derecha */}
-              <div className="w-full md:w-1/2 p-4">
+              <div className="w-1/2 p-4">
                 <div className="flex flex-col items-center">
                   {faqs.map((faq, index) => (
                     <FAQItem key={index} pregunta={faq.pregunta} respuesta={faq.respuesta} />
