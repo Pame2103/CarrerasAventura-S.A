@@ -55,6 +55,7 @@ body {
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
+    margin-left: 1rem; /* Agregar margen izquierdo */
   }
 
   .faq-column {
