@@ -33,20 +33,31 @@ body {
 }
 
 .carousel-image {
-  max-width: 100%; /* Ajusta el ancho máximo de las imágenes del carrusel */
+  max-width: 100%;
   height: auto;
   border-radius: 15px;
 }
 
 .event-card {
-  width: 100%; /* Ajusta el ancho de las tarjetas de evento al 100% */
-  max-width: 350px; /* Limita el ancho máximo de las tarjetas de evento */
-  margin-bottom: 1.5rem; /* Añade un espacio entre las tarjetas de evento */
+  width: 100%;
+  max-width: 350px;
+  margin-bottom: 1.5rem;
 }
 
 @media (min-width: 768px) {
   .event-card {
-    max-width: none; /* Elimina el límite de ancho máximo en pantallas más grandes */
-    margin-bottom: 0; /* Elimina el espacio entre las tarjetas de evento en pantallas más grandes */
+    max-width: none;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .faq-column {
+    width: 100%;
   }
 }
