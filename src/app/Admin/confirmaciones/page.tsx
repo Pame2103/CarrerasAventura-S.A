@@ -10,6 +10,7 @@ interface Participante {
   apellidos: string;
   evento: string;
   codigoComprobante: string;
+  cedula : number;
 }
 
 function Confirmacionespago(): JSX.Element {
@@ -49,8 +50,8 @@ function Confirmacionespago(): JSX.Element {
 
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
       const inscripcionesData = snapshot.docs.map((doc) => {
-        const { id, nombre, apellidos, costo, evento, codigoComprobante } = doc.data();
-        return { id: doc.id, nombre, apellidos, evento, codigoComprobante };
+        const { id, nombre, apellidos, costo, evento, codigoComprobante,cedula } = doc.data();
+        return { id: doc.id, nombre, apellidos, evento, codigoComprobante,cedula };
       });
 
       setParticipantes(inscripcionesData);
@@ -75,8 +76,10 @@ function Confirmacionespago(): JSX.Element {
             <th style={thStyle}>Codigo Comprobante</th>
             <th style={thStyle}>Nombre</th>
             <th style={thStyle}>Apellidos</th>
+            <th style={thStyle}>Cedula</th>
             <th style={thStyle}>Evento</th>
             <th style={thStyle}>Acciones</th>
+          
           </tr>
         </thead>
         <tbody>
@@ -92,6 +95,7 @@ function Confirmacionespago(): JSX.Element {
                 <td className="border px-4 py-2">{participante.codigoComprobante}</td>
                 <td className="border px-4 py-2">{participante.nombre}</td>
                 <td className="border px-4 py-2">{participante.apellidos}</td>
+                <td className="border px-4 py-2">{participante.cedula}</td>
                 <td className="border px-4 py-2">{participante.evento}</td>
                 <td className="border px-4 py-2">
                   <button

@@ -1,10 +1,8 @@
-
 'use client'
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { db } from '../../../../firebase/firebase';
-import { getFirestore, collection, onSnapshot, addDoc } from 'firebase/firestore';
-import Layout from '@/app/layout';
+import { collection, onSnapshot, addDoc } from 'firebase/firestore';
 import {
   faCog,
   faChartBar,
@@ -37,8 +35,6 @@ function ListaParticipantes(): JSX.Element {
   
     return () => unsubscribe();
   }, []);
-
-  const eventos = Array.from(new Set(participantes.map(participante => participante.evento)) || []);
 
   const handleAprobar = async (id: string) => {
     const updatedParticipantes = participantes.map(participante => {
@@ -76,39 +72,43 @@ function ListaParticipantes(): JSX.Element {
     }
   };
 
+  // Filtrar participantes según el evento seleccionado
+  const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
+
+  const eventos = Array.from(new Set(participantes.map(participante => participante.evento)) || []);
+
   return (
     <>
       <nav className="bg-blue-700 p-4">
         <div className="container mx-auto">
-       
           <ul className="flex space-x-20">
             <li>
               <FontAwesomeIcon icon={faCog} className="text-white" />
               <a href="/administradorCarreras/administradorcarreras" className="text-white">Administrar carreras</a>
             </li>  
             <li>
-                <FontAwesomeIcon icon={faCog} className="text-white" /><a href="/configuraciones/configuraciones" className="text-white">Configuraciones</a>
+              <FontAwesomeIcon icon={faCog} className="text-white" /><a href="/configuraciones/configuraciones" className="text-white">Configuraciones</a>
             </li>
             <li>
-                <FontAwesomeIcon icon={faChartBar} className="text-white" /><a href="/resultados/resultados" className="text-white">Resultados</a>
+              <FontAwesomeIcon icon={faChartBar} className="text-white" /><a href="/resultados/resultados" className="text-white">Resultados</a>
             </li>
             <li>
-                <FontAwesomeIcon icon={faHistory} className="text-white" /><a href="/historicosadmi/historicosadmi" className="text-white">Historicos</a>
+              <FontAwesomeIcon icon={faHistory} className="text-white" /><a href="/historicosadmi/historicosadmi" className="text-white">Historicos</a>
             </li>
             <li>
-                <FontAwesomeIcon icon={faHistory} className="text-white" /><a href="/administrarTiempos/administrarTiempos" className="text-white">Administrar tiempos</a>
+              <FontAwesomeIcon icon={faHistory} className="text-white" /><a href="/administrarTiempos/administrarTiempos" className="text-white">Administrar tiempos</a>
             </li>
             <li>
-                <FontAwesomeIcon icon={faMoneyCheckAlt} className="text-white" /><a href="/confirmacionesdepago/confirmaciones" className="text-white">Confirmacion de Pagos</a>
+              <FontAwesomeIcon icon={faMoneyCheckAlt} className="text-white" /><a href="/confirmacionesdepago/confirmaciones" className="text-white">Confirmacion de Pagos</a>
             </li> 
             <li>
-                <FontAwesomeIcon icon={faEnvelope} className="text-white" /><a href="/listaParticipantes/listaParticipantes" className="text-white">Lista de Participantes </a>
+              <FontAwesomeIcon icon={faEnvelope} className="text-white" /><a href="/listaParticipantes/listaParticipantes" className="text-white">Lista de Participantes </a>
             </li>
           </ul>
         </div>
       </nav>
       <div className="container mx-auto p-4">
-      <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Comprobantes de Pago</h2>
+        <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Comprobantes de Pago</h2>
         <div className="mb-4">
           <label htmlFor="evento">Seleccionar Evento:</label>
           <select 
@@ -124,7 +124,7 @@ function ListaParticipantes(): JSX.Element {
           </select>
         </div>
         <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
-        <thead style={{ backgroundColor: '#B1CEE3' }} className="">
+          <thead style={{ backgroundColor: '#B1CEE3' }} className="">
             <tr>
               <th className="border px-4 py-2">Cedula</th>
               <th className="border px-4 py-2">Nombre</th>
@@ -133,15 +133,14 @@ function ListaParticipantes(): JSX.Element {
             </tr>
           </thead>
           <tbody>
-          {participantes.length === 0 ? (
-             <tr style={{ height: '600px' }}>
-             <td colSpan={6} className="p-4 text-center" style={{ height: '600px' }}>
-               No hay participantes .
-             </td>
-           </tr>
-           
+            {filteredParticipantes.length === 0 ? (
+              <tr style={{ height: '600px' }}>
+                <td colSpan={6} className="p-4 text-center" style={{ height: '600px' }}>
+                  No hay participantes .
+                </td>
+              </tr>
             ) : (
-              participantes.map(participante => (
+              filteredParticipantes.map(participante => (
                 <tr key={participante.id} className="hover:bg-gray-100">
                   <td className="border px-4 py-2">{participante.cedula}</td>
                   <td className="border px-4 py-2">{participante.nombre}</td>
