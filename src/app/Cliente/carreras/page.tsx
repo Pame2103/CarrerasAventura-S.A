@@ -7,7 +7,7 @@ import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } fr
 
 interface Carrera {
   id: string;
-  nombre: string;
+  evento: string;
   edicion: string;
   fecha: string;
   distancia: string;
@@ -119,7 +119,7 @@ function Carreras() {
                       <div key={carrera.id} className="bg-white rounded-lg shadow-md p-4 mb-4 w-full max-w-3xl">
                         <div className="grid grid-cols-3 gap-4">
                           <div>
-                            <h3 className="text-lg font-bold">{carrera.nombre}</h3>
+                            <h3 className="text-lg font-bold">{carrera.evento}</h3>
                             <p>{carrera.edicion}</p>
                             <p>{carrera.fecha}</p>
                             <p>Cupos Disponibles: {carrera.cupo}</p>

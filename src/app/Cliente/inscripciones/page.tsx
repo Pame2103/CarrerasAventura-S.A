@@ -1,13 +1,12 @@
-'use client'
-import React, { useState } from 'react';
-import Layout from '@/app/layout';
+'use client';
+import React, { useState, useEffect } from 'react'; // Importa useEffect desde React
+
 import { db } from '../../../../firebase/firebase';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-
-
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function Inscripciones() {
     const [formData, setFormData] = useState({
+        nombreCarrera: '',
         nombre: '',
         apellidos: '',
         cedula: '',
@@ -28,138 +27,135 @@ export default function Inscripciones() {
         metodoPago: '',
         guardarDatos: false,
         aceptarTerminos: false,
-        discapacidad: '', 
+        discapacidad: '',
         tipoDiscapacidad: '',
         alergiaMedicamento: '',
         pais: '',
         evento: '',
-        codigoComprobante:'',
-    
-      });
-      
-    
-      const handleInputChange = (event: any) => {
+        codigoComprobante: '',
+    });
+
+    useEffect(() => {
+      const searchParams = new URLSearchParams(location.search);
+      const evento = searchParams.get('evento');
+      if (evento) {
+          setSelectedEvent(evento);
+          setFormData(prevState => ({ ...prevState, evento }));
+      }
+  }, [location.search])
+  
+    const [selectedEvent, setSelectedEvent] = useState(''); // Estado para almacenar el nombre de la carrera seleccionada
+
+    const handleInputChange = (event: any) => {
         const { name, value } = event.target;
         console.log('Name:', name, 'Value:', value);
-      
+
         // Si el campo modificado es la fecha de nacimiento, calcular la edad
         if (name === 'nacimiento') {
-          const edad = calcularEdad(value);
-          setFormData({ ...formData, [name]: value, edad: edad.toString() }); // Convert to string
+            const edad = calcularEdad(value);
+            setFormData({ ...formData, [name]: value, edad: edad.toString() }); // Convert to string
         } else {
-          setFormData({ ...formData, [name]: value });
+            setFormData({ ...formData, [name]: value });
         }
-      };;
-      
-      const calcularEdad = (fechaNacimiento: Date) => {
+    };
+
+    const calcularEdad = (fechaNacimiento: Date) => {
         const hoy = new Date();
         const cumpleanos = fechaNacimiento;
         let edad = hoy.getFullYear() - cumpleanos.getFullYear();
         const mes = hoy.getMonth() - cumpleanos.getMonth();
         if (mes < 0 || (mes === 0 && hoy.getDate() < cumpleanos.getDate())) {
-          edad--;
+            edad--;
         }
         return edad;
-      };
-      
-      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-      
+
         try {
-          await addFormDataToFirebase();
-          console.log('Form Data:', formData);
-    
+            await addFormDataToFirebase();
+            console.log('Form Data:', formData);
+            console.log('Selected Event:', selectedEvent); // Log del nombre de la carrera seleccionada
         } catch (error) {
-          console.error('Error adding form data to Firebase:', error);
+            console.error('Error adding form data to Firebase:', error);
         }
-        
+
         // Reset the form data
         setFormData({
-          nombre: '',
-          apellidos: '',
-          cedula: '',
-          sexo: '',
-          edad: '',
-          email: '',
-          confirmarEmail: '',
-          telefono: '',
-          nacimiento: '',
-          tallaCamisa: '',
-          lateralidad: '',
-          nombreEmergencia: '',
-          telefonoEmergencia: '',
-          parentescoEmergencia: '',
-          provincia: '',
-          totalMonto: '',
-          beneficiarioPoliza: '',
-          metodoPago: '',
-          guardarDatos: false,
-          aceptarTerminos: false,
-          discapacidad: '', 
-          tipoDiscapacidad: '',
-          alergiaMedicamento: '',
-          pais: '',
-          evento: '',
-          codigoComprobante:'',
+          nombreCarrera: '',
+            nombre: '',
+            apellidos: '',
+            cedula: '',
+            sexo: '',
+            edad: '',
+            email: '',
+            confirmarEmail: '',
+            telefono: '',
+            nacimiento: '',
+            tallaCamisa: '',
+            lateralidad: '',
+            nombreEmergencia: '',
+            telefonoEmergencia: '',
+            parentescoEmergencia: '',
+            provincia: '',
+            totalMonto: '',
+            beneficiarioPoliza: '',
+            metodoPago: '',
+            guardarDatos: false,
+            aceptarTerminos: false,
+            discapacidad: '', 
+            tipoDiscapacidad: '',
+            alergiaMedicamento: '',
+            pais: '',
+            evento: '', // Restablecer el estado de la carrera seleccionada
+            codigoComprobante:'',
         });
-      };
-      
-      
-      const addFormDataToFirebase = async () => {
+        setSelectedEvent(''); // Restablecer la carrera seleccionada
+    };
+
+    const addFormDataToFirebase = async () => {
         try {
-          const docRef = await addDoc(collection(db, 'Inscripciones'), formData); // Replace 'formDataCollection' with your desired collection name
-          console.log('Form data added with ID: ', docRef.id);
+            const docRef = await addDoc(collection(db, 'Inscripciones'), formData); // Replace 'formDataCollection' with your desired collection name
+            console.log('Form data added with ID: ', docRef.id);
         } catch (error) {
-          console.error('Error adding form data: ', error);
-          throw error;
+            console.error('Error adding form data: ', error);
+            throw error;
         }
-      };
+    };
 
+    return (
+      <div>
+      <div className="min-h-screen flex flex-col justify-center items-center" style={{ background: 'linear-gradient(to bottom right, #FFFFF, #B1CEE3)',}}>
+          <br />
+          <br />
+          <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4"
+              onClick={() => window.history.back()}
+          >
+              Volver
+          </button>
 
-  return (
-    <div>
-     <div className="min-h-screen flex flex-col justify-center items-center" style={{ background: 'linear-gradient(to bottom right, #FFFFF, #B1CEE3)',}}>
-      <br />
-            <br />
-            <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4"
-          onClick={() => window.history.back()}
-        >
-          Volver
-        </button>
+          <h1 style={{ fontWeight: 'bold', marginBottom: '80px' }}>FORMULARIO DE INCRIPCION A CARRERAS</h1>
 
-      <h1 style={{ fontWeight: 'bold', marginBottom: '80px' }}>FORMULARIO DE INCRIPCION A CARRERAS</h1>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', maxWidth: '1200px' }}>
-          <form onSubmit={handleSubmit} style={{ width: '45%', marginRight: '5%' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-  <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Datos Personales:</h1>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', maxWidth: '1200px' }}>
+              <form onSubmit={handleSubmit} style={{ width: '45%', marginRight: '5%' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Datos Personales:</h1>
 
-  <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="nombre" style={{ display: 'inline-block', width: '150px' }}>Nombre:</label>
-    <input
-      type="text"
-      id="nombre"
-      name="nombre"
-      value={formData.nombre}
-      onChange={handleInputChange}
-      required
-      style={{ display: 'inline-block' }}
-    />
-  </div>
+                      <div style={{ marginBottom: '20px' }}>
+                          <label htmlFor="nombre" style={{ display: 'inline-block', width: '150px' }}>Nombre:</label>
+                          <input
+                              type="text"
+                              id="nombre"
+                              name="nombre"
+                              value={formData.nombre}
+                              onChange={handleInputChange}
+                              required
+                              style={{ display: 'inline-block' }}
+                          />
+                      </div>
 
-  <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="apellidos" style={{ display: 'inline-block', width: '150px' }}>Apellidos:</label>
-    <input
-      type="text"
-      id="apellidos"
-      name="apellidos"
-      value={formData.apellidos}
-      onChange={handleInputChange}
-      required
-      style={{ display: 'inline-block' }}
-    />
-  </div>
 
   <div style={{ marginBottom: '20px' }}>
     <label htmlFor="cedula" style={{ display: 'inline-block', width: '150px' }}>Cédula/Pasaporte:</label>
