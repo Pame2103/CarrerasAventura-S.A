@@ -47,28 +47,28 @@ export default function Inscripciones() {
     const [selectedEvent, setSelectedEvent] = useState(''); // Estado para almacenar el nombre de la carrera seleccionada
 
     const handleInputChange = (event: any) => {
-        const { name, value } = event.target;
-        console.log('Name:', name, 'Value:', value);
-
-        // Si el campo modificado es la fecha de nacimiento, calcular la edad
-        if (name === 'nacimiento') {
-            const edad = calcularEdad(value);
-            setFormData({ ...formData, [name]: value, edad: edad.toString() }); // Convert to string
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
-    };
-
-    const calcularEdad = (fechaNacimiento: Date) => {
-        const hoy = new Date();
-        const cumpleanos = fechaNacimiento;
-        let edad = hoy.getFullYear() - cumpleanos.getFullYear();
-        const mes = hoy.getMonth() - cumpleanos.getMonth();
-        if (mes < 0 || (mes === 0 && hoy.getDate() < cumpleanos.getDate())) {
-            edad--;
-        }
-        return edad;
-    };
+      const { name, value } = event.target;
+      console.log('Name:', name, 'Value:', value);
+  
+      // Si el campo modificado es la fecha de nacimiento, calcular la edad
+      if (name === 'nacimiento') {
+          const fechaNacimiento = new Date(value); // Convertir el valor a un objeto Date
+          const edad = calcularEdad(fechaNacimiento);
+          setFormData({ ...formData, [name]: value, edad: edad.toString() }); // Convertir a cadena
+      } else {
+          setFormData({ ...formData, [name]: value });
+      }
+  };
+  
+  const calcularEdad = (fechaNacimiento: Date) => {
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+      const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+      if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+          edad--;
+      }
+      return edad;
+  };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -108,10 +108,10 @@ export default function Inscripciones() {
             tipoDiscapacidad: '',
             alergiaMedicamento: '',
             pais: '',
-            evento: '', // Restablecer el estado de la carrera seleccionada
+            evento: '', 
             codigoComprobante:'',
         });
-        setSelectedEvent(''); // Restablecer la carrera seleccionada
+        setSelectedEvent(''); 
     };
 
     const addFormDataToFirebase = async () => {
