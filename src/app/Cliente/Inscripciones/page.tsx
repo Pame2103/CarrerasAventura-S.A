@@ -338,8 +338,8 @@ function Inscripción() {
       required
       style={{ display: 'inline-block' }}
     >
-      <option value="no">No</option>
-      <option value="si">Sí</option>
+      <option value="No">No</option>
+      <option value="Si">Sí</option>
     </select>
   </div>
 
