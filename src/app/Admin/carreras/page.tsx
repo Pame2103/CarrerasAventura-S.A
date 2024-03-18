@@ -98,7 +98,7 @@ function Carreras() {
 
   const handleEditarCarrera = (carreraId: string) => {
     // Redireccionar a la página de administrador de carreras
-    window.location.href = `/Admin/administradorCarreras/${carreraId}`;
+    window.location.href = `/Admin/administradorCarreras${carreraId}`;
   };
 
   const today = new Date();
