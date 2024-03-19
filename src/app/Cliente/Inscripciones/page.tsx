@@ -1,8 +1,25 @@
 'use client'
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState,useEffect, ChangeEvent, FormEvent } from 'react';
+
 
 import { db } from '../../../../firebase/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc,getDocs } from 'firebase/firestore';
+
+interface Carrera {
+  id: string;
+  evento: string;
+  edicion: string;
+  fecha: string;
+  distancia: string;
+  tipocarrera: string;
+  estadocarrera: string;
+  costo: string;
+  responsable: string;
+  contacto: string;
+  cupo: number;
+  nombre: string;
+}
+
 
 interface FormData {
   nombre: string;
@@ -64,7 +81,23 @@ const initialFormData: FormData = {
 
 function Inscripción() {
   const [formData, setFormData] = useState<FormData>({ ...initialFormData });
+  const [eventoSeleccionado, setEventoSeleccionado] = useState<string | null>(null);
+  const [carreras, setCarreras] = useState<Carrera[]>([]);
 
+  useEffect(() => {
+    const obtenerCarreras = async () => {
+      const carrerasCollection = collection(db, 'Configuracion Carreeras');
+      const snapshot = await getDocs(carrerasCollection);
+      const carrerasData: Carrera[] = [];
+      snapshot.forEach((doc) => {
+        const carrera = doc.data() as Carrera;
+        carrerasData.push(carrera);
+      });
+      setCarreras(carrerasData);
+    };
+
+    obtenerCarreras();
+  }, []);
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -124,8 +157,27 @@ function Inscripción() {
           Volver
         </button>
 
+     
+     <h1 >Si desea inscribirse pagando a través de SINPE Móvil (al número 87460160, a nombre de Pamela Barrantes) o mediante transferencia bancaria</h1>
+     <h1 >(cuenta en colones IBAN CR00000000000000000000000000000), a nombre de (Carreras Aventura S.A),le solicitamos </h1>
+     <h1 >que complete el formulario adjunto.Asegúrese de incluir el número de comprobante del SINPE y haga clic en'Enviar'.Una vez enviado,recibirá   </h1>
+     <h1 >una confirmación por correo electrónico de que sus datos han sido recibidos correctamente. Su solicitud pasará al departamento de confirmaciones  </h1>
+     <h1 >pago donde uno de nuestros administradores verificará la validez de su pago. Posteriormente, recibirá un nuevo correo electrónico con la </h1>
+     <h1 >confirmación de su participación en la carrera que ha seleccionado. </h1>
+     <br />
+     <br />
+     <h1>Si su pago es realizado por un patrocinador, por favor seleccione esta opción y complete el campo correspondiente con el nombre del mismo.</h1>
+     <h1>Una vez completado, envíe los datos a través del formulario proporcionado. Recibirá un correo electrónico de confirmación indicando que sus </h1>
+     <h1> datos han sido recibidos correctamente.Su solicitud será gestionada por nuestro departamento de confirmaciones de pago.Será notificado por</h1>
+     <h1>correo electrónico una vez que su patrocinador haya efectuado el pago correctamente.Una vez confirmado el pago, estará oficialmente inscrito</h1>
+     <h1>y podrá participar en la carrera que ha seleccionado.</h1>
+     <h1></h1>
+     <br />
+      <br />
+      <br />
+      <br />
       <h1 style={{ fontWeight: 'bold', marginBottom: '80px' }}>FORMULARIO DE INCRIPCION A CARRERAS</h1>
-        
+      
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', maxWidth: '1200px' }}>
           <form onSubmit={handleSubmit} style={{ width: '45%', marginRight: '5%' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -298,70 +350,7 @@ function Inscripción() {
     </select>
   </div>
 
-  <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="discapacidad" style={{ display: 'inline-block', width: '150px' }}>¿Presenta alguna discapacidad?</label>
-    <select
-      id="discapacidad"
-      name="discapacidad"
-      value={formData.discapacidad}
-      onChange={handleInputChange}
-      required
-      style={{ display: 'inline-block' }}
-    >
-      <option value="no">No</option>
-      <option value="si">Sí</option>
-    </select>
-  </div>
-
-  {formData.discapacidad === 'si' && (
-    <div style={{ marginBottom: '20px' }}>
-      <label htmlFor="tipoDiscapacidad" style={{ display: 'inline-block', width: '150px' }}>Tipo de Discapacidad:</label>
-      <input
-        type="text"
-        id="tipoDiscapacidad"
-        name="tipoDiscapacidad"
-        value={formData.tipoDiscapacidad}
-        onChange={handleInputChange}
-        required
-        style={{ display: 'inline-block' }}
-      />
-    </div>
-  )}
-
-  <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="alergiaMedicamento" style={{ display: 'inline-block', width: '150px' }}>¿Presenta alergia a algún medicamento?</label>
-    <select
-      id="alergiaMedicamento"
-      name="alergiaMedicamento"
-      value={formData.alergiaMedicamento}
-      onChange={handleInputChange}
-      required
-      style={{ display: 'inline-block' }}
-    >
-      <option value="No">No</option>
-      <option value="Si">Sí</option>
-    </select>
-  </div>
-
-  {formData.alergiaMedicamento === 'si' && (
-    <div style={{ marginBottom: '20px' }}>
-      <label htmlFor="medicamentoAlergia" style={{ display: 'inline-block', width: '150px' }}>Medicamento alérgico:</label>
-      <input
-        type="text"
-        id="medicamentoAlergia"
-        name="medicamentoAlergia"
-        value={formData.alergiaMedicamento}
-        onChange={handleInputChange}
-        required
-        style={{ display: 'inline-block' }}
-      />
-    </div>
-  )}
-
 </div>
-
-
-
           </form>
           <form onSubmit={handleSubmit} style={{ width: '45%', marginLeft: '5%' }}>
           
@@ -407,17 +396,7 @@ function Inscripción() {
     />
   </div>
 
-  <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="beneficiarioPoliza" style={{ display: 'inline-block', width: '250px' }}>Beneficiario Póliza:</label>
-    <input
-      type="text"
-      id="beneficiarioPoliza"
-      name="beneficiarioPoliza"
-      value={formData.beneficiarioPoliza}
-      onChange={handleInputChange}
-      style={{ display: 'inline-block' }}
-    />
-  </div>
+  
 <div style={{ marginBottom: '20px' }}>
   <label htmlFor="parentescoEmergencia" style={{ display: 'inline-block', width: '150px', marginRight: '20px' }}>Parentesco:</label>
   <select
@@ -439,30 +418,27 @@ function Inscripción() {
 </div>
 
 
-
-
 </div>
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
   <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Evento en el que desea participar:</h1>
 
   <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="evento" style={{ display: 'inline-block', width: '250px' }}>Carreras Disponibles:</label>
-    <select
-      id="evento"
-      name="evento"
-      value={formData.evento}
-      onChange={handleInputChange}
-      required
-      style={{ display: 'inline-block' }}
-    >
-      <option value=""></option>
-      <option value="Carrera Montaña">Carrera Montaña</option>
-      <option value="carrera Ecologica">carrera Ecologica</option>
-      <option value="Carrera Internacional">Carrera Internacional</option>
-    </select>
-  </div>
-
+  <label htmlFor="evento" style={{ display: 'inline-block', width: '250px' }}>Carreras Disponibles:</label>
+        <select
+          id="evento"
+          name="evento"
+          value={formData.evento}
+          onChange={handleInputChange}
+          required
+          style={{ display: 'inline-block' }}
+        >
+          <option value="">Selecciona una carrera</option>
+          {carreras.map((carrera, index) => (
+            <option key={index} value={carrera.nombre}>{carrera.nombre}</option>
+          ))}
+        </select>
+      </div>
   <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Formas de pago:</h1>
 
   <div style={{ marginBottom: '20px' }}>

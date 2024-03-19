@@ -72,7 +72,7 @@ function Carreras() {
     setCarrerasByMonth(groupedCarreras);
   }, [carreras]);
 
-  const handleInscribirse = async (carreraId: string) => {
+  const handleInscribirse = async (carreraId: string, eventoNombre: string) => {
     const cupo = await getCupo(carreraId);
     const raceToUpdate = carreras.find(carrera => carrera.id === carreraId);
     if (raceToUpdate) {
@@ -81,7 +81,11 @@ function Carreras() {
           carrera.id === carreraId ? { ...carrera, cupo: cupo - 1 } : carrera
         );
         setCarreras(updatedCarreras);
-        console.log(`Inscribiéndose en la carrera con ID ${carreraId}`);
+        // Guarda los detalles de la carrera seleccionada en el almacenamiento local
+        localStorage.setItem('carreraSeleccionada', JSON.stringify(raceToUpdate));
+        localStorage.setItem('nombreEventoSeleccionado', eventoNombre);
+        // Redirige a la página de detalles de la carrera
+        window.location.href = '/Cliente/Inscripciones';
       } else {
         setMensaje("El cupo de participantes ya ha llegado a su límite. Gracias por su interés, por favor revise otros eventos disponibles.");
       }
@@ -127,26 +131,19 @@ function Carreras() {
                           <div>
                             <p>Distancia: {carrera.distancia}</p>
                             <p>Tipo de Carrera: {carrera.tipocarrera}</p>
-                            <p>Estado de la Carrera: {carrera.estadocarrera}</p>
+                            <p>Estado: {carrera.estadocarrera}</p>
                           </div>
-                          <div>
-                            <p>Costo: {carrera.costo}</p>
-                            <p>Responsable: {carrera.responsable}</p>
-                            <p>Contacto: {carrera.contacto}</p>
-                            <p style={{ color: carrera.cupo > 0 ? 'black' : 'red' }}>
-                              {carrera.cupo > 0 ? (
-                                <a href={`/Cliente/inscripciones`}>
-                                  <button
-                                    style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', margin: 'auto' }}
-                                    onClick={() => handleInscribirse(carrera.id)}
-                                  >
-                                    Inscribirse
-                                  </button>
-                                </a>
-                              ) : (
-                                "El cupo de participantes está lleno."
-                              )}
-                            </p>
+                          <div className="flex flex-col items-center justify-center">
+                            {carrera.cupo > 0 ? (
+                              <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => handleInscribirse(carrera.id, carrera.evento)}
+                              >
+                                Inscribirse
+                              </button>
+                            ) : (
+                              <p style={{ color: 'red' }}>El cupo de participantes está lleno.</p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -156,8 +153,8 @@ function Carreras() {
               }
               return null;
             })}
+          {mensaje && <p>{mensaje}</p>}
         </div>
-        {mensaje && <div>{mensaje}</div>}
       </div>
     </>
   );
