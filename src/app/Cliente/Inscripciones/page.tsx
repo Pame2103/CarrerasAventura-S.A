@@ -1,9 +1,9 @@
 'use client'
-import React, { useState,useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
-
+import styles from './estilos/Inscripciones.module.css';
 import { db } from '../../../../firebase/firebase';
-import { collection, addDoc,getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 interface Carrera {
   id: string;
@@ -145,20 +145,19 @@ function Inscripción() {
   };
 
   return (
-
     <>
-      <div className="min-h-screen flex flex-col justify-center items-center" style={{ background: 'linear-gradient(to bottom right, #FFFFF, #B1CEE3)',}}>
-      <br />
-            <br />
-            <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4"
+      <div className={styles.container}>
+        <br />
+        <br />
+        <button
+          className={`${styles.button} ${styles.goBackButton}`}
           onClick={() => window.history.back()}
         >
           Volver
         </button>
 
      
-     <h1 >Si desea inscribirse pagando a través de SINPE Móvil (al número 87460160, a nombre de Pamela Barrantes) o mediante transferencia bancaria</h1>
+     <h1 className={styles.instructionTitle}>Si desea inscribirse pagando a través de SINPE Móvil (al número 87460160, a nombre de Pamela Barrantes) o mediante transferencia bancaria</h1>
      <h1 >(cuenta en colones IBAN CR0000000000000000000000000), a nombre de (Carreras Aventura S.A),le solicitamos </h1>
      <h1 >que complete el formulario adjunto.Asegúrese de incluir el número de comprobante del SINPE y haga clic en'Enviar'.Una vez enviado,recibirá   </h1>
      <h1 >una confirmación por correo electrónico de que sus datos han sido recibidos correctamente. Su solicitud pasará al departamento de confirmaciones  </h1>
@@ -416,8 +415,6 @@ function Inscripción() {
     ))}
   </select>
 </div>
-
-
 </div>
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -488,21 +485,15 @@ function Inscripción() {
 </div>
 <br />
             <br />
-            <input 
-              type="submit" 
-              value="Enviar Inscripción" 
-              style={{ 
-                padding: '10px 20px', 
-                fontSize: '16px',
-                background: 'blue',  
-                color: 'white',       
-              }} 
-            />
+            <input
+  type="submit"
+  value="Enviar Inscripción"
+  className={styles.submitButton} // Agrega esta clase
+/>
           </form>
         </div>
       </div>
     </>
   );
 }
-
 export default Inscripción;
