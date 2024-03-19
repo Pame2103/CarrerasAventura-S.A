@@ -159,7 +159,7 @@ function Inscripción() {
 
      
      <h1 >Si desea inscribirse pagando a través de SINPE Móvil (al número 87460160, a nombre de Pamela Barrantes) o mediante transferencia bancaria</h1>
-     <h1 >(cuenta en colones IBAN CR00000000000000000000000000000), a nombre de (Carreras Aventura S.A),le solicitamos </h1>
+     <h1 >(cuenta en colones IBAN CR0000000000000000000000000), a nombre de (Carreras Aventura S.A),le solicitamos </h1>
      <h1 >que complete el formulario adjunto.Asegúrese de incluir el número de comprobante del SINPE y haga clic en'Enviar'.Una vez enviado,recibirá   </h1>
      <h1 >una confirmación por correo electrónico de que sus datos han sido recibidos correctamente. Su solicitud pasará al departamento de confirmaciones  </h1>
      <h1 >pago donde uno de nuestros administradores verificará la validez de su pago. Posteriormente, recibirá un nuevo correo electrónico con la </h1>
