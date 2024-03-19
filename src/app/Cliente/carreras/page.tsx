@@ -146,7 +146,7 @@ function Carreras() {
                                   </button>
                                 </a>
                               ) : (
-                                "El cupo de participantes está lleno."
+                                "Cupo lleno"
                               )}
                             </p>
                           </div>
@@ -155,11 +155,32 @@ function Carreras() {
                     ))}
                   </div>
                 );
+              } else {
+                return null;
               }
-              return null;
             })}
+          {mensaje && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <strong className="font-bold">¡Error!</strong>
+              <span className="block sm:inline"> {mensaje}</span>
+              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <svg onClick={() => setMensaje("")} className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <title>Close</title>
+                  <path
+                    fillRule="evenodd"
+                    d="M14.348 5.652a.5.5 0 010 .707l-8 8a.5.5 0 01-.707-.707l8-8a.5.5 0 01.707 0z"
+                    clipRule="evenodd"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    d="M5.652 5.652a.5.5 0 00-.707.707l8 8a.5.5 0 00.707-.707l-8-8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+            </div>
+          )}
         </div>
-        {mensaje && <div>{mensaje}</div>}
       </div>
     </>
   );

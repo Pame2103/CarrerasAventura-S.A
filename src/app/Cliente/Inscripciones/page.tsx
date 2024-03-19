@@ -11,8 +11,6 @@ interface Carrera {
   edicion: string;
   fecha: string;
   distancia: string;
-  tipocarrera: string;
-  estadocarrera: string;
   costo: string;
   responsable: string;
   contacto: string;
@@ -36,7 +34,7 @@ interface FormData {
   nombreEmergencia: string;
   telefonoEmergencia: string;
   parentescoEmergencia: string;
-  provincia: string;
+
   totalMonto: string;
   beneficiarioPoliza: string;
   metodoPago: string;
@@ -65,7 +63,6 @@ const initialFormData: FormData = {
   nombreEmergencia: '',
   telefonoEmergencia: '',
   parentescoEmergencia: '',
-  provincia: '',
   totalMonto: '',
   beneficiarioPoliza: '',
   metodoPago: '',
@@ -98,10 +95,11 @@ function Inscripción() {
 
     obtenerCarreras();
   }, []);
+  const [carreraSeleccionada, setCarreraSeleccionada] = useState<Carrera | null>(null);
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-
     if (name === 'nacimiento') {
       const edad = calcularEdad(value);
       setFormData({ ...formData, [name]: value, edad: edad.toString() });
@@ -125,6 +123,17 @@ function Inscripción() {
     e.preventDefault();
 
     try {
+      // Disminuir el cupo de la carrera seleccionada
+      if (carreraSeleccionada) {
+        const index = carreras.findIndex(carrera => carrera.id === carreraSeleccionada.id);
+        if (index !== -1) {
+          const updatedCarreras = [...carreras];
+          updatedCarreras[index].cupo -= 1;
+          setCarreras(updatedCarreras);
+        }
+      }
+      
+      // Luego procede a enviar el formulario
       await addFormDataToFirebase(formData);
       console.log('Form Data:', formData);
     } catch (error) {
@@ -143,6 +152,7 @@ function Inscripción() {
       throw error;
     }
   };
+
 
   return (
 
@@ -425,11 +435,17 @@ function Inscripción() {
 
   <div style={{ marginBottom: '20px' }}>
   <label htmlFor="evento" style={{ display: 'inline-block', width: '250px' }}>Carreras Disponibles:</label>
-        <select
+  <select
           id="evento"
           name="evento"
           value={formData.evento}
-          onChange={handleInputChange}
+          onChange={(event) => {
+            handleInputChange(event);
+            const carrera = carreras.find(carrera => carrera.nombre === event.target.value);
+            if (carrera) {
+              setCarreraSeleccionada(carrera);
+            }
+          }}
           required
           style={{ display: 'inline-block' }}
         >
@@ -438,6 +454,7 @@ function Inscripción() {
             <option key={index} value={carrera.nombre}>{carrera.nombre}</option>
           ))}
         </select>
+        <button type="submit" onClick={handleSubmit}>Enviar Inscripción</button>
       </div>
   <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Formas de pago:</h1>
 
