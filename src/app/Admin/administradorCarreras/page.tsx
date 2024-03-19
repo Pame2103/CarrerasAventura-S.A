@@ -22,7 +22,7 @@ interface Carrera {
   contacto: string;
   lugar: string;
   hora: string;
-  cupo: string;
+  cupoDiponible: string;
   limiteParticipante: string;
 }
 
@@ -37,7 +37,7 @@ function Administradorcarreras() {
     contacto: '',
     lugar: '',
     hora:'',
-    cupo: '',
+    cupoDiponible: '',
     limiteParticipante:''
   });
 
@@ -71,7 +71,7 @@ function Administradorcarreras() {
         edicion: '',
         responsable: '',
         contacto: '',
-        cupo: '',
+        cupoDiponible: '',
         lugar: '',
         hora: '',
         limiteParticipante:''
@@ -102,7 +102,7 @@ function Administradorcarreras() {
       nuevaCarrera.responsable.trim() === '' ||
       nuevaCarrera.contacto.trim() === '' ||
       nuevaCarrera.lugar.trim() === '' ||
-      nuevaCarrera.cupo.trim() === ''
+      nuevaCarrera.cupoDiponible.trim() === ''
       
     ) {
       return false;
@@ -215,7 +215,7 @@ function Administradorcarreras() {
                 label=''
                 variant='outlined'
                 name='cupo'
-                value={nuevaCarrera.cupo}
+                value={nuevaCarrera.cupoDiponible}
                 onChange={handleChange}
                 fullWidth
                 placeholder='50'

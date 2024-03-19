@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/app/componentes/navbar';
-import { collection, onSnapshot, doc, getDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 
@@ -11,13 +11,12 @@ interface Carrera {
   edicion: string;
   fecha: string;
   distancia: string;
-  tipocarrera: string;
-  estadocarrera: string;
   costo: string;
   responsable: string;
   contacto: string;
-  cupo: number;
-  nombre: string; // Asegúrate de que 'nombre' está definido en la interfaz Carrera
+  cupoDisponible: number; // Cambiado el nombre de la propiedad a 'cupoDisponible'
+  limiteParticipante: string;
+  nombre: string;
 }
 
 function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
@@ -44,7 +43,7 @@ async function getCupo(carreraId: string) {
   const carreraDocRef = doc(db, 'Configuracion Carreeras', carreraId);
   const carreraDocSnap = await getDoc(carreraDocRef);
   if (carreraDocSnap.exists()) {
-    return carreraDocSnap.data().limiteParticipantes;
+    return carreraDocSnap.data().limiteParticipante;
   } else {
     console.error(`Carrera document with ID ${carreraId} not found.`);
     return 0; // Return 0 if document not found
@@ -79,9 +78,11 @@ function Carreras() {
     if (raceToUpdate) {
       if (cupo > 0) {
         const updatedCarreras = carreras.map(carrera =>
-          carrera.id === carreraId ? { ...carrera, cupo: cupo - 1 } : carrera
+          carrera.id === carreraId ? { ...carrera, cupoDisponible: carrera.cupoDisponible - 1 } : carrera
         );
         setCarreras(updatedCarreras);
+        const carreraDocRef = doc(db, 'Configuracion Carreeras', carreraId);
+        await updateDoc(carreraDocRef, { cupoDisponible: cupo - 1 });
         console.log(`Inscribiéndose en la carrera con ID ${carreraId}`);
       } else {
         setMensaje("El cupo de participantes ya ha llegado a su límite. Gracias por su interés, por favor revise otros eventos disponibles.");
@@ -124,19 +125,18 @@ function Carreras() {
                             <p>{carrera.evento}</p>
                             <p>{carrera.edicion}</p>
                             <p>{carrera.fecha}</p>
-                            <p>Cupos Disponibles: {carrera.cupo}</p>
+                            <p>Límite de Participantes: {carrera.limiteParticipante}</p> {/* Mostrar límite de participantes */}
+                            <p>Cupos Disponibles: {carrera.cupoDisponible}</p> {/* Mostrar cupos disponibles */}
                           </div>
                           <div>
                             <p>Distancia: {carrera.distancia}</p>
-                            <p>Tipo de Carrera: {carrera.tipocarrera}</p>
-                            <p>Estado de la Carrera: {carrera.estadocarrera}</p>
                           </div>
                           <div>
                             <p>Costo: {carrera.costo}</p>
                             <p>Responsable: {carrera.responsable}</p>
                             <p>Contacto: {carrera.contacto}</p>
-                            <p style={{ color: carrera.cupo > 0 ? 'black' : 'red' }}>
-                              {carrera.cupo > 0 ? (
+                            <p style={{ color: carrera.cupoDisponible > 0 ? 'black' : 'red' }}>
+                              {carrera.cupoDisponible > 0 ? (
                                 <a href={`/Cliente/Inscripciones`}>
                                   <button
                                     style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', margin: 'auto' }}
