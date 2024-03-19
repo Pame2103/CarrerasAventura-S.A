@@ -16,8 +16,6 @@ interface Carrera {
   edicion: string;
   fecha: string;
   distancia: string;
-  tipocarrera: string;
-  estadocarrera: string;
   costo: string;
   responsable: string;
   contacto: string;
@@ -150,8 +148,7 @@ function Carreras() {
                           </div>
                           <div>
                             <p>Distancia: {carrera.distancia}</p>
-                            <p>Tipo de Carrera: {carrera.tipocarrera}</p>
-                            <p>Estado de la Carrera: {carrera.estadocarrera}</p>
+                          
                           </div>
                           <div>
                             <p>Costo: {carrera.costo}</p>

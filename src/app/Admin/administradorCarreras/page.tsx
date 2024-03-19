@@ -18,13 +18,12 @@ interface Carrera {
   costo: string;
   distancia: string;
   edicion: string;
-  tipocarrera: string;
-  estadocarrera: string;
   responsable: string;
   contacto: string;
   lugar: string;
   hora: string;
   cupo: string;
+  limiteParticipante: string;
 }
 
 function Administradorcarreras() {
@@ -34,13 +33,12 @@ function Administradorcarreras() {
     costo: '',
     distancia: '',
     edicion: '',
-    tipocarrera: '',
-    estadocarrera: '',
     responsable: '',
     contacto: '',
     lugar: '',
     hora:'',
     cupo: '',
+    limiteParticipante:''
   });
 
   const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
@@ -71,13 +69,12 @@ function Administradorcarreras() {
         costo: '',
         distancia: '',
         edicion: '',
-        tipocarrera: '',
-        estadocarrera: '',
         responsable: '',
         contacto: '',
         cupo: '',
         lugar: '',
-        hora: ''
+        hora: '',
+        limiteParticipante:''
       });
     } catch (error) {
       console.error('Error adding form data to Firebase:', error);
@@ -102,12 +99,11 @@ function Administradorcarreras() {
       nuevaCarrera.fecha.trim() === '' ||
       nuevaCarrera.distancia.trim() === '' ||
       nuevaCarrera.costo.trim() === '' ||
-      nuevaCarrera.tipocarrera.trim() === '' ||
-      nuevaCarrera.estadocarrera.trim() === '' ||
       nuevaCarrera.responsable.trim() === '' ||
       nuevaCarrera.contacto.trim() === '' ||
       nuevaCarrera.lugar.trim() === '' ||
       nuevaCarrera.cupo.trim() === ''
+      
     ) {
       return false;
     }
@@ -238,37 +234,8 @@ function Administradorcarreras() {
               />
             </div>
             
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <InputLabel>Tipo de carrera:</InputLabel>
-              <Select
-                variant='outlined'
-                name='tipocarrera'
-                value={nuevaCarrera.tipocarrera}
-                //onChange={handleChange}
-                fullWidth
-                placeholder='carreras de Montaña'
-              >
-                <MenuItem value='Carreras de Montaña'>Carreras de Montaña</MenuItem>
-                <MenuItem value='Carrera Internacional'>Carrera internacional</MenuItem>
-                <MenuItem value='Carrera Ecologica'>Carrera ecologica</MenuItem>
-              </Select>
-            </div>
-            <div className="form-field">
-              <InputLabel>Estado de la carrera:</InputLabel>
-              <Select
-                variant='outlined'
-                name='estadocarrera'
-                value={nuevaCarrera.estadocarrera}
-                //onChange={handleChange}
-                fullWidth
-              >
-                <MenuItem value='Activa'>Activa</MenuItem>
-                <MenuItem value='Inactiva'>Inactiva</MenuItem>
-                <MenuItem value='En configuracion'>Configuracion</MenuItem>
-              </Select>
-            </div>
+         
+            
             <div className="form-field">
               <InputLabel>Responsable:</InputLabel>
               <TextField

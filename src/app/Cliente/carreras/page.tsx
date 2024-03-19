@@ -3,27 +3,27 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/app/componentes/navbar';
 import { collection, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
-import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 
 interface Carrera {
   id: string;
-  evento: string;
-  edicion: string;
+  nombre: string;
   fecha: string;
-  distancia: string;
-  tipocarrera: string;
-  estadocarrera: string;
   costo: string;
+  distancia: string;
+  edicion: string;
+ limiteParticipante:string;
   responsable: string;
   contacto: string;
-  cupo: number;
+  lugar: string;
+  hora: string;
+  cupo: number; // Se cambia a number
 }
 
 function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
   const grouped: { [key: string]: Carrera[] } = {};
 
   carreras.forEach(carrera => {
-    // Ensure carrera.fecha exists and is a string
     if (typeof carrera.fecha === 'string' && carrera.fecha.includes('-')) {
       const parts = carrera.fecha.split('-');
       const month = new Date(2022, parseInt(parts[1]) - 1, 1).toLocaleString('default', { month: 'long' });
@@ -39,14 +39,14 @@ function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
   return grouped;
 }
 
-async function getCupo(carreraId: string) {
+async function getCupo(carreraId: string): Promise<number> { // Se especifica que la función devuelve un número
   const carreraDocRef = doc(db, 'Configuracion Carreeras', carreraId);
   const carreraDocSnap = await getDoc(carreraDocRef);
   if (carreraDocSnap.exists()) {
     return carreraDocSnap.data().limiteParticipantes;
   } else {
     console.error(`Carrera document with ID ${carreraId} not found.`);
-    return 0; // Return 0 if document not found
+    return 0;
   }
 }
 
@@ -58,10 +58,10 @@ function Carreras() {
   useEffect(() => {
     const carrerasRef = collection(db, 'Configuracion Carreeras');
     const unsubscribe = onSnapshot(carrerasRef, (querySnapshot) => {
-      const carrerasData = querySnapshot.docs.map((doc) => ({
+      const carrerasData: Carrera[] = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      }) as Carrera);
+      })) as Carrera[];
       setCarreras(carrerasData);
     });
     return () => unsubscribe();
@@ -74,25 +74,31 @@ function Carreras() {
 
   const handleInscribirse = async (carreraId: string, eventoNombre: string) => {
     const cupo = await getCupo(carreraId);
-    const raceToUpdate = carreras.find(carrera => carrera.id === carreraId);
-    if (raceToUpdate) {
+    console.log("Cupo actual:", cupo); // Agregar este console.log
+    const raceToUpdateIndex = carreras.findIndex(carrera => carrera.id === carreraId);
+    console.log("Index de la carrera:", raceToUpdateIndex); // Agregar este console.log
+    
+    if (raceToUpdateIndex !== -1) {
       if (cupo > 0) {
-        const updatedCarreras = carreras.map(carrera =>
-          carrera.id === carreraId ? { ...carrera, cupo: cupo - 1 } : carrera
-        );
-        setCarreras(updatedCarreras);
-        // Guarda los detalles de la carrera seleccionada en el almacenamiento local
-        localStorage.setItem('carreraSeleccionada', JSON.stringify(raceToUpdate));
+        const updatedCarreras = [...carreras];
+        updatedCarreras[raceToUpdateIndex] = {
+          ...updatedCarreras[raceToUpdateIndex],
+          cupo: cupo - 1
+        };
+        setCarreras(updatedCarreras); // Actualizar el estado aquí
+
+        localStorage.setItem('carreraSeleccionada', JSON.stringify(updatedCarreras[raceToUpdateIndex]));
         localStorage.setItem('nombreEventoSeleccionado', eventoNombre);
-        // Redirige a la página de detalles de la carrera
         window.location.href = '/Cliente/Inscripciones';
       } else {
         setMensaje("El cupo de participantes ya ha llegado a su límite. Gracias por su interés, por favor revise otros eventos disponibles.");
       }
+    } else {
+      console.error(`No se encontró la carrera con ID ${carreraId} en el estado.`);
     }
   };
 
-  const today = new Date(); // Obtener la fecha actual
+  const today = new Date(); 
 
   return (
     <>
@@ -123,27 +129,26 @@ function Carreras() {
                       <div key={carrera.id} className="bg-white rounded-lg shadow-md p-4 mb-4 w-full max-w-3xl">
                         <div className="grid grid-cols-3 gap-4">
                           <div>
-                            <h3 className="text-lg font-bold">{carrera.evento}</h3>
+                            <h3 className="text-lg font-bold">{carrera.nombre}</h3> {/* Se cambia a carrera.nombre */}
                             <p>{carrera.edicion}</p>
                             <p>{carrera.fecha}</p>
                             <p>Cupos Disponibles: {carrera.cupo}</p>
                           </div>
                           <div>
                             <p>Distancia: {carrera.distancia}</p>
-                            <p>Tipo de Carrera: {carrera.tipocarrera}</p>
-                            <p>Estado: {carrera.estadocarrera}</p>
+                        
                           </div>
                           <div className="flex flex-col items-center justify-center">
-                            {carrera.cupo > 0 ? (
-                              <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={() => handleInscribirse(carrera.id, carrera.evento)}
-                              >
-                                Inscribirse
-                              </button>
-                            ) : (
-                              <p style={{ color: 'red' }}>El cupo de participantes está lleno.</p>
-                            )}
+                            <button
+                              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${carrera.cupo <= 0 ? 'bg-gray-300 cursor-not-allowed' : ''}`}
+                              onClick={() => {
+                                console.log("Clic en el botón de inscripción:", carrera.id, carrera.nombre);
+                                carrera.cupo > 0 && handleInscribirse(carrera.id, carrera.nombre)
+                              }} 
+                              disabled={carrera.cupo <= 0}
+                            >
+                              {carrera.cupo > 0 ? 'Inscribirse' : 'Cupo lleno'}
+                            </button>
                           </div>
                         </div>
                       </div>
