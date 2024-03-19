@@ -1,0 +1,43 @@
+.form {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background-color: #6bc6dd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(207, 25, 25, 0.1);
+    font-size: 16px; /* Ajusta el tamaño de la fuente */
+    margin: 20px auto; /* Agrega márgenes para centrar el formulario */
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    color: #333;
+    background-color: #fff;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px; /* Agrega margen superior para separar los botones */
+  }
+  
+  .button {
+    /* Estilos del botón */
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #68BCF5;
+    color: #1177BB;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
