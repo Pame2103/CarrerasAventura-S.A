@@ -1,9 +1,9 @@
 'use client'
-import React, { useState,useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState,useEffect, ChangeEvent, FormEvent, } from 'react';
 
-
+import { collection, doc, DocumentData, DocumentReference, updateDoc,getDocs,addDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
-import { collection, addDoc,getDocs } from 'firebase/firestore';
+
 
 interface Carrera {
   id: string;
@@ -16,6 +16,8 @@ interface Carrera {
   contacto: string;
   cupo: number;
   nombre: string;
+  cupoDisponible: string; 
+  limiteParticipante: string;
 }
 
 
@@ -34,7 +36,8 @@ interface FormData {
   nombreEmergencia: string;
   telefonoEmergencia: string;
   parentescoEmergencia: string;
-
+  cupoDisponible: string; 
+  limiteParticipante: string;
   totalMonto: string;
   beneficiarioPoliza: string;
   metodoPago: string;
@@ -74,6 +77,9 @@ const initialFormData: FormData = {
   pais: '',
   evento: '',
   codigoComprobante: '',
+  cupoDisponible: '',  // Cambiado el nombre de la propiedad a 'cupoDisponible'
+  
+  limiteParticipante: '',
 };
 
 function Inscripción() {
@@ -121,28 +127,36 @@ function Inscripción() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+  
     try {
-      // Disminuir el cupo de la carrera seleccionada
-      if (carreraSeleccionada) {
-        const index = carreras.findIndex(carrera => carrera.id === carreraSeleccionada.id);
-        if (index !== -1) {
-          const updatedCarreras = [...carreras];
-          updatedCarreras[index].cupo -= 1;
-          setCarreras(updatedCarreras);
+      if (formData.metodoPago === "sinpe" || formData.metodoPago === "Patrocinador") {
+        // Disminuir el cupo de la carrera seleccionada
+        if (carreraSeleccionada) {
+          const index = carreras.findIndex(carrera => carrera.id === carreraSeleccionada.id);
+          if (index !== -1) {
+            const updatedCarreras = [...carreras];
+            updatedCarreras[index].cupo -= 1;
+            setCarreras(updatedCarreras);
+  
+            // Actualizar el cupo en la base de datos
+            const carreraRef: DocumentReference<DocumentData> = doc(db, 'Configuracion Carreeras', carreraSeleccionada.id);
+            
+            await updateDoc(carreraRef, {
+              cupo: carreraSeleccionada.cupo - 1
+            });
+          }
         }
       }
-      
+  
       // Luego procede a enviar el formulario
       await addFormDataToFirebase(formData);
       console.log('Form Data:', formData);
     } catch (error) {
       console.error('Error adding form data to Firebase:', error);
     }
-
+  
     setFormData({ ...initialFormData });
   };
-
   const addFormDataToFirebase = async (formData: FormData) => {
     try {
       const docRef = await addDoc(collection(db, 'Inscripciones'), formData);

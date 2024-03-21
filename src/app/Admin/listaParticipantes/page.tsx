@@ -41,6 +41,8 @@ interface Participante {
   pais: string;
   evento: string;
   codigoComprobante: string;
+  cupoDisponible: string; 
+  limiteParticipante: string;
 }
 
 function ListaParticipantes(): JSX.Element {
@@ -136,6 +138,7 @@ function ListaParticipantes(): JSX.Element {
       'Pais',
       'Evento',
       'Codigo Comprobante'
+      
     ];
     worksheet.addRow(headers).font = { bold: true };
 
