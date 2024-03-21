@@ -67,8 +67,8 @@ const MainMenu: React.FC = () => {
 
 const Sidebar: React.FC<MenuItemProps> = ({ link, text, description }) => (
   <div className="flex flex-col items-start cursor-pointer group p-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-300">
-    <a href={link} className="text-white group-hover:text-yellow-300 text-lg font-semibold">{text}</a>
-    <span className="text-xs text-gray-300 group-hover:text-white">{description}</span>
+    <a href={link} className="text-white group-hover:text-yellow-300 text-lg font-semibold" style={{ color: '#fff' }}>{text}</a>
+    <span className="text-xs text-gray-300 group-hover:text-white" style={{ color: '#fff' }}>{description}</span>
   </div>
 );
 

@@ -5,7 +5,6 @@ import { faUser, faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'; 
 import { signInWithEmailAndPassword } from 'firebase/auth'; 
 import { auth } from '../../../firebase/firebase'; 
-import styles from './estilos/Login.module.css';
 
 export default function Login() { 
   const [email, setEmail] = useState(''); 
@@ -36,14 +35,22 @@ export default function Login() {
   }; 
 
   return ( 
-    <div> 
-      <div className={`min-h-screen flex flex-col justify-center items-center ${styles.bgBlue} text-white min-h-screen`}> 
-        <form className={`border ${styles.borderGray} p-6 rounded-md shadow-md bg-white max-w-md w-full`}> 
-          <h1 className={`text-4xl font-extrabold mb-6 text-center ${styles.textBlue}`}> 
+    <div style={{ 
+      backgroundImage: "url('core.jpeg')", 
+      backgroundSize: 'cover', 
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)' /* Opacidad del fondo */,
+      minHeight: '100vh', /* Ajuste la altura para cubrir la pantalla */
+    }}> 
+      <div className="min-h-screen flex flex-col justify-center items-center text-white"> 
+        <form className="border p-6 rounded-md shadow-md bg-white max-w-md w-full"> 
+          <h2 className="text-3xl font-bold mb-6 text-center text-black">Inicio de Sesión</h2> 
+          <h1 className="text-4xl font-extrabold mb-6 text-center text-black"> 
             ¡Bienvenido! 
           </h1> 
           {error && ( 
-            <div className={`mb-4 ${styles.textRed} text-center`}> 
+            <div className="mb-4 text-red-500 text-center"> 
               {error} 
             </div> 
           )} 
@@ -57,7 +64,7 @@ export default function Login() {
               id="email" 
               value={email} 
               onChange={handleEmailChange} 
-              className={`mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300 ${styles.input}`} 
+              className="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300" 
               style={{ fontSize: '1rem' }} 
             /> 
           </div> 
@@ -71,19 +78,21 @@ export default function Login() {
               id="password" 
               value={password} 
               onChange={handlePasswordChange} 
-              className={`mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300 ${styles.input}`} 
+              className="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300" 
               style={{ fontSize: '1rem' }} 
             /> 
           </div> 
           <div className="flex justify-between items-center"> 
             <button 
               onClick={signIn} 
-              className={`px-4 py-2 rounded-md ${styles.bgBlue600} text-white hover:bg-blue-700 hover:text-black`}> 
+              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 hover:text-black" 
+              style={{ backgroundColor: '#2563eb' }}> {/* Color fijo para el botón */} 
               Iniciar Sesión 
             </button> 
             <Link 
               href="/Admin/recuperar" 
-              className={`px-4 py-2 rounded-md ${styles.bgBlue600} text-white hover:bg-blue-700 hover:text-black`}> 
+              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 hover:text-black" 
+              style={{ backgroundColor: '#2563eb' }}> {/* Color fijo para el enlace */} 
               Olvidé mi Contraseña 
             </Link> 
           </div> 
