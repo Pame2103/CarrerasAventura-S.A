@@ -78,7 +78,6 @@ const initialFormData: FormData = {
   evento: '',
   codigoComprobante: '',
   cupoDisponible: '',  // Cambiado el nombre de la propiedad a 'cupoDisponible'
-  
   limiteParticipante: '',
 };
 

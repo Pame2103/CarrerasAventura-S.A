@@ -16,7 +16,7 @@ interface Carrera {
   contacto: string;
   cupoDisponible: number; // Cambiado el nombre de la propiedad a 'cupoDisponible'
   limiteParticipante: string;
-  nombre: string;
+nombreCarrera:string;
 }
 
 function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
@@ -121,7 +121,7 @@ function Carreras() {
                       <div key={carrera.id} className="bg-white rounded-lg shadow-md p-4 mb-4 w-full max-w-3xl">
                         <div className="grid grid-cols-3 gap-4">
                           <div>
-                            <h3 className="text-lg font-bold">{carrera.nombre}</h3> {/* Añadido el nombre de la carrera */}
+                            <h3 className="text-lg font-bold">{carrera.nombreCarrera}</h3> {/* Añadido el nombre de la carrera */}
                             <p>{carrera.evento}</p>
                             <p>{carrera.edicion}</p>
                             <p>{carrera.fecha}</p>
