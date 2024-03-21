@@ -16,7 +16,7 @@ interface Carrera {
   contacto: string;
   cupo: number;
   nombre: string;
-  cupoDisponible: string; 
+  cupoDisponible : string;
   limiteParticipante: string;
 }
 
