@@ -26,7 +26,7 @@ const MainMenu: React.FC = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <nav className="bg-blue-500 p-10 w-1/4">
+      <nav className="bg-white p-10 w-1/4">
         <div className="flex flex-col space-y-4">
           <Sidebar link="/Admin/administradorCarreras" text="Administrar Carreras" description="" />
           <Sidebar link="/Admin/configuraciones" text="Configuraciones" description="" />

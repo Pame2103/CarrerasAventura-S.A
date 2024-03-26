@@ -87,7 +87,7 @@ function Administradorcarreras() {
           body {
             margin: 0;
             padding: 0;
-            background-image: url('/admi.jpeg');
+            background-colorblue
             background-size: cover;
             background-repeat: no-repeat;
             height: 100vh;

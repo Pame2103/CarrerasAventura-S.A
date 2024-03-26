@@ -70,7 +70,7 @@ function Resultados() {
                 nanosegundos: '',
                 posicion: '',
                 sexo: '',
-                nombreCarrera: '', // Corregido el nombre de la variable
+                nombreCarrera: '', 
             });
         } catch (error) {
             console.error('Error al agregar resultado a Firebase:', error);
@@ -215,10 +215,17 @@ function Resultados() {
                             onChange={handleChangen}
                             className="border p-2 w-full"
                         >
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
+                            <option value="Femenino, Junior ">Femenina, Junior</option>
+                            <option value="Femenino,Mayor">Femenina,Mayor</option>
+                            <option value="Femenino,Veterano">Femenina,Veterano A</option>
+                            <option value="Femenino,Veterano B">Femenina,Veterano B</option>
+                            <option value="Femenino,Veterano C">Femenina,Veterano C</option>
+                            <option value="Masculino,Junior ">Masculino,Junior</option>
+                            <option value="Masculono,Mayor">Masculino,Mayor</option>
+                            <option value="Masculino,Veterano ">Masculino,Veterano A</option>
+                            <option value="Masculino,Veterano A">Masculino,Veterano A</option>
+                            <option value="Masculino,Veterano B">Masculino,Veterano B</option>
+                            <option value="Masculino,Veterano C">Masculino,Veterano C</option>
                         </select>
                     </div>
                     <div className="mb-2">

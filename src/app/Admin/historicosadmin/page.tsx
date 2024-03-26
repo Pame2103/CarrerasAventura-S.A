@@ -1,14 +1,14 @@
-
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 
 interface Dato {
+  id: string;
   nombre: string;
   tiempo: string;
   cedula: string;
-  posicion: string;
+  posicion: number; 
   categoria: string;
 }
 
@@ -19,7 +19,7 @@ function HistoricosAdmi() {
   const [segundos, setSegundos] = useState(0);
   const [nanosegundos, setNanosegundos] = useState(0);
   const [cedula, setCedula] = useState('');
-  const [posicion, setPosicion] = useState('');
+  const [posicion, setPosicion] = useState(1); 
   const [categoria, setCategoria] = useState('');
   const [loading, setLoading] = useState(true);
   const [datos, setDatos] = useState<Dato[]>([]); 
@@ -28,13 +28,57 @@ function HistoricosAdmi() {
     const historicosCollection = collection(db, 'Historicos');
 
     const unsubscribe = onSnapshot(historicosCollection, (snapshot) => {
-      const historicosData = snapshot.docs.map((doc) => doc.data());
-   
+      const historicosData: Dato[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          nombre: data.nombre || '',
+          tiempo: data.tiempo || '',
+          cedula: data.cedula || '',
+          posicion: data.posicion || 1, 
+          categoria: data.categoria || '',
+        };
+      });
+      setDatos(historicosData);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, 'Historicos', id));
+      setDatos(prevDatos => prevDatos.filter(dato => dato.id !== id));
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
+  };
+
+  const handleEdit = async (id: string) => {
+    const tiempo = `${horas}h ${minutos}m ${segundos}s ${nanosegundos}ns`;
+
+    try {
+      await updateDoc(doc(db, 'Historicos', id), {
+        nombre,
+        tiempo,
+        cedula,
+        posicion,
+        categoria,
+      });
+      setDatos(prevDatos => {
+        return prevDatos.map(dato => {
+          if (dato.id === id) {
+            return { ...dato, nombre, tiempo, cedula, posicion, categoria };
+          } else {
+            return dato;
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,7 +89,7 @@ function HistoricosAdmi() {
         nombre,
         tiempo,
         cedula,
-        posicion,
+        posicion, 
         categoria,
       });
 
@@ -57,40 +101,13 @@ function HistoricosAdmi() {
       setSegundos(0);
       setNanosegundos(0);
       setCedula('');
-      setPosicion('');
+      setPosicion(1); 
       setCategoria('');
+
+    
     } catch (error) {
       console.error("Error adding document: ", error);
     }
-  };
-
-  const handleDelete = (index: number) => {
-    const nuevosDatos = [...datos];
-    nuevosDatos.splice(index, 1);
-    setDatos(nuevosDatos);
-  };
-
-  const handleEdit = (index: number) => {
-    const datoEditado = datos[index];
-    setNombre(datoEditado.nombre);
-
-    if (datoEditado.tiempo) {
-      const tiempoMatches = datoEditado.tiempo.match(/\d+\w/g);
-      if (tiempoMatches) {
-        const [horas, minutos, segundos, nanosegundos] = tiempoMatches.map((parte) => parseInt(parte, 10));
-
-        setHoras(horas);
-        setMinutos(minutos);
-        setSegundos(segundos);
-        setNanosegundos(nanosegundos);
-      }
-    }
-
-    setCedula(datoEditado.cedula);
-    setPosicion(datoEditado.posicion);
-    setCategoria(datoEditado.categoria);
-
-    handleDelete(index);
   };
 
   return (
@@ -170,23 +187,40 @@ function HistoricosAdmi() {
           />
         </div>
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Posicion:</label>
+        <label style={{ display: 'block', marginBottom: '5px' }}>Posicion:</label>
+          {/* Contador de números para la posición */}
           <input
-            type="text"
+            type="number"
             value={posicion}
-            onChange={(e) => setPosicion(e.target.value)}
+            min="1" // Mínimo valor permitido es 1
+            onChange={(e) => setPosicion(parseInt(e.target.value))}
             style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
         </div>
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Categoria:</label>
-          <input
-            type="text"
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-        </div>
+        <label htmlFor="categoria" className="block font-semibold">Categoría:</label>
+                       <select
+  id="categoria"
+  name="categoria"
+  value={categoria}
+  onChange={(e) => setCategoria(e.target.value)}
+  className="border p-2 w-full"
+>
+  <option value="Categoria">Categoria</option>
+  <option value="Femenino, Junior">Femenina, Junior</option>
+  <option value="Femenino,Mayor">Femenina,Mayor</option>
+  <option value="Femenino,Veterano">Femenina,Veterano A</option>
+  <option value="Femenino,Veterano B">Femenina,Veterano B</option>
+  <option value="Femenino,Veterano C">Femenina,Veterano C</option>
+  <option value="Masculino,Junior">Masculino,Junior</option>
+  <option value="Masculono,Mayor">Masculino,Mayor</option>
+  <option value="Masculino,Veterano">Masculino,Veterano A</option>
+  <option value="Masculino,Veterano A">Masculino,Veterano A</option>
+  <option value="Masculino,Veterano B">Masculino,Veterano B</option>
+  <option value="Masculino,Veterano C">Masculino,Veterano C</option>
+</select>
+
+                    </div>
         <button type="submit" style={{ background: '#0D47A1', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Agregar</button>
       </form>
       <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}> Historicos</h2>
@@ -195,28 +229,32 @@ function HistoricosAdmi() {
         <thead style={{ backgroundColor: '#B1CEE3' }} className="">
             <tr>
               <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Nombre</th>
-              <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Tiempo</th>
+             
               <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Cedula</th>
+              <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Tiempo</th>
+
               <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Posicion</th>
               <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Categoria</th>
               <th style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {datos.map((dato, index) => (
-              <tr key={index}>
-                <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.nombre}</td>
-                <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.tiempo}</td>
-                <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.cedula}</td>
-                <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.posicion}</td>
-                <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.categoria}</td>
-                <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>
-                  <button onClick={() => handleDelete(index)} style={{ background: '#0D47A1', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', marginRight: '4px' }}>Eliminar</button>
-                  <button onClick={() => handleEdit(index)} style={{ background: '#0D47A1', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>Editar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {datos.map((dato) => (
+  <tr key={dato.id}>
+    <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.nombre}</td>
+    <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.cedula}</td>
+    <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.tiempo}</td>
+    <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.posicion}</td>
+    <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>{dato.categoria}</td>
+    <td style={{ padding: '15px', borderBottom: '1px solid #ccc' }}>
+      <button onClick={() => handleDelete(dato.id)} style={{ background: '#0D47A1', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', marginRight: '4px' }}>Eliminar</button>
+      <button onClick={() => handleEdit(dato.id)} style={{ background: '#0D47A1', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>Editar</button>
+    </td>
+  </tr>
+))}
+
+</tbody>
+
         </table>
       </div>
     </div>
@@ -225,117 +263,50 @@ function HistoricosAdmi() {
 }
 <style>
         {`
-
-.contenedor {
-  background-color: #fff; /* Fondo blanco */
-  padding: 20px; /* Espaciado interior */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  margin: 20px auto; /* Margen exterior */
-  max-width: 800px; /* Ancho máximo del contenedor */
-}
-/* Estilos globales */
+          body {
+            margin: 0;
+            padding: 0;
+            background-image: url('/admi.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          
           .container {
-            max-width: 1300px;
-            margin: 0 auto;
+            max-width: 800px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            background: #f9f9f9;
+            background: rgba(255, 255, 255, 0.8); /* Agregar fondo blanco semi-transparente para mejorar la legibilidad */
           }
-
-
-          .mi-formulario {
-            max-width: 500px;
-            margin: 0 auto;
+          
+          .form-container {
+            text-align: left;
           }
-
-          .mi-formulario div {
+          
+          .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+          }
+          
+          .form-field {
+            flex: 0 0 calc(33.33% - 8px);
+          }
+          
+          .form-container form div {
             margin-bottom: 10px;
           }
-
-          .mi-formulario label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-
-          .mi-formulario input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-top: 3px;
-          }
-
-          .mi-formulario {
-            text-align: center; /* Centrar el contenido dentro del contenedor */
-          }
           
-          .mi-formulario button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+          .form-container form button {
             margin-top: 10px;
+            background: #1976D2;
+            color: white;
           }
           
-          .mi-formulario button.agregar {
-            background-color: #0D47A1;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-          }
-
-          .mi-formulario button.agregar:hover {
-            background-color: #0056b3;
-          }
-
-          .tiempo-inputs {
-            display: flex;
-            align-items: center;
-          }
-
-          .tiempo-inputs label {
-            margin-right: 5px;
-          }
-
-          table {
-            border-collapse: collapse;
-            width: 70%;
-            table-layout: fixed; /* Añade esta línea */
-           
-          }
-
-          th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-            overflow: hidden; /* Añade esta línea */
-            white-space: nowrap; /* Añade esta línea */
-          }
-
-          .editar,
-          .eliminar {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-right: 30px; /* Ajusta el valor de margen derecho según tu preferencia */
-          }
-          
-          .editar {
-            background-color: #0D47A1;
-            color: #fff;
-          }
-
-          .eliminar {
-            background-color: #0D47A1;
-            color: #fff;
-            margin-left: 5px;
-          }
         `}
       </style>
 

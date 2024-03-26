@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 
-// Supongo que MenuItem es un componente externo
+
 interface MenuItemProps {
   link: string;
   text: string;
