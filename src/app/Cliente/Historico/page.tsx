@@ -15,27 +15,14 @@ export default function Historico() {
         costo: string;
         responsable: string;
         contacto: string;
-        nombrecarrera:string;
-       
+        nombrecarrera: string;
     }
+
     const [busqueda, setBusqueda] = useState('');
-    
     const [carreras, setCarreras] = useState<Carrera[]>([]);
-    const [resultados, setResultados] = useState<{
-      id: number;
-      nombre: string;
-      cedula: string;
-      posicion: number;
-      tiempo: string;
-      categoria: string;
-      distancia: string;
-      costo: string;
-      responsable: string;
-      contacto: string;
-      nombrecarrera:string;
-    }[]>([]);
+    const [resultados, setResultados] = useState<Carrera[]>([]);
     const [hayResultados, setHayResultados] = useState(true);
-  
+
     const handleBusquedaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBusqueda(e.target.value);
         if (!e.target.value) {
@@ -43,8 +30,7 @@ export default function Historico() {
             setHayResultados(true);
         }
     };
-      
-  
+
     useEffect(() => {
         const historicosCollection = collection(db, 'Historicos');
       
@@ -59,19 +45,18 @@ export default function Historico() {
         return () => unsubscribe();
     }, []);
       
-      
-  
     const handleSearch = () => {
         if (busqueda.trim() !== '') {
             const resultados = carreras.filter((carrera: Carrera) => {
-                const { nombre, cedula, categoria } = carrera;
+                const { nombre, cedula, categoria, nombrecarrera } = carrera;
                 return (
                     nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
                     cedula.includes(busqueda) ||
-                    categoria.toLowerCase().includes(busqueda.toLowerCase()) // Incluir búsqueda en el campo "carrera"
+                    categoria.toLowerCase().includes(busqueda.toLowerCase()) ||
+                    nombrecarrera.toLowerCase().includes(busqueda.toLowerCase()) // Incluir búsqueda por nombre de carrera
                 );
             });
-      
+
             setResultados(resultados);
             setHayResultados(resultados.length > 0);
         } else {
@@ -79,8 +64,7 @@ export default function Historico() {
             setHayResultados(true);
         }
     };
-      
-  
+
     const renderFilas = () => {
         let filas;
         if (resultados.length > 0) {
@@ -90,7 +74,7 @@ export default function Historico() {
             // Si no hay resultados, renderizar todas las carreras
             filas = [...carreras];
         }
-  
+
         return filas.map(carrera => (
             <tr key={carrera.id}>
                 <td className="p-2 border text-center">{carrera.nombre}</td>

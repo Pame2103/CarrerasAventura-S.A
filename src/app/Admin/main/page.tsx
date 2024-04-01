@@ -36,6 +36,7 @@ const MainMenu: React.FC = () => {
           <Sidebar link="/Admin/confirmaciones" text="Confirmación de Pagos" description="" />
           <Sidebar link="/Admin/carreras" text="Carreras" description="" />
           <Sidebar link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
+          <Sidebar link="/Admin/record" text="Records" description="" />
         </div>
       </nav>
       

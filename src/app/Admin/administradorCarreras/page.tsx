@@ -1,8 +1,8 @@
 'use client'
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { TextField, Button, InputLabel } from '@mui/material';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, query, where, doc as docRef } from 'firebase/firestore';
 
 interface Carrera {
   nombre: string;
@@ -36,45 +36,77 @@ function Administradorcarreras() {
   const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [selectedCarrera, setSelectedCarrera] = useState<string>('');
+
+  useEffect(() => {
+    async function fetchCarreras() {
+      const q = query(collection(db, 'Configuracion Carreeras'));
+      const carrerasSnapshot = await getDocs(q);
+      const carrerasData: Carrera[] = [];
+      carrerasSnapshot.forEach((doc) => {
+        carrerasData.push(doc.data() as Carrera);
+      });
+      setCarreras(carrerasData);
+    }
+    fetchCarreras();
+  }, []);
+
   const handleChange = (event: ChangeEvent<{ name?: string; value: unknown }>) => {
     const { name, value } = event.target;
-    setNuevaCarrera({ ...nuevaCarrera, [name as string]: value });
+    setNuevaCarrera({ ...nuevaCarrera, [name as string]: value as string });
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const selectedCarreraNombre = event.target.value;
+    setSelectedCarrera(selectedCarreraNombre);
+
+    const carrera = carreras.find(carrera => carrera.nombre === selectedCarreraNombre);
+    if (carrera) {
+      setNuevaCarrera(carrera);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      await addFormDataToFirebase(nuevaCarrera);
+      await updateCarreraInFirebase(nuevaCarrera);
       console.log('Form Data:', nuevaCarrera);
 
       setOperacionExitosa(true);
       setErrorMessage('');
-      setNuevaCarrera({
-        nombre: '',
-        fecha: '',
-        costo: '',
-        distancia: '',
-        edicion: '',
-        responsable: '',
-        contacto: '',
-        lugar: '',
-        hora: '',
-        cupoDisponible: '',
-        limiteParticipante: '',
-      });
     } catch (error) {
-      console.error('Error adding form data to Firebase:', error);
+      console.error('Error updating form data in Firebase:', error);
       setOperacionExitosa(false);
+      setErrorMessage('Hubo un error al agregar los cambios.');
     }
   };
 
-  const addFormDataToFirebase = async (nuevaCarrera: Carrera) => {
+  const updateCarreraInFirebase = async (updatedCarrera: Carrera) => {
     try {
-      const docRef = await addDoc(collection(db, 'Configuracion Carreeras'), nuevaCarrera);
-      console.log('Form data added with ID: ', docRef.id);
+      const q = query(collection(db, 'Configuracion Carreeras'), where('nombre', '==', updatedCarrera.nombre));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach(async (doc) => {
+          try {
+            const carreraRef = docRef(db, `Configuracion Carreeras/${doc.id}`);
+            // Copiar todas las propiedades de Carrera excepto 'nombre'
+            const { nombre, ...updatedCarreraData } = updatedCarrera;
+            await updateDoc(carreraRef, updatedCarreraData);
+            console.log('Carrera updated:', updatedCarrera.nombre);
+          } catch (error) {
+            console.error('Error updating carrera:', error);
+            throw error;
+          }
+        });
+      } else {
+        console.error('Documento no encontrado:', updatedCarrera.nombre);
+        throw new Error('Documento no encontrado en la base de datos.');
+      }
     } catch (error) {
-      console.error('Error adding form data: ', error);
+      console.error('Error querying database:', error);
       throw error;
     }
   };
@@ -111,7 +143,7 @@ function Administradorcarreras() {
           .form-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 16px; /* Se corrigió la propiedad margin-bottom */
           }
           
           .form-field {
@@ -135,6 +167,12 @@ function Administradorcarreras() {
         <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Administrador de carreras</h2>
         <div className="form-container">
           <form onSubmit={handleSubmit}>
+            <Select value={selectedCarrera} onChange={handleSelectChange} fullWidth>
+              <MenuItem value="">Seleccionar Carrera</MenuItem>
+              {carreras.map(carrera => (
+                <MenuItem key={carrera.nombre} value={carrera.nombre}>{carrera.nombre}</MenuItem>
+              ))}
+            </Select>
             <div className="form-row">
               <div className="form-field">
                 <InputLabel>Nombre:</InputLabel>
@@ -172,7 +210,7 @@ function Administradorcarreras() {
                   placeholder='2024/10/31'
                 />
               </div>
-            </div>
+              </div>
             <div className="form-row">
               <div className="form-field">
                 <InputLabel>Distancia:</InputLabel>
@@ -251,7 +289,7 @@ function Administradorcarreras() {
             </div>
             <div className="form-row">
               <div className="form-field">
-              <InputLabel>Lugar:</InputLabel>
+                <InputLabel>Lugar:</InputLabel>
                 <TextField
                   label=''
                   variant='outlined'
@@ -265,21 +303,21 @@ function Administradorcarreras() {
             </div>
             {/* Botón de envío */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-  <Button variant='contained' type='submit' color='primary' className='botones'>
-    Agregar Carrera
-  </Button>
-</div>
+              <Button variant='contained' type='submit' color='primary' className='botones'>
+                Agregar Cambios
+              </Button>
+            </div>
           </form>
 
           {/* Mensajes de éxito o error */}
           {operacionExitosa === true && (
             <div style={{ color: 'green', marginTop: '10px' }}>
-              La carrera se agregó con éxito.
+              Los cambios se realizaron con éxito.
             </div>
           )}
           {operacionExitosa === false && (
             <div style={{ color: 'red', marginTop: '10px' }}>
-              Hubo un error al agregar la carrera.
+              Hubo un error al agregar los cambios.
             </div>
           )}
           {errorMessage && (

@@ -5,10 +5,9 @@ import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase
 
 function Resultados() {
     const [resultados, setResultados] = useState<Resultado[]>([]);
-
     const [nuevoResultado, setNuevoResultado] = useState({
-        nombre: '',
-        nombreCarrera: '', // Corrección aquí
+        nombreAtleta: '', 
+        nombreCarrera: '',
         fecha: '',
         distancia: '',
         categoria: '',
@@ -19,10 +18,12 @@ function Resultados() {
         posicion: '',
         sexo: '',
     });
+    const [posicion, setPosicion] = useState<number>(1);
+    const [filtro, setFiltro] = useState<string>('');
 
     interface Resultado {
         id: string;
-        nombre: string;
+        nombreAtleta: string;
         fecha: string;
         distancia: string;
         categoria: string;
@@ -30,115 +31,59 @@ function Resultados() {
         nanosegundos: string;
         posicion: string;
         sexo: string;
-        nombreCarrera: string; // Corrección aquí
+        nombreCarrera: string;
     }
-  
-    const handleChangen = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setNuevoResultado((prevResultado) => ({
-            ...prevResultado,
-            [name]: value,
-        }));
-    };
-  
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setNuevoResultado({
-            ...nuevoResultado,
-            [name]: value,
-        });
-    };
-  
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const tiempoCompleto = `${nuevoResultado.horas}:${nuevoResultado.minutos}:${nuevoResultado.segundos}`;
-        const resultadoConTiempo = {
-            ...nuevoResultado,
-            tiempo: tiempoCompleto,
-        };
-  
-        try {
-            const docRef = await addDoc(collection(db, 'resultados'), resultadoConTiempo);
-            setResultados([...resultados, { id: docRef.id, ...resultadoConTiempo }]);
-            setNuevoResultado({
-                nombre: '',
-                fecha: '',
-                distancia: '',
-                categoria: '',
-                horas: '',
-                minutos: '',
-                segundos: '',
-                nanosegundos: '',
-                posicion: '',
-                sexo: '',
-                nombreCarrera: '', // Corrección aquí
-            });
-        } catch (error) {
-            console.error('Error al agregar resultado a Firebase:', error);
-        }
-    };
 
     useEffect(() => {
         const obtenerResultadosDesdeFirebase = async () => {
             try {
                 const querySnapshot = await getDocs(collection(db, 'resultados'));
-    
-                // Specify the type of resultadosData using the Resultado interface
                 const resultadosData: Resultado[] = [];
-    
+
                 querySnapshot.forEach((doc) => {
                     resultadosData.push({ id: doc.id, ...doc.data() } as Resultado);
                 });
-    
+
                 setResultados(resultadosData);
             } catch (error) {
                 console.error('Error al obtener resultados desde Firebase:', error);
             }
         };
-    
+
         obtenerResultadosDesdeFirebase();
     }, []);
 
-    const handleEdit = async (index: number) => {
-        const resultadoEdit = resultados[index];
-        setNuevoResultado({
-            nombre: resultadoEdit.nombre,
-            fecha: resultadoEdit.fecha,
-            distancia: resultadoEdit.distancia,
-            categoria: resultadoEdit.categoria,
-            horas: resultadoEdit.tiempo.split(':')[0],
-            minutos: resultadoEdit.tiempo.split(':')[1],
-            segundos: resultadoEdit.tiempo.split(':')[2],
-            nanosegundos: resultadoEdit.nanosegundos,
-            posicion: resultadoEdit.posicion,
-            sexo: resultadoEdit.sexo,
-            nombreCarrera: resultadoEdit.nombreCarrera, // Agregado aquí
-        });
-    
-        const nuevosResultados = resultados.filter((_, i) => i !== index);
-        setResultados(nuevosResultados);
+    const filtrarResultados = () => {
+        return resultados.filter(resultado =>
+            resultado.nombreAtleta.toLowerCase().includes(filtro.toLowerCase()) ||
+            resultado.nombreCarrera.toLowerCase().includes(filtro.toLowerCase())
+        );
     };
 
-    const handleDelete = async (index: number) => {
-        try {
-            await deleteDoc(doc(db, 'resultados', resultados[index].id));
-            const nuevosResultados = resultados.filter((_, i) => i !== index);
-            setResultados(nuevosResultados);
-        } catch (error) {
-            console.error('Error al eliminar el resultado:', error);
-        }
+    const handleBuscar = () => {
+        // Filtrar los resultados y actualizar el estado
+        const resultadosFiltrados = filtrarResultados();
+        setResultados(resultadosFiltrados);
     };
-  
+
     return (
-        <div >
+        <div>
             <div className="container mx-auto p-4">
-                {/* Resto del código */}
-                <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Resultados</h2>
-                <br />
-                <br />
+                <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Resultados de las carreras</h2>
+                <div className="flex items-center justify-center mb-4">
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre de atleta o nombre de carrera"
+                        value={filtro}
+                        onChange={(e) => setFiltro(e.target.value)}
+                        className="px-2 py-1 border border-gray-300 rounded-md mr-2"
+                    />
+                    <button onClick={handleBuscar} className="px-3 py-1 bg-blue-500 text-white rounded-md">Buscar</button>
+                </div>
                 <table className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
                     <thead style={{ backgroundColor: '#B1CEE3' }} className="">
                         <tr>
+                            <th className="border border-gray-500 p-2">Nombre de la carrera</th>
                             <th className="border border-gray-500 p-2">Nombre del Atleta</th>
                             <th className="border border-gray-500 p-2">Fecha</th>
                             <th className="border border-gray-500 p-2">Distancia</th>
@@ -146,132 +91,46 @@ function Resultados() {
                             <th className="border border-gray-500 p-2">Tiempo</th>
                             <th className="border border-gray-500 p-2">Posición</th>
                             <th className="border border-gray-500 p-2">Sexo</th>
-                            <th className="border border-gray-500 p-2">Carrera</th> {/* Agregado aquí */}
-                            <th className="border border-gray-500 p-2">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {resultados.map((resultado, index) => (
                             <tr key={index}>
-                                <td className="border border-gray-500 p-2">{resultado.nombre}</td>
+                                <td className="border border-gray-500 p-2">{resultado.nombreCarrera}</td>
+                                <td className="border border-gray-500 p-2">{resultado.nombreAtleta}</td>
                                 <td className="border border-gray-500 p-2">{resultado.fecha}</td>
                                 <td className="border border-gray-500 p-2">{resultado.distancia}</td>
                                 <td className="border border-gray-500 p-2">{resultado.categoria}</td>
                                 <td className="border border-gray-500 p-2">{resultado.tiempo}</td>
                                 <td className="border border-gray-500 p-2">{resultado.posicion}</td>
                                 <td className="border border-gray-500 p-2">{resultado.sexo}</td>
-                                <td className="border border-gray-500 p-2">{resultado.nombreCarrera}</td> {/* Agregado aquí */}
-                                <td className="border border-gray-500 p-2">
-                                  
-                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-      <style>
-        {`
-
-.contenedor {
-  background-color: #fff; /* Fondo blanco */
-  padding: 20px; /* Espaciado interior */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  margin: 20px auto; /* Margen exterior */
-  max-width: 800px; /* Ancho máximo del contenedor */
-}
-/* Estilos globales */
-          .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: #f9f9f9;
-          }
-
-
-          .mi-formulario {
-            max-width: 500px;
-            margin: 0 auto;
-          }
-
-          .mi-formulario div {
-            margin-bottom: 10px;
-          }
-
-          .mi-formulario label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-
-          .mi-formulario input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-top: 3px;
-          }
-
-          .mi-formulario {
-            text-align: center; /* Centrar el contenido dentro del contenedor */
-          }
-          
-          .mi-formulario button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-          }
-          
-          .mi-formulario button.agregar {
-            background-color: #0D47A1;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-          }
-
-          .mi-formulario button.agregar:hover {
-            background-color: #0056b3;
-          }
-
-          .tiempo-inputs {
-            display: flex;
-            align-items: center;
-          }
-
-          .tiempo-inputs label {
-            margin-right: 5px;
-          }
-
-          table {
-            border-collapse: collapse;
-            width: 70%;
-            table-layout: fixed; /* Añade esta línea */
-           
-          }
-
-          th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-            overflow: hidden; /* Añade esta línea */
-            white-space: nowrap; /* Añade esta línea */
-          }
-
-         
-        `}
-      </style>
-    </div>
-
-
-
-
-  );
-  
+            <style>
+                {`
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        background-size: cover;
+                        height: 100vh;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    .container {
+                        max-width: 1600px;
+                        padding: 20px;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        background: rgba(200, 200, 200, 0.7);
+                    }
+                `}
+            </style>
+        </div>
+    );
 }
 
 export default Resultados;

@@ -306,7 +306,6 @@ function HistoricosAdmi() {
             background: #1976D2;
             color: white;
           }
-          
         `}
       </style>
 
