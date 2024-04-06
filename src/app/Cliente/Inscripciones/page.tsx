@@ -1,7 +1,7 @@
 'use client'
-import React, { useState,useEffect, ChangeEvent, FormEvent, } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
-import { collection, doc, DocumentData, DocumentReference, updateDoc,getDocs,addDoc } from 'firebase/firestore';
+import { collection, doc, DocumentData, DocumentReference, updateDoc, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 
 
@@ -16,7 +16,7 @@ interface Carrera {
   contacto: string;
   cupo: number;
   nombre: string;
-  cupoDisponible : string;
+  cupoDisponible: string;
   limiteParticipante: string;
 }
 
@@ -170,54 +170,50 @@ function Inscripción() {
   return (
 
     <>
-      <div className="min-h-screen flex flex-col justify-center items-center" style={{ background: 'linear-gradient(to bottom right, #FFFFF, #B1CEE3)',}}>
-      <br />
-            <br />
-            <button
+      <div className="min-h-screen flex flex-col justify-center items-center" style={{ background: 'linear-gradient(to bottom right, #FFFFF, #B1CEE3)' }}>
+        <br />
+        <br />
+        <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4"
           onClick={() => window.history.back()}
         >
           Volver
         </button>
-
-     
-     <h1 >Si desea inscribirse pagando a través de SINPE Móvil (al número 87460160, a nombre de Pamela Barrantes) o mediante transferencia bancaria</h1>
-     <h1 >(cuenta en colones IBAN CR0000000000000000000000000), a nombre de (Carreras Aventura S.A),le solicitamos </h1>
-     <h1 >que complete el formulario adjunto.Asegúrese de incluir el número de comprobante del SINPE y haga clic en'Enviar'.Una vez enviado,recibirá   </h1>
-     <h1 >una confirmación por correo electrónico de que sus datos han sido recibidos correctamente. Su solicitud pasará al departamento de confirmaciones  </h1>
-     <h1 >pago donde uno de nuestros administradores verificará la validez de su pago. Posteriormente, recibirá un nuevo correo electrónico con la </h1>
-     <h1 >confirmación de su participación en la carrera que ha seleccionado. </h1>
-     <br />
-     <br />
-     <h1>Si su pago es realizado por un patrocinador, por favor seleccione esta opción y complete el campo correspondiente con el nombre del mismo.</h1>
-     <h1>Una vez completado, envíe los datos a través del formulario proporcionado. Recibirá un correo electrónico de confirmación indicando que sus </h1>
-     <h1> datos han sido recibidos correctamente.Su solicitud será gestionada por nuestro departamento de confirmaciones de pago.Será notificado por</h1>
-     <h1>correo electrónico una vez que su patrocinador haya efectuado el pago correctamente.Una vez confirmado el pago, estará oficialmente inscrito</h1>
-     <h1>y podrá participar en la carrera que ha seleccionado.</h1>
-     <h1></h1>
-     <br />
-      <br />
-      <br />
-      <br />
-      <h1 style={{ fontWeight: 'bold', marginBottom: '80px' }}>FORMULARIO DE INCRIPCION A CARRERAS</h1>
-      
+        <h1>Si desea inscribirse pagando a través de SINPE Móvil (al número 87460160, a nombre de Pamela Barrantes) o mediante transferencia bancaria</h1>
+        <h1>(cuenta en colones IBAN CR0000000000000000000000000), a nombre de (Carreras Aventura S.A),le solicitamos </h1>
+        <h1>que complete el formulario adjunto.Asegúrese de incluir el número de comprobante del SINPE y haga clic en'Enviar'.Una vez enviado,recibirá   </h1>
+        <h1>una confirmación por correo electrónico de que sus datos han sido recibidos correctamente. Su solicitud pasará al departamento de confirmaciones  </h1>
+        <h1>pago donde uno de nuestros administradores verificará la validez de su pago. Posteriormente, recibirá un nuevo correo electrónico con la </h1>
+        <h1>confirmación de su participación en la carrera que ha seleccionado. </h1>
+        <br />
+        <br />
+        <h1>Si su pago es realizado por un patrocinador, por favor seleccione esta opción y complete el campo correspondiente con el nombre del mismo.</h1>
+        <h1>Una vez completado, envíe los datos a través del formulario proporcionado. Recibirá un correo electrónico de confirmación indicando que sus </h1>
+        <h1> datos han sido recibidos correctamente.Su solicitud será gestionada por nuestro departamento de confirmaciones de pago.Será notificado por</h1>
+        <h1>correo electrónico una vez que su patrocinador haya efectuado el pago correctamente.Una vez confirmado el pago, estará oficialmente inscrito</h1>
+        <h1>y podrá participar en la carrera que ha seleccionado.</h1>
+        <h1></h1>
+        <br />
+        <br />
+        <br />
+        <br />
+        <h1 style={{ fontWeight: 'bold', marginBottom: '80px' }}>FORMULARIO DE INCRIPCION A CARRERAS</h1>
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', maxWidth: '1200px' }}>
           <form onSubmit={handleSubmit} style={{ width: '45%', marginRight: '5%' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-  <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Datos Personales:</h1>
-
-  <div style={{ marginBottom: '20px' }}>
-    <label htmlFor="nombre" style={{ display: 'inline-block', width: '150px' }}>Nombre:</label>
-    <input
-      type="text"
-      id="nombre"
-      name="nombre"
-      value={formData.nombre}
-      onChange={handleInputChange}
-      required
-      style={{ display: 'inline-block' }}
-    />
-  </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Datos Personales:</h1>
+              <div style={{ marginBottom: '20px' }}>
+                <label htmlFor="nombre" style={{ display: 'inline-block', width: '150px' }}>Nombre:</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleInputChange}
+                  required
+                  style={{ display: 'inline-block' }}
+                />
+              </div>
 
   <div style={{ marginBottom: '20px' }}>
     <label htmlFor="apellidos" style={{ display: 'inline-block', width: '150px' }}>Apellidos:</label>

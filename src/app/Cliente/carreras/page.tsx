@@ -14,7 +14,6 @@ interface Carrera {
   costo: string;
   responsable: string;
   contacto: string;
-  cupoDisponible: number;
   limiteParticipante: string;
   nombreCarrera: string;
 }
@@ -75,16 +74,10 @@ function Carreras() {
   const handleInscribirse = async (carreraId: string) => {
     const cupo = await getCupo(carreraId);
     const raceToUpdate = carreras.find(carrera => carrera.id === carreraId);
-    if (raceToUpdate && raceToUpdate.cupoDisponible > 0) {
-      const updatedCarreras = carreras.map(carrera =>
-        carrera.id === carreraId ? { ...carrera, cupoDisponible: carrera.cupoDisponible - 1 } : carrera
-      );
-      setCarreras(updatedCarreras);
+    if (raceToUpdate) {
       const carreraDocRef = doc(db, 'Configuracion Carreeras', carreraId);
-      await updateDoc(carreraDocRef, { cupoDisponible: cupo - 1 });
+      await updateDoc(carreraDocRef, { limiteParticipante: cupo - 1 });
       console.log(`Inscribiéndose en la carrera con ID ${carreraId}`);
-    } else {
-      setMensaje("El cupo de participantes ya ha llegado a su límite. Gracias por su interés, por favor revise otros eventos disponibles.");
     }
   };
 
@@ -124,7 +117,6 @@ function Carreras() {
                             <Typography variant="body1">{carrera.edicion}</Typography>
                             <Typography variant="body1">{carrera.fecha}</Typography>
                             <Typography variant="body1">Límite de Participantes: {carrera.limiteParticipante}</Typography>
-                            <Typography variant="body1">Cupos Disponibles: {carrera.cupoDisponible}</Typography>
                           </Grid>
                           <Grid item xs={12} sm={3}>
                             <Typography variant="body1">Distancia: {carrera.distancia}</Typography>
@@ -133,49 +125,43 @@ function Carreras() {
                             <Typography variant="body1">Costo: {carrera.costo}</Typography>
                             <Typography variant="body1">Responsable: {carrera.responsable}</Typography>
                             <Typography variant="body1">Contacto: {carrera.contacto}</Typography>
-                            <Typography variant="body1" sx={{ color: carrera.cupoDisponible > 0 ? 'black' : 'red' }}>
-                              {carrera.cupoDisponible > 0 ? (
-                                <Button style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', margin: 'auto' }} onClick={() => handleInscribirse(carrera.id)}>Inscribirse</Button>
-                                  ) : (
-                                    "Cupo lleno"
-                                  )}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-                          </Paper>
-                        ))}
-                      </Grid>
-                    );
-                  } else {
-                    return null;
-                  }
-                })}
-            </Grid>
-    
-            {mensaje && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">¡Error!</strong>
-                <span className="block sm:inline"> {mensaje}</span>
-                <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                  <svg onClick={() => setMensaje("")} className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <title>Close</title>
-                    <path
-                      fillRule="evenodd"
-                      d="M14.348 5.652a.5.5 0 010 .707l-8 8a.5.5 0 01-.707-.707l8-8a.5.5 0 01.707 0z"
-                      clipRule="evenodd"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      d="M5.652 5.652a.5.5 0 00-.707.707l8 8a.5.5 0 00.707-.707l-8-8z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </div>
-            )}
+                            <Button style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', margin: 'auto' }} onClick={() => handleInscribirse(carrera.id)}>Inscribirse</Button>
+                          </Grid>
+                        </Grid>
+                      </Paper>
+                    ))}
+                  </Grid>
+                );
+              } else {
+                return null;
+              }
+            })}
+        </Grid>
+
+        {mensaje && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong className="font-bold">¡Error!</strong>
+            <span className="block sm:inline"> {mensaje}</span>
+            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+              <svg onClick={() => setMensaje("")} className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <title>Close</title>
+                <path
+                  fillRule="evenodd"
+                  d="M14.348 5.652a.5.5 0 010 .707l-8 8a.5.5 0 01-.707-.707l8-8a.5.5 0 01.707 0z"
+                  clipRule="evenodd"
+                />
+                <path
+                  fillRule="evenodd"
+                  d="M5.652 5.652a.5.5 0 00-.707.707l8 8a.5.5 0 00.707-.707l-8-8z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
           </div>
-        </>
-      );
-    }
-    
-    export default Carreras;
+        )}
+      </div>
+    </>
+  );
+}
+
+export default Carreras;
