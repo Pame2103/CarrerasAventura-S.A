@@ -18,7 +18,6 @@ export default function Home() {
 
     window.addEventListener("resize", handleResize);
 
-    // Limpia el listener del evento en el desmontaje del componente
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -75,7 +74,7 @@ export default function Home() {
     "/PIES.png",
     "/25Aniversario.png",
     "/HAHA.png",
-    // Agrega más rutas de imágenes según sea necesario
+   
   ];
 
   return (
@@ -100,30 +99,35 @@ export default function Home() {
               />
             ))}
           </div>
+{/* Sección de Próximos Eventos */}
+<div className="mb-8 mx-auto flex items-center justify-center">
+  <div className="flex justify-center">
+    {/* División izquierda */}
+    <div className="w-1/2 p-2">
+      <div className="border border-gray-300 rounded-md shadow-md p-4">
+        <h2 className="text-2xl font-bold mb-4">Categorías Femeninas</h2>
+        <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
+        <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
+        <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
+        <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
+        <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
+      </div>
+    </div>
 
-          {/* Sección de Próximos Eventos */}
-          <div className="mb-8 mx-auto flex items-center justify-center">
-            <div className="flex justify-center">
-              {/* División izquierda */}
-              <div className="w-1/2 p-2 flex flex-col">
-                <h2 className="text-2xl font-bold mb-4">Categorias Femeninas</h2>
-                <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
-                <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
-                <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
-                <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
-                <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
-              </div>
+    {/* División derecha */}
+    <div className="w-1/2 p-2">
+      <div className="border border-gray-300 rounded-md shadow-md p-4">
+        <h2 className="text-2xl font-bold mb-4">Categorías Masculinas</h2>
+        <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
+        <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
+        <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
+        <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
+        <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
+      </div>
+    </div>
+  </div>
 
-              {/* División derecha */}
-              <div className="w-1/2 p-2 flex flex-col">
-                <h2 className="text-2xl font-bold mb-4">Categorias Masculinas</h2>
-                <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
-                <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
-                <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
-                <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
-                <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
-              </div>
-            </div>
+
 
             <div className="text-center">
               <h2 className="text-4xl font-bold mb-4">Próximos Eventos</h2>

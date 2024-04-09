@@ -1,9 +1,9 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/app/componentes/navbar';
-import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, runTransaction } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
-import { Button, Grid, Typography, Paper } from '@mui/material';
+import { Button, Grid, Typography, Paper, Modal, Box } from '@mui/material';
 
 interface Carrera {
   id: string;
@@ -16,24 +16,13 @@ interface Carrera {
   contacto: string;
   limiteParticipante: string;
   nombreCarrera: string;
-}
-
-async function getCupo(carreraId: string): Promise<number> {
-  const carreraDocRef = doc(db, 'Configuracion Carreeras', carreraId);
-  const carreraDocSnap = await getDoc(carreraDocRef);
-  if (carreraDocSnap.exists()) {
-    return carreraDocSnap.data().limiteParticipante;
-  } else {
-    console.error(`Carrera document with ID ${carreraId} not found.`);
-    return 0; // Return 0 if document not found
-  }
+  cupoDisponible: number;
 }
 
 function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
   const grouped: { [key: string]: Carrera[] } = {};
 
   carreras.forEach(carrera => {
-    // Ensure carrera.fecha exists and is a string
     if (typeof carrera.fecha === 'string' && carrera.fecha.includes('-')) {
       const parts = carrera.fecha.split('-');
       const month = new Date(2022, parseInt(parts[1]) - 1, 1).toLocaleString('default', { month: 'long' });
@@ -53,6 +42,7 @@ function Carreras() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
   const [carrerasByMonth, setCarrerasByMonth] = useState<{ [key: string]: Carrera[] }>({});
   const [mensaje, setMensaje] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const carrerasRef = collection(db, 'Configuracion Carreeras');
@@ -72,16 +62,26 @@ function Carreras() {
   }, [carreras]);
 
   const handleInscribirse = async (carreraId: string) => {
-    const cupo = await getCupo(carreraId);
-    const raceToUpdate = carreras.find(carrera => carrera.id === carreraId);
-    if (raceToUpdate) {
-      const carreraDocRef = doc(db, 'Configuracion Carreeras', carreraId);
-      await updateDoc(carreraDocRef, { limiteParticipante: cupo - 1 });
-      console.log(`Inscribiéndose en la carrera con ID ${carreraId}`);
-    }
+    const carreraRef = doc(db, 'Configuracion Carreeras', carreraId);
+    await runTransaction(db, async (transaction) => {
+      const carreraDoc = await transaction.get(carreraRef);
+      if (carreraDoc.exists()) {
+        const cupoDisponible = carreraDoc.data()?.cupoDisponible;
+        if (cupoDisponible !== undefined && cupoDisponible > 0) {
+          transaction.update(carreraRef, { cupoDisponible: cupoDisponible - 1 });
+          console.log(`Inscripciones ${carreraId}`);
+          window.location.href = '/Cliente/Inscripciones';
+        } else {
+          setMensaje("¡No hay cupo disponible para esta carrera!");
+          setModalOpen(true);
+        }
+      } else {
+        console.error(`Carrera document with ID ${carreraId} not found.`);
+      }
+    });
   };
 
-  const today = new Date(); // Obtener la fecha actual
+  const today = new Date();
 
   return (
     <>
@@ -117,6 +117,7 @@ function Carreras() {
                             <Typography variant="body1">{carrera.edicion}</Typography>
                             <Typography variant="body1">{carrera.fecha}</Typography>
                             <Typography variant="body1">Límite de Participantes: {carrera.limiteParticipante}</Typography>
+                            <Typography variant="body1">Cupo Disponible: {carrera.cupoDisponible}</Typography>
                           </Grid>
                           <Grid item xs={12} sm={3}>
                             <Typography variant="body1">Distancia: {carrera.distancia}</Typography>
@@ -131,6 +132,7 @@ function Carreras() {
                       </Paper>
                     ))}
                   </Grid>
+                  
                 );
               } else {
                 return null;
@@ -138,27 +140,27 @@ function Carreras() {
             })}
         </Grid>
 
-        {mensaje && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong className="font-bold">¡Error!</strong>
-            <span className="block sm:inline"> {mensaje}</span>
-            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-              <svg onClick={() => setMensaje("")} className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <title>Close</title>
-                <path
-                  fillRule="evenodd"
-                  d="M14.348 5.652a.5.5 0 010 .707l-8 8a.5.5 0 01-.707-.707l8-8a.5.5 0 01.707 0z"
-                  clipRule="evenodd"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M5.652 5.652a.5.5 0 00-.707.707l8 8a.5.5 0 00.707-.707l-8-8z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </span>
-          </div>
-        )}
+        <Modal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+          }}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" color="red">Error</Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }} color="red">{mensaje}</Typography>
+          </Box>
+        </Modal>
       </div>
     </>
   );

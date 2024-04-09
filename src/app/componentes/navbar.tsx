@@ -1,65 +1,53 @@
 'use client'
 import React from 'react'
-import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaFileAlt, FaHistory } from 'react-icons/fa';
+import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaFileAlt, FaHistory, FaSignInAlt } from 'react-icons/fa';
 import Link from 'next/link';
-
 
 export default function Navbar() {
   return (
-    <div>
-     <nav className="bg-[#B1CEE3] dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
-      <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
-        <Link href="/" className="flex items-center">
-          <img src="/Aventura.png" className="h-12 mr-3" alt="Carrera Aventura" />
-          <img src="/CARRERAS.png" className="h-12 mr-3" alt="CARRERAS" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Carrera Aventura</span>
-        </Link>
-        <div className="flex md:order-2">
-        <a href="/Login" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          Iniciar Sesión
-        </a>
+    <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23"> {/* Ajustamos el alto del navbar */}
+      <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9"> {/* Cambiamos la clase max-w-7xl a max-w-screen-2xl para un ancho más grande */}
+        <div className="flex items-center justify-between h-full"> {/* Ajustamos el alto del contenido del navbar */}
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0 mr-6">
+              <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" /> {/* Aumentamos el tamaño del logo */}
+              
+            </Link>
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaRunning className="mr-1" /> Inicio
+                </Link>
+                <Link href="/Cliente/carreras" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaInfoCircle className="mr-1" /> Carreras
+                </Link>
+                <Link href="/Cliente/Inscripciones" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaDumbbell className="mr-1" /> Inscripciones
+                </Link>
+                <Link href="/Cliente/Historico" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaTrophy className="mr-1" /> Histórico
+                </Link>
+                <Link href="/Cliente/resultados" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaInfoCircle className="mr-1" /> Resultados
+                </Link>
+                <Link href="/Cliente/record" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaTrophy className="mr-1" /> Records
+                </Link>
+                <Link href="/Cliente/Contact" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  <FaEnvelope className="mr-1" /> Contacto
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="flex">
+            <a href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
+              <FaSignInAlt className="mr-2" /> Ingresar
+            </a>
+          </div>
         </div>
-        <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li>
-            <Link href="/" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-  <FaRunning className="mr-1" /> Inicio
-</Link>
-            </li>
-            <li>
-              <Link href="/Cliente/carreras" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                <FaInfoCircle className="mr-1" /> Carreras
-              </Link>
-            </li>
-            <li>
-              <Link href="/Cliente/Inscripciones" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                <FaDumbbell className="mr-1" /> Inscripciones
-              </Link>
-            </li>
-            <li>
-              <Link href="/Cliente/Historico" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                <FaTrophy className="mr-1" /> Histórico
-              </Link>
-            </li>
-            <li>
-              <Link href="/Cliente/resultados" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                <FaInfoCircle className="mr-1" /> Resultados
-              </Link>
-            </li>
-            <li>
-              <Link href="/Cliente/record" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                <FaTrophy className="mr-1" /> Records
-              </Link>
-            </li>
-            <li>
-              <Link href="/Cliente/Contact" className="flex items-center py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                <FaEnvelope className="mr-1" /> Contacto
-              </Link>
-            </li>
-          </ul>
-        </div>
+        {/* Texto adicional dentro del navbar */}
+        <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
       </div>
-    </nav>   
-    </div>
+    </nav>
   )
 }
