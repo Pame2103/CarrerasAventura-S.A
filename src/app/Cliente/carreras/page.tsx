@@ -4,6 +4,11 @@ import Navbar from '@/app/componentes/navbar';
 import { collection, onSnapshot, doc, runTransaction } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import { Button, Grid, Typography, Paper, Modal, Box } from '@mui/material';
+import EventIcon from '@mui/icons-material/Event';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import PersonIcon from '@mui/icons-material/Person';
+import PhoneIcon from '@mui/icons-material/Phone';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 interface Carrera {
   id: string;
@@ -47,10 +52,13 @@ function Carreras() {
   useEffect(() => {
     const carrerasRef = collection(db, 'Configuracion Carreeras');
     const unsubscribe = onSnapshot(carrerasRef, (querySnapshot) => {
-      const carrerasData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }) as Carrera);
+      const carrerasData = querySnapshot.docs.map((doc) => {
+        const carreraData = doc.data();
+        return {
+          id: doc.id,
+          nombreCarrera: carreraData.nombre, 
+        } as Carrera;
+      });
       setCarreras(carrerasData);
     });
     return () => unsubscribe();
@@ -86,13 +94,17 @@ function Carreras() {
   return (
     <>
       <Navbar />
+      <br />
+        <br />
+        <br />
+        <br />
       <div style={{ fontFamily: 'Arial', color: '#3c78f2#', backgroundColor: '#E0E6F3', padding: '20px' }}>
-        <button style={{ backgroundColor: '#007bff', color: 'white', fontWeight: 'bold', padding: '8px 16px', borderRadius: '4px', position: 'absolute', top: '16px', right: '16px' }} onClick={() => window.history.back()}>
-          Volver
-        </button>
+      <br />
+        <br />
         <Typography variant="h1" align="center" sx={{ fontSize: '30px', color: 'black', marginBottom: '20px' }}>EVENTOS DISPONIBLES</Typography>
-
         <Grid container spacing={2} justifyContent="center">
+        <br />
+        <br />
           {Object.keys(carrerasByMonth)
             .sort((a, b) => {
               const months = [
@@ -109,30 +121,62 @@ function Carreras() {
                       <Typography variant="h2" align="center" sx={{ textTransform: 'capitalize' }}>{monthName}</Typography>
                     </Paper>
                     {carrerasEnMes.map(carrera => (
-                      <Paper key={carrera.id} sx={{ padding: '20px', marginBottom: '20px' }}>
+                      <Paper key={carrera.id} sx={{ padding: '20px', marginBottom: '20px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
                         <Grid container spacing={2}>
-                          <Grid item xs={12} sm={6}>
+                          <Grid item xs={12}>
                             <Typography variant="h3" gutterBottom>{carrera.nombreCarrera}</Typography>
-                            <Typography variant="body1">{carrera.evento}</Typography>
-                            <Typography variant="body1">{carrera.edicion}</Typography>
-                            <Typography variant="body1">{carrera.fecha}</Typography>
-                            <Typography variant="body1">Límite de Participantes: {carrera.limiteParticipante}</Typography>
-                            <Typography variant="body1">Cupo Disponible: {carrera.cupoDisponible}</Typography>
                           </Grid>
-                          <Grid item xs={12} sm={3}>
-                            <Typography variant="body1">Distancia: {carrera.distancia}</Typography>
+                          <Grid item xs={12} sm={6}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <EventIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">{carrera.evento}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <EventAvailableIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">{carrera.edicion}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <EventIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">{carrera.fecha}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <DirectionsRunIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">Límite de Participantes: {carrera.limiteParticipante}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <DirectionsRunIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">Cupo Disponible: {carrera.cupoDisponible}</Typography>
+                            </Box>
                           </Grid>
-                          <Grid item xs={12} sm={3}>
-                            <Typography variant="body1">Costo: {carrera.costo}</Typography>
-                            <Typography variant="body1">Responsable: {carrera.responsable}</Typography>
-                            <Typography variant="body1">Contacto: {carrera.contacto}</Typography>
-                            <Button style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', margin: 'auto' }} onClick={() => handleInscribirse(carrera.id)}>Inscribirse</Button>
+                          <Grid item xs={12} sm={6}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <DirectionsRunIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">Distancia: {carrera.distancia}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <PersonIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">Costo: {carrera.costo}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                              <PersonIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">Responsable: {carrera.responsable}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <PhoneIcon sx={{ marginRight: '10px' }} />
+                              <Typography variant="body1">Contacto: {carrera.contacto}</Typography>
+                            </Box>
+                            <Button
+                              style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', marginTop: '10px' }}
+                              onClick={() => handleInscribirse(carrera.id)}
+                              startIcon={<EventAvailableIcon />}
+                            >
+                              Inscribirse
+                            </Button>
                           </Grid>
                         </Grid>
                       </Paper>
                     ))}
                   </Grid>
-                  
                 );
               } else {
                 return null;
