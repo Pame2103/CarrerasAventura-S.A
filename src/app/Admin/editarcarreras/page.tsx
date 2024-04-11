@@ -1,10 +1,10 @@
 'use client'
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { TextField, Button, InputLabel } from '@mui/material';
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
+import { collection, getDocs, doc, updateDoc, query, where, doc as docRef } from 'firebase/firestore';
 import Link from 'next/link';
-import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
+import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaFileAlt, FaHistory, FaSignInAlt } from 'react-icons/fa';
 
 interface Carrera {
   nombre: string;
@@ -38,9 +38,35 @@ function Administradorcarreras() {
   const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [selectedCarrera, setSelectedCarrera] = useState<string>('');
+
+  useEffect(() => {
+    async function fetchCarreras() {
+      const q = query(collection(db, 'Configuracion Carreeras'));
+      const carrerasSnapshot = await getDocs(q);
+      const carrerasData: Carrera[] = [];
+      carrerasSnapshot.forEach((doc) => {
+        carrerasData.push(doc.data() as Carrera);
+      });
+      setCarreras(carrerasData);
+    }
+    fetchCarreras();
+  }, []);
+
   const handleChange = (event: ChangeEvent<{ name?: string; value: unknown }>) => {
     const { name, value } = event.target;
     setNuevaCarrera({ ...nuevaCarrera, [name as string]: value as string });
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const selectedCarreraNombre = event.target.value;
+    setSelectedCarrera(selectedCarreraNombre);
+
+    const carrera = carreras.find(carrera => carrera.nombre === selectedCarreraNombre);
+    if (carrera) {
+      setNuevaCarrera(carrera);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -55,17 +81,34 @@ function Administradorcarreras() {
     } catch (error) {
       console.error('Error updating form data in Firebase:', error);
       setOperacionExitosa(false);
-      setErrorMessage('Hubo un error al agregar la nueva carrera.');
+      setErrorMessage('Hubo un error al agregar los cambios.');
     }
   };
 
-  const updateCarreraInFirebase = async (newCarrera: Carrera) => {
+  const updateCarreraInFirebase = async (updatedCarrera: Carrera) => {
     try {
-      const carreraCollectionRef = collection(db, 'Configuracion Carreeras');
-      await addDoc(carreraCollectionRef, newCarrera);
-      console.log('Nueva carrera agregada:', newCarrera.nombre);
+      const q = query(collection(db, 'Configuracion Carreeras'), where('nombre', '==', updatedCarrera.nombre));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach(async (doc) => {
+          try {
+            const carreraRef = docRef(db, `Configuracion Carreeras/${doc.id}`);
+            // Copiar todas las propiedades de Carrera excepto 'nombre'
+            const { nombre, ...updatedCarreraData } = updatedCarrera;
+            await updateDoc(carreraRef, updatedCarreraData);
+            console.log('Carrera updated:', updatedCarrera.nombre);
+          } catch (error) {
+            console.error('Error updating carrera:', error);
+            throw error;
+          }
+        });
+      } else {
+        console.error('Documento no encontrado:', updatedCarrera.nombre);
+        throw new Error('Documento no encontrado en la base de datos.');
+      }
     } catch (error) {
-      console.error('Error adding new carrera:', error);
+      console.error('Error querying database:', error);
       throw error;
     }
   };
@@ -130,19 +173,22 @@ function Administradorcarreras() {
               </div>
             </div>
             <div className="flex">
-              <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-0 py-0 rounded-md font-medium flex items-center">
+              <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
                 <FaSignInAlt className="mr-2" /> Cerrar sesión
               </Link>
             </div>
           </div>
           <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
+        
       </nav>
+      
     );
   }
 
   return (
     <>
+      {/* Estilos */}
       <style>
         {`
           body {
@@ -192,11 +238,22 @@ function Administradorcarreras() {
         `}
       </style>
 
+      {/* Contenido del componente */}
       <div className="container">
+      <br />
         <br />
         <br />
         <br />
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>CREAR EVENTO</h1>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>EDITAR EVENTOS</h1>
         <div className="form-container">
           <br />
           <br />
@@ -351,14 +408,18 @@ function Administradorcarreras() {
               </Button>
             </div>
           </form>
+           
+         
+
+          {/* Mensajes de éxito o error */}
           {operacionExitosa === true && (
             <div style={{ color: 'green', marginTop: '10px' }}>
-              La carrera se agregó con éxito.
+              Los cambios se realizaron con éxito.
             </div>
           )}
           {operacionExitosa === false && (
             <div style={{ color: 'red', marginTop: '10px' }}>
-              Hubo un error al agregar la carrera.
+              Hubo un error al agregar los cambios.
             </div>
           )}
           {errorMessage && (
@@ -368,6 +429,7 @@ function Administradorcarreras() {
           )}
         </div>
       </div>
+      {/* Navbar */}
       <Navbar />
     </>
   );

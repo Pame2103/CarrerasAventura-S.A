@@ -117,6 +117,7 @@ const MainMenu: React.FC = () => {
   <Sidebar link="/Admin/administrarTiempos" text="Administrar Tiempos" description="" />
   <Sidebar link="/Admin/carreras" text="Carreras" description="" />
   <Sidebar link="/Admin/confirmaciones" text="Confirmación de Pagos" description="" />
+  <Sidebar link="/Admin/editarcarreras" text="Editar Carreras" description="" />
   <Sidebar link="/Admin/historicosadmin" text="Históricos" description="" />
   <Sidebar link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
   <Sidebar link="/Admin/record" text="Records" description="" />
