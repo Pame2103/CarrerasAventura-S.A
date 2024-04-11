@@ -3,7 +3,7 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import emailjs from 'emailjs-com';
 import { collection, doc, DocumentData, DocumentReference, updateDoc, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
-
+import Navbar from '@/app/componentes/navbar';
 
 interface Carrera {
   id: string;
@@ -194,7 +194,14 @@ function Inscripción() {
   return (
 
     <>
+     <Navbar />
+     <br />
+        <br />
       <div className="min-h-screen flex flex-col justify-center items-center" style={{ background: 'linear-gradient(to bottom right, #FFFFF, #B1CEE3)' }}>
+      <br />
+        <br />
+        <br />
+        <br />
   <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>INSCRIPCIÓN A CARRERAS</h1>
   <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
     <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: '1px solid #ddd', padding: '20px', borderRadius: '5px', boxShadow: '2px 2px 5px #ccc', fontFamily: 'Arial, sans-serif', maxWidth: '400px', textAlign: 'center' }}>

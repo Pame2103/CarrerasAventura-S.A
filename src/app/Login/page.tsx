@@ -1,10 +1,11 @@
 'use client'
 import React, { useState } from 'react'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
-import { faUser, faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
+import { faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
 import Link from 'next/link'; 
 import { signInWithEmailAndPassword } from 'firebase/auth'; 
 import { auth } from '../../../firebase/firebase'; 
+import Navbar from '../componentes/navbar';
 
 export default function Login() { 
   const [email, setEmail] = useState(''); 
@@ -35,6 +36,11 @@ export default function Login() {
   }; 
 
   return ( 
+    <div>
+      <Navbar />
+  <br />
+  <br />
+  <br />
     <div style={{ 
       backgroundImage: "url('core.jpeg')", 
       backgroundSize: 'cover', 
@@ -99,5 +105,6 @@ export default function Login() {
         </form> 
       </div> 
     </div> 
+        </div>
   ) 
 }

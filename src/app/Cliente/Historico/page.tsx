@@ -1,11 +1,12 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
-import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
+import Navbar from '@/app/componentes/navbar';
 
 export default function Historico() {
     interface Carrera {
-        id: number;
+        id: string; // Cambiado a string para un identificador único
         nombre: string;
         cedula: string;
         posicion: number;
@@ -36,7 +37,7 @@ export default function Historico() {
       
         const unsubscribe = onSnapshot(historicosCollection, (snapshot) => {
             const historicosData: Carrera[] = snapshot.docs.map((doc) => {
-                return doc.data() as Carrera;
+                return { id: doc.id, ...doc.data() } as Carrera; // Agregar id único
             });
             setCarreras(historicosData);
         });
@@ -90,15 +91,17 @@ export default function Historico() {
 
     return (
         <div>
+            <Navbar />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
             <div className="p-4">
-                <h2 className="text-2xl font-bold mb-4">Historico de Corredores</h2>
-                <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4"
-                    onClick={() => window.history.back()}
-                >
-                    Volver
-                </button>
-                <div className="mb-4 flex items-center">
+                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>Histórico de Corredores</h1> {/* Ajuste de la tilde */}
+               
+                <div className="mb-4 flex justify-center items-center"> {/* Flex y centrado horizontal */}
                     <input 
                         type="text" 
                         placeholder="Buscar por nombre, cédula o carrera" 
@@ -134,7 +137,6 @@ export default function Historico() {
                     </tbody>
                 </table>
             </div>   
-
         </div>
-    )
+    );
 }

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
-
+import Navbar from '@/app/componentes/navbar';
 interface Record {
     id: string;
     nombreAtleta: string;
@@ -71,6 +71,9 @@ function Records() {
 
     return (
         <div>
+             <Navbar />
+             <br />
+             <br />
             <div className="container mx-auto p-4">
                 <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Récords de corredores</h2>
                 <div className="flex items-center justify-center mb-4">

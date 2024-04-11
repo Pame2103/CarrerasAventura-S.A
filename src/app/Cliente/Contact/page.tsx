@@ -1,5 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Navbar from '@/app/componentes/navbar';
 import {
   faFacebook,
   faTwitter,
@@ -11,6 +12,9 @@ import {
 export default function Contact() {
   return (
     <div>
+      <Navbar />
+      <br />
+      <br />
      <div className="container mx-auto p-4 text-center bg-blue-100">
         
         <h1 className="text-4xl font-bold mb-4 text-blue-900">Contáctanos</h1>

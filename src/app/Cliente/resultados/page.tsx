@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import Navbar from '@/app/componentes/navbar';
 
 function Resultados() {
     const [resultados, setResultados] = useState<Resultado[]>([]);
@@ -67,7 +68,11 @@ function Resultados() {
     };
 
     return (
+
         <div>
+             <Navbar />
+             <br/>
+             <br/>
             <div className="container mx-auto p-4">
                 <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Resultados de las carreras</h2>
                 <div className="flex items-center justify-center mb-4">
