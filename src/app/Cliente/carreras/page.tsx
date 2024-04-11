@@ -9,6 +9,7 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import RoomIcon from '@mui/icons-material/Room'; // Importar RoomIcon para el lugar
 
 interface Carrera {
   id: string;
@@ -22,6 +23,7 @@ interface Carrera {
   limiteParticipante: string;
   nombreCarrera: string;
   cupoDisponible: number;
+  lugar: string; // Nuevo campo para el lugar de la carrera
 }
 
 function groupByMonth(carreras: Carrera[]): { [key: string]: Carrera[] } {
@@ -56,7 +58,8 @@ function Carreras() {
         const carreraData = doc.data();
         return {
           id: doc.id,
-          nombreCarrera: carreraData.nombre, 
+          nombreCarrera: carreraData.nombre,
+          ...carreraData
         } as Carrera;
       });
       setCarreras(carrerasData);
@@ -72,22 +75,21 @@ function Carreras() {
   const handleInscribirse = async (carreraId: string) => {
     const carreraRef = doc(db, 'Configuracion Carreeras', carreraId);
     await runTransaction(db, async (transaction) => {
-      const carreraDoc = await transaction.get(carreraRef);
-      if (carreraDoc.exists()) {
-        const cupoDisponible = carreraDoc.data()?.cupoDisponible;
-        if (cupoDisponible !== undefined && cupoDisponible > 0) {
-          transaction.update(carreraRef, { cupoDisponible: cupoDisponible - 1 });
-          console.log(`Inscripciones ${carreraId}`);
-          window.location.href = '/Cliente/Inscripciones';
+        const carreraDoc = await transaction.get(carreraRef);
+        if (carreraDoc.exists()) {
+            const cupoDisponible = carreraDoc.data()?.cupoDisponible;
+            if (cupoDisponible !== undefined && cupoDisponible > 0) {
+                console.log(`Inscripciones ${carreraId}`);
+                window.location.href = '/Cliente/Inscripciones';
+            } else {
+                setMensaje("¡No hay cupo disponible para esta carrera!");
+                setModalOpen(true);
+            }
         } else {
-          setMensaje("¡No hay cupo disponible para esta carrera!");
-          setModalOpen(true);
+            console.error(`Carrera document with ID ${carreraId} not found.`);
         }
-      } else {
-        console.error(`Carrera document with ID ${carreraId} not found.`);
-      }
     });
-  };
+};
 
   const today = new Date();
 
@@ -102,9 +104,10 @@ function Carreras() {
       <br />
         <br />
         <Typography variant="h1" align="center" sx={{ fontSize: '30px', color: 'black', marginBottom: '20px' }}>EVENTOS DISPONIBLES</Typography>
+        <br />
+       
+        
         <Grid container spacing={2} justifyContent="center">
-        <br />
-        <br />
           {Object.keys(carrerasByMonth)
             .sort((a, b) => {
               const months = [
@@ -116,7 +119,7 @@ function Carreras() {
               const carrerasEnMes = carrerasByMonth[monthName]?.filter(carrera => new Date(carrera.fecha) > today);
               if (carrerasEnMes && carrerasEnMes.length > 0) {
                 return (
-                  <Grid item xs={12} key={monthName}>
+                  <Grid item xs={10} key={monthName} style={{ width: '100%', textAlign: 'center' }}>
                     <Paper sx={{ backgroundColor: '#3c78f2', color: 'white', padding: '10px', marginBottom: '20px' }}>
                       <Typography variant="h2" align="center" sx={{ textTransform: 'capitalize' }}>{monthName}</Typography>
                     </Paper>
@@ -124,21 +127,21 @@ function Carreras() {
                       <Paper key={carrera.id} sx={{ padding: '20px', marginBottom: '20px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
                         <Grid container spacing={2}>
                           <Grid item xs={12}>
-                            <Typography variant="h3" gutterBottom>{carrera.nombreCarrera}</Typography>
+                            <Typography variant="h3" align="center" gutterBottom>{carrera.nombreCarrera}</Typography>
                           </Grid>
                           <Grid item xs={12} sm={6}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                              <EventIcon sx={{ marginRight: '10px' }} />
-                              <Typography variant="body1">{carrera.evento}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                              <EventAvailableIcon sx={{ marginRight: '10px' }} /> {/* Icono de evento disponible */}
+                              <Typography variant="body1" sx={{ marginRight: '10px' }}>Edición:</Typography> {/* Título "Edición" */}
+                              <Typography variant="body1">{carrera.edicion}</Typography> {/* Mostrar la edición */}
                             </Box>
+
                             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                              <EventAvailableIcon sx={{ marginRight: '10px' }} />
-                              <Typography variant="body1">{carrera.edicion}</Typography>
+                              <EventIcon sx={{ marginRight: '10px' }} /> {/* Icono de evento */}
+                              <Typography variant="body1" sx={{ marginRight: '10px' }}>Fecha:</Typography> {/* Título "Fecha" */}
+                              <Typography variant="body1">{carrera.fecha}</Typography> {/* Mostrar la fecha */}
                             </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                              <EventIcon sx={{ marginRight: '10px' }} />
-                              <Typography variant="body1">{carrera.fecha}</Typography>
-                            </Box>
+
                             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                               <DirectionsRunIcon sx={{ marginRight: '10px' }} />
                               <Typography variant="body1">Límite de Participantes: {carrera.limiteParticipante}</Typography>
@@ -147,6 +150,12 @@ function Carreras() {
                               <DirectionsRunIcon sx={{ marginRight: '10px' }} />
                               <Typography variant="body1">Cupo Disponible: {carrera.cupoDisponible}</Typography>
                             </Box>
+                            <br />
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                               <RoomIcon sx={{ marginRight: '10px' }} /> {/* Mostrar el icono de Room para el lugar */}
+                              <Typography variant="body1">Lugar: {carrera.lugar}</Typography> {/* Mostrar el lugar */}
+                            </Box>
+                            <br />
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
