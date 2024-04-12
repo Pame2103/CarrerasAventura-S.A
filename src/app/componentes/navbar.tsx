@@ -9,10 +9,9 @@ export default function Navbar() {
       <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9"> {/* Cambiamos la clase max-w-7xl a max-w-screen-2xl para un ancho más grande */}
         <div className="flex items-center justify-between h-full"> {/* Ajustamos el alto del contenido del navbar */}
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 mr-6">
-              <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" /> {/* Aumentamos el tamaño del logo */}
-              
-            </Link>
+           
+            <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" /> {/* Aumentamos el tamaño del logo */}
+           
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">

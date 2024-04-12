@@ -191,12 +191,19 @@ function Administradorcarreras() {
           }
         `}
       </style>
-
+      <br />
+        <br />
+         <br />
+        <br />
       <div className="container">
         <br />
         <br />
         <br />
+        <br />
+        <br />
         <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>CREAR EVENTO</h1>
+
+        <img src="/anuncio.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
         <div className="form-container">
           <br />
           <br />

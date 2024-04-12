@@ -1,5 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firestore';
 
@@ -31,7 +33,7 @@ function Administradortiempos() {
     nombreAtleta: '',
     numeroParticipante: '',
     tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
-    categoria: '',
+    categoria: '', // Agregar la categoría al estado
     sexo: ''
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -121,22 +123,10 @@ function Administradortiempos() {
     }));
   };
 
-  const formatTime = (tiempoString: string): string => {
-    const [hours, minutes, secondsAndNanoseconds] = tiempoString.split(':');
-    const [seconds, milliseconds] = secondsAndNanoseconds.split('.');
-  
-    const tiempoEnMilisegundos =
-      parseInt(hours) * 3600000 +
-      parseInt(minutes) * 60000 +
-      parseInt(seconds) * 1000 +
-      parseInt(milliseconds);
-  
-    const formattedTime = new Date(tiempoEnMilisegundos).toISOString().substr(11, 12);
-    return formattedTime;
-  };
-  
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    addAtletaDataToFirebase(formData);
 
     setFormData({
       nombreAtleta: '',
@@ -169,7 +159,7 @@ function Administradortiempos() {
   const handleSave = (index: number) => {
     const newData = data.slice();
     const editedAtleta: AtletaData = {
-      id: data[index].id, // Incluir el id existente
+      id: data[index].id,
       ...formData,
       tiempo: `${formData.tiempo.hours}:${formData.tiempo.minutes}:${formData.tiempo.seconds}.${formData.tiempo.nanoseconds}`
     };
@@ -191,101 +181,190 @@ function Administradortiempos() {
     setData(newData);
   };
 
-  return (
-    <div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 right-0 mt-4 mr-4"
-        onClick={() => window.history.back()}
-      >
-        Volver
-      </button>
-      <br />
-      <br />
-      <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Perfil Administradores</h2>
-      <br />
-      <br />
-
-      <form className="mi-formulario" onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="nombreAtleta">Nombre Atleta:</label>
-          <input
-            type="text"
-            id="nombreAtleta"
-            name="nombreAtleta"
-            value={formData.nombreAtleta}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="numeroParticipante">Numero Participante:</label>
-          <input
-            type="text"
-            id="numeroParticipante"
-            name="numeroParticipante"
-            value={formData.numeroParticipante}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="tiempo">Tiempo:</label>
-          <div className="tiempo-inputs">
-            <input
-              type="number"
-              name="hours"
-              value={formData.tiempo.hours}
-              onChange={handleTimeChange}
-            />
-            <span>H:</span>
-            <input
-              type="number"
-              name="minutes"
-              value={formData.tiempo.minutes}
-              onChange={handleTimeChange}
-            />
-            <span>M:</span>
-            <input
-              type="number"
-              name="seconds"
-              value={formData.tiempo.seconds}
-              onChange={handleTimeChange}
-            />
-            <span>S:</span>
-            <input
-              type="number"
-              name="nanoseconds"
-              value={formData.tiempo.nanoseconds}
-              onChange={handleTimeChange}
-            />
-            <span>NS</span>
+  const Navbar: React.FC = () => {
+    return (
+      <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
+        <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
+          <div className="flex items-center justify-between h-full">
+            <div className="flex items-center">
+              <Link href="/">
+                <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" />
+              </Link>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <Link href="/Admin/administradorCarreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaRunning className="mr-1" /> Administrar Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/administrarTiempos">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaInfoCircle className="mr-1" /> Administrar Tiempos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/carreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaDumbbell className="mr-1" /> Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/confirmaciones">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" />Confirmación de Pagos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/editarcarreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" />Editar Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/historicosadmin">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaInfoCircle className="mr-1" /> Históricos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/listaParticipantes">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Lista de Participantes
+                    </span>
+                  </Link>
+                  <Link href="/Admin/record">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaEnvelope className="mr-1" /> Records
+                    </span>
+                  </Link>
+                  <Link href="/Admin/resultados">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaEnvelope className="mr-1" /> Resultados
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="flex">
+              <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-0 py-0 rounded-md font-medium flex items-center">
+                <FaSignInAlt className="mr-1" /> Cerrar sesión
+              </Link>
+            </div>
           </div>
+          <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
-        <div>
-          <label htmlFor="categoria">Categoria:</label>
-          <input
-            type="text"
-            id="categoria"
-            name="categoria"
-            value={formData.categoria}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="sexo">Sexo:</label>
-          <input
-            type="text"
-            id="sexo"
-            name="sexo"
-            value={formData.sexo}
-            onChange={handleChange}
-          />
-        </div>
-        <button className="agregar" type="submit">Agregar</button>
-        <br />
-        <br />
-      </form>
-
+      </nav>
+    );
+  }
+  return (
+  <div className="container">
+  <br />
+  <br />
+  <br />
+  <div className="form-container">
+    <Navbar />
+    <br />
+    <br />
+      <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+      <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
+    
+      <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+        
+        <form className="mi-formulario" onSubmit={handleSubmit}>
+          
+          <div>
+            
+            <label htmlFor="nombreAtleta">Nombre Atleta:</label>
+            <input
+              type="text"
+              id="nombreAtleta"
+              name="nombreAtleta"
+              value={formData.nombreAtleta}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="numeroParticipante">Numero Participante:</label>
+            <input
+              type="text"
+              id="numeroParticipante"
+              name="numeroParticipante"
+              value={formData.numeroParticipante}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="tiempo">Tiempo:</label>
+            <div className="tiempo-inputs">
+              <input
+                type="number"
+                name="hours"
+                value={formData.tiempo.hours}
+                onChange={handleTimeChange}
+              />
+              <span>H:</span>
+              <input
+                type="number"
+                name="minutes"
+                value={formData.tiempo.minutes}
+                onChange={handleTimeChange}
+              />
+              <span>M:</span>
+              <input
+                type="number"
+                name="seconds"
+                value={formData.tiempo.seconds}
+                onChange={handleTimeChange}
+              />
+              <span>S:</span>
+              <input
+                type="number"
+                name="nanoseconds"
+                value={formData.tiempo.nanoseconds}
+                onChange={handleTimeChange}
+              />
+              <span>NS</span>
+            </div>
+          </div>
+          <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="categoria" className="block font-semibold">Categoría:</label>
+              <select
+                id="categoria"
+                name="categoria"
+                value={formData.categoria} 
+                onChange={(e) => setFormData(prevState => ({ ...prevState, categoria: e.target.value }))}
+                className="border p-2 w-full"
+              >
+                <option value="Categoria">Categoria</option>
+                <option value="Femenino, Junior">Femenina, Junior</option>
+                <option value="Femenino,Mayor">Femenina,Mayor</option>
+                <option value="Femenino,Veterano">Femenina,Veterano A</option>
+                <option value="Femenino,Veterano B">Femenina,Veterano B</option>
+                <option value="Femenino,Veterano C">Femenina,Veterano C</option>
+                <option value="Masculino,Junior">Masculino,Junior</option>
+                <option value="Masculono,Mayor">Masculino,Mayor</option>
+                <option value="Masculino,Veterano">Masculino,Veterano A</option>
+                <option value="Masculino,Veterano A">Masculino,Veterano A</option>
+                <option value="Masculino,Veterano B">Masculino,Veterano B</option>
+                <option value="Masculino,Veterano C">Masculino,Veterano C</option>
+              </select>
+            </div>
+          <div>
+            <label htmlFor="sexo">Sexo:</label>
+            <input
+              type="text"
+              id="sexo"
+              name="sexo"
+              value={formData.sexo}
+              onChange={handleChange}
+            />
+          </div>
+          <button className="agregar" type="submit">Agregar</button>
+          <br />
+          <br />
+        </form>
+      </div>
+<br />
+<br />
+<br />
+<h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
       <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
-        <thead style={{ backgroundColor: '#B1CEE3' }} className="">
+        <thead style={{ backgroundColor: 'blue--700' }} className="">
           <tr>
             <th>Nombre Atleta</th>
             <th>Numero Participante</th>
@@ -383,9 +462,17 @@ function Administradortiempos() {
 
           table {
             border-collapse: collapse;
-            width: 80%;
+            width: 50%;
             table-layout: fixed;
           }
+          .container {
+            max-width: 1400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: rgba(250, 250, 250, 0.3);
+          }
+          
 
           th, td {
             border: 1px solid black;
@@ -411,14 +498,16 @@ function Administradortiempos() {
           }
 
           .eliminar {
-            background-color: #0D47A1;
+            background-color:red;
             color: #fff;
             margin-left: 5px;
           }
         `}
       </style>
+      </div>
     </div>
   );
 }
+
 
 export default Administradortiempos;

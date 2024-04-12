@@ -163,13 +163,17 @@ const Carreras: React.FC = () => {
           <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
       </nav>
+      <br />
+        <br />
       <div className="text-black min-h-screen" style={{ fontFamily: 'Arial', backgroundColor: '#E0E6F3' }}>
         <br />
         <br />
-        <h1 style={{ textAlign: 'center', fontSize: '30px', color: 'black' }}>Editar Eventos </h1>
         <br />
         <br />
-        <br />
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE CARRERAS</h1>
+    
+    <img src="/idea.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+      
         <div className="grid grid-cols-3 gap-4">
           {Object.keys(carrerasByMonth)
             .sort((a, b) => {
