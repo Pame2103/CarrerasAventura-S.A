@@ -2,16 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { db } from '../../../../firebase/firebase';
-import { collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, query, where, getDocs } from 'firebase/firestore';
+import Link from 'next/link';
+import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
 import {
   faCog,
   faChartBar,
   faHistory,
   faMoneyCheckAlt,
-  faEnvelope,
   faFileExcel ,
 } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
+
 interface Participante {
   id: string;
   nombreCarrera: string;
@@ -45,10 +47,82 @@ interface Participante {
   limiteParticipante: string;
 }
 
+const Navbar: React.FC = () => {
+  return (
+    <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
+      <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
+        <div className="flex items-center justify-between h-full">
+          <div className="flex items-center">
+            <Link href="/">
+              <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" />
+            </Link>
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                <Link href="/Admin/administradorCarreras">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                    <FaRunning className="mr-1" /> Administrar Carreras
+                  </span>
+                </Link>
+                <Link href="/Admin/administrarTiempos">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                    <FaInfoCircle className="mr-1" /> Administrar Tiempos
+                  </span>
+                </Link>
+                <Link href="/Admin/carreras">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                    <FaDumbbell className="mr-1" /> Carreras
+                  </span>
+                </Link>
+                <Link href="/Admin/confirmaciones">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                    <FaTrophy className="mr-1" />Confirmación de Pagos
+                  </span>
+                </Link>
+                <Link href="/Admin/editarcarreras">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                    <FaTrophy className="mr-1" />Editar Carreras
+                  </span>
+                </Link>
+                <Link href="/Admin/historicosadmin">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                    <FaInfoCircle className="mr-1" /> Históricos
+                  </span>
+                </Link>
+                <Link href="/Admin/listaParticipantes">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                    <FaTrophy className="mr-1" /> Lista de Participantes
+                  </span>
+                </Link>
+                <Link href="/Admin/record">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                    <FaEnvelope className="mr-1" /> Records
+                  </span>
+                </Link>
+                <Link href="/Admin/resultados">
+                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                    <FaEnvelope className="mr-1" /> Resultados
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="flex">
+            <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-0 py-0 rounded-md font-medium flex items-center">
+              <FaSignInAlt className="mr-1" /> Cerrar sesión
+            </Link>
+          </div>
+        </div>
+        <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
+      </div>
+    </nav>
+  );
+}
+
 function ListaParticipantes(): JSX.Element {
   const [eventoSeleccionado, setEventoSeleccionado] = useState<string>('Todos');
   const [participantes, setParticipantes] = useState<Participante[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [carreras, setCarreras] = useState<string[]>([]);
 
   useEffect(() => {
     const inscripcionesCollection = collection(db, 'listaparticipantes');
@@ -62,6 +136,20 @@ function ListaParticipantes(): JSX.Element {
     return () => unsubscribe();
   }, []);
 
+  const cargarCarreras = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'carreras'));
+      const carrerasData = querySnapshot.docs.map(doc => doc.data().nombre);
+      setCarreras(carrerasData);
+    } catch (error) {
+      console.error('Error al cargar las carreras:', error);
+    }
+  };
+
+  useEffect(() => {
+    cargarCarreras();
+  }, []);
+
   const handleAprobar = async (id: string) => {
     const updatedParticipantes = participantes.map(participante => {
       if (participante.id === id) {
@@ -71,7 +159,6 @@ function ListaParticipantes(): JSX.Element {
     });
     setParticipantes(updatedParticipantes);
 
-    // Agregar lógica para cargar los datos actualizados a Firebase
     try {
       await addDoc(collection(db, 'listaparticipantes'), participantes.find(p => p.id === id));
       console.log('Datos actualizados en la colección listaparticpantes.');
@@ -89,7 +176,6 @@ function ListaParticipantes(): JSX.Element {
     });
     setParticipantes(updatedParticipantes);
 
-    // Agregar lógica para cargar los datos actualizados a Firebase
     try {
       await addDoc(collection(db, 'listaparticpantes'), participantes.find(p => p.id === id));
       console.log('Datos actualizados en la colección listaparticpantes.');
@@ -98,18 +184,10 @@ function ListaParticipantes(): JSX.Element {
     }
   };
 
-
-
-  // Filtrar participantes según el evento seleccionado
-  const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
-
-  const eventos = Array.from(new Set(participantes.map(participante => participante.evento)) || []);
-
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Participantes');
 
-    // Definir encabezados con todos los campos disponibles en la colección
     const headers = [
       'Nombre Carrera',
       'Nombre',
@@ -138,40 +216,40 @@ function ListaParticipantes(): JSX.Element {
       'Pais',
       'Evento',
       'Codigo Comprobante'
-      
     ];
     worksheet.addRow(headers).font = { bold: true };
 
-    participantes.forEach((participante) => {
-      // Agregar todos los campos disponibles en la colección a cada fila
+    const filteredParticipantes = participantes.filter(participante => participante.evento === eventoSeleccionado);
+
+    filteredParticipantes.forEach((participante) => {
       worksheet.addRow([
-        participante.nombreCarrera,
-        participante.nombre,
-        participante.apellidos,
-        participante.cedula,
-        participante.sexo,
-        participante.edad,
-        participante.email,
-        participante.confirmarEmail,
-        participante.telefono,
-        participante.nacimiento,
-        participante.tallaCamisa,
-        participante.lateralidad,
-        participante.nombreEmergencia,
-        participante.telefonoEmergencia,
-        participante.parentescoEmergencia,
-        participante.provincia,
-        participante.totalMonto,
-        participante.beneficiarioPoliza,
-        participante.metodoPago,
-        participante.guardarDatos,
-        participante.aceptarTerminos,
-        participante.discapacidad,
-        participante.tipoDiscapacidad,
-        participante.alergiaMedicamento,
-        participante.pais,
-        participante.evento,
-        participante.codigoComprobante
+        participante.nombreCarrera || '-',
+        participante.nombre || '-',
+        participante.apellidos || '-',
+        participante.cedula || '-',
+        participante.sexo || '-',
+        participante.edad || '-',
+        participante.email || '-',
+        participante.confirmarEmail || '-',
+        participante.telefono || '-',
+        participante.nacimiento || '-',
+        participante.tallaCamisa || '-',
+        participante.lateralidad || '-',
+        participante.nombreEmergencia || '-',
+        participante.telefonoEmergencia || '-',
+        participante.parentescoEmergencia || '-',
+        participante.provincia || '-',
+        participante.totalMonto || '-',
+        participante.beneficiarioPoliza || '-',
+        participante.metodoPago || '-',
+        participante.guardarDatos || '-',
+        participante.aceptarTerminos || '-',
+        participante.discapacidad || '-',
+        participante.tipoDiscapacidad || '-',
+        participante.alergiaMedicamento || '-',
+        participante.pais || '-',
+        participante.evento || '-',
+        participante.codigoComprobante || '-'
       ]);
     });
 
@@ -186,36 +264,15 @@ function ListaParticipantes(): JSX.Element {
     document.body.removeChild(link);
   };
 
+  const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
+  const eventos = Array.from(new Set(participantes.map(participante => participante.evento)) || []);
+
   return (
     <>
-      <nav className="bg-blue-700 p-4">
-        <div className="container mx-auto">
-          <ul className="flex space-x-20">
-            <li>
-              <FontAwesomeIcon icon={faCog} className="text-white" />
-              <a href="/Admin/administradorcarreras" className="text-white">Administrar carreras</a>
-            </li>  
-            <li>
-              <FontAwesomeIcon icon={faCog} className="text-white" /><a href="/Admin/configuraciones" className="text-white">Configuraciones</a>
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faChartBar} className="text-white" /><a href="/Admin/resultados" className="text-white">Resultados</a>
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faHistory} className="text-white" /><a href="/Admin/historicosadmi" className="text-white">Historicos</a>
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faHistory} className="text-white" /><a href="/Admin/administrarTiempos" className="text-white">Administrar tiempos</a>
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faMoneyCheckAlt} className="text-white" /><a href="/Admin/confirmaciones" className="text-white">Confirmacion de Pagos</a>
-            </li> 
-            <li>
-              <FontAwesomeIcon icon={faEnvelope} className="text-white" /><a href="/Admin/listaParticipantes" className="text-white">Lista de Participantes </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <Navbar />
+      <br />
+      <br />
+      <br />
       <div className="container mx-auto p-4">
         <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Comprobantes de Pago</h2>
         <div className="mb-4">
@@ -247,18 +304,16 @@ function ListaParticipantes(): JSX.Element {
           </thead>
           <tbody>
             {filteredParticipantes.length === 0 ? (
-              <tr style={{ height: '600px' }}>
-                <td colSpan={6} className="p-4 text-center" style={{ height: '600px' }}>
-                  No hay participantes .
-                </td>
+              <tr>
+                <td colSpan={4} className="text-center py-4">No hay participantes.</td>
               </tr>
             ) : (
               filteredParticipantes.map(participante => (
                 <tr key={participante.id} className="hover:bg-gray-100">
-                  <td className="border px-4 py-2">{participante.cedula}</td>
-                  <td className="border px-4 py-2">{participante.nombre}</td>
-                  <td className="border px-4 py-2">{participante.apellidos}</td>
-                  <td className="border px-4 py-2">{participante.evento}</td>
+                  <td className="border px-4 py-2">{participante.cedula || '-'}</td>
+                  <td className="border px-4 py-2">{participante.nombre || '-'}</td>
+                  <td className="border px-4 py-2">{participante.apellidos || '-'}</td>
+                  <td className="border px-4 py-2">{participante.evento || '-'}</td>
                 </tr>
               ))
             )}

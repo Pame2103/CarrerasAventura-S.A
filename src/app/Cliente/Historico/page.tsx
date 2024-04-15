@@ -6,7 +6,7 @@ import Navbar from '@/app/componentes/navbar';
 
 export default function Historico() {
     interface Carrera {
-        id: string; // Cambiado a string para un identificador único
+        id: string; 
         nombre: string;
         cedula: string;
         posicion: number;
@@ -37,12 +37,10 @@ export default function Historico() {
       
         const unsubscribe = onSnapshot(historicosCollection, (snapshot) => {
             const historicosData: Carrera[] = snapshot.docs.map((doc) => {
-                return { id: doc.id, ...doc.data() } as Carrera; // Agregar id único
+                return { id: doc.id, ...doc.data() } as Carrera;
             });
             setCarreras(historicosData);
         });
-      
-        // Limpiar el listener cuando el componente se desmonta
         return () => unsubscribe();
     }, []);
       
@@ -69,10 +67,10 @@ export default function Historico() {
     const renderFilas = () => {
         let filas;
         if (resultados.length > 0) {
-            // Ordenar los resultados por posición antes de renderizar
+           
             filas = [...resultados].sort((a, b) => a.posicion - b.posicion);
         } else {
-            // Si no hay resultados, renderizar todas las carreras
+          
             filas = [...carreras];
         }
 
@@ -101,7 +99,7 @@ export default function Historico() {
             <div className="p-4">
                 <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>Histórico de Corredores</h1> {/* Ajuste de la tilde */}
                
-                <div className="mb-4 flex justify-center items-center"> {/* Flex y centrado horizontal */}
+                <div className="mb-4 flex justify-center items-center"> 
                     <input 
                         type="text" 
                         placeholder="Buscar por nombre, cédula o carrera" 
