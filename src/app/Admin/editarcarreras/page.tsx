@@ -1,10 +1,9 @@
 'use client'
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { TextField, Button, InputLabel, Select, MenuItem } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
 import { collection, getDocs, doc, updateDoc, query, where, doc as docRef } from 'firebase/firestore';
 import Link from 'next/link';
-import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaFileAlt, FaHistory, FaSignInAlt } from 'react-icons/fa';
 
 interface Carrera {
   nombre: string;
@@ -59,8 +58,8 @@ function Administradorcarreras() {
     setNuevaCarrera({ ...nuevaCarrera, [name as string]: value as string });
   };
 
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    const selectedCarreraNombre = event.target.value;
+  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const selectedCarreraNombre = event.target.value as string;
     setSelectedCarrera(selectedCarreraNombre);
 
     const carrera = carreras.find(carrera => carrera.nombre === selectedCarreraNombre);
@@ -94,7 +93,7 @@ function Administradorcarreras() {
         querySnapshot.forEach(async (doc) => {
           try {
             const carreraRef = docRef(db, `Configuracion Carreeras/${doc.id}`);
-            // Copiar todas las propiedades de Carrera excepto 'nombre'
+            
             const { nombre, ...updatedCarreraData } = updatedCarrera;
             await updateDoc(carreraRef, updatedCarreraData);
             console.log('Carrera updated:', updatedCarrera.nombre);
@@ -126,47 +125,47 @@ function Administradorcarreras() {
                 <div className="ml-10 flex items-baseline space-x-4">
                   <Link href="/Admin/administradorCarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaRunning className="mr-1" /> Administrar Carreras
+                      Administrar Carreras
                     </span>
                   </Link>
                   <Link href="/Admin/administrarTiempos">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaInfoCircle className="mr-1" /> Administrar Tiempos
+                      Administrar Tiempos
                     </span>
                   </Link>
                   <Link href="/Admin/carreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaDumbbell className="mr-1" /> Carreras
+                      Carreras
                     </span>
                   </Link>
                   <Link href="/Admin/confirmaciones">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaTrophy className="mr-1" />Confirmación de Pagos
+                      Confirmación de Pagos
                     </span>
                   </Link>
                   <Link href="/Admin/editarcarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaTrophy className="mr-1" />Editar Carreras
+                      Editar Carreras
                     </span>
                   </Link>
                   <Link href="/Admin/historicosadmin">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaInfoCircle className="mr-1" /> Históricos
+                      Históricos
                     </span>
                   </Link>
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaTrophy className="mr-1" /> Lista de Participantes
+                      Lista de Participantes
                     </span>
                   </Link>
                   <Link href="/Admin/record">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Records
+                      Records
                     </span>
                   </Link>
                   <Link href="/Admin/resultados">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Resultados
+                      Resultados
                     </span>
                   </Link>
                 </div>
@@ -174,7 +173,7 @@ function Administradorcarreras() {
             </div>
             <div className="flex">
               <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
-                <FaSignInAlt className="mr-2" /> Cerrar sesión
+                Cerrar sesión
               </Link>
             </div>
           </div>
@@ -238,26 +237,29 @@ function Administradorcarreras() {
         `}
       </style>
 
-      {/* Contenido del componente */}
       <div className="container">
-      <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        
         <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>EDITAR EVENTOS</h1>
         <div className="form-container">
-          <br />
-          <br />
           <form onSubmit={handleSubmit}>
+            <div className="form-row">
+              <div className="form-field">
+                <InputLabel>Seleccionar Carrera:</InputLabel>
+                <Select
+                  value={selectedCarrera}
+                  //onChange={handleSelectChange}
+                  fullWidth
+                >
+                  <MenuItem value="">
+                    <em>Seleccionar carrera</em>
+                  </MenuItem>
+                  {carreras.map((carrera) => (
+                    <MenuItem key={carrera.nombre} value={carrera.nombre}>
+                      {carrera.nombre}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </div>
+            </div>
             <div className="form-row">
               <div className="form-field">
                 <InputLabel>Nombre:</InputLabel>
@@ -404,14 +406,11 @@ function Administradorcarreras() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button variant='contained' type='submit' color='primary' className='botones'>
-                Agregar Carrera
+                Editar Carrera
               </Button>
             </div>
           </form>
-           
-         
-
-          {/* Mensajes de éxito o error */}
+        
           {operacionExitosa === true && (
             <div style={{ color: 'green', marginTop: '10px' }}>
               Los cambios se realizaron con éxito.
@@ -429,7 +428,7 @@ function Administradorcarreras() {
           )}
         </div>
       </div>
-      {/* Navbar */}
+
       <Navbar />
     </>
   );

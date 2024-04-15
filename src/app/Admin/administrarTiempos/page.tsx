@@ -12,6 +12,9 @@ interface AtletaData {
   numeroParticipante: string;
   categoria: string;
   sexo: string;
+  nombreCarrera: string;
+  fecha: string; // Nuevo campo para la fecha
+  edicion: string; // Nuevo campo para la edición
 }
 
 interface FormData {
@@ -25,6 +28,9 @@ interface FormData {
   };
   categoria: string;
   sexo: string;
+  nombreCarrera: string;
+  fecha: string; // Nuevo campo para la fecha
+  edicion: string; // Nuevo campo para la edición
 }
 
 function Administradortiempos() {
@@ -33,8 +39,11 @@ function Administradortiempos() {
     nombreAtleta: '',
     numeroParticipante: '',
     tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
-    categoria: '', // Agregar la categoría al estado
-    sexo: ''
+    categoria: '', 
+    sexo: '',
+    nombreCarrera: '',
+    fecha: '',
+    edicion: ''
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -59,7 +68,7 @@ function Administradortiempos() {
 
   const addAtletaDataToFirebase = async (nuevoAtleta: FormData) => {
     try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo } = nuevoAtleta;
+      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, nombreCarrera, fecha, edicion } = nuevoAtleta;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
       const docRef = await addDoc(collection(db, 'administradortiempos'), {
@@ -68,6 +77,9 @@ function Administradortiempos() {
         tiempo: tiempoString,
         categoria,
         sexo,
+        nombreCarrera,
+        fecha,
+        edicion
       });
 
       console.log('Datos del atleta agregados con ID: ', docRef.id);
@@ -88,7 +100,7 @@ function Administradortiempos() {
 
   const handleEditarAtleta = async (id: string, atletaEditado: FormData) => {
     try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo } = atletaEditado;
+      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, nombreCarrera, fecha, edicion } = atletaEditado;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
       await updateDoc(doc(db, 'administradortiempos', id), {
@@ -97,6 +109,9 @@ function Administradortiempos() {
         tiempo: tiempoString,
         categoria,
         sexo,
+        nombreCarrera,
+        fecha,
+        edicion
       });
 
       obtenerAtletasDesdeFirebase();
@@ -123,6 +138,22 @@ function Administradortiempos() {
     }));
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      fecha: value
+    }));
+  };
+
+  const handleEditionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      edicion: value
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -133,7 +164,10 @@ function Administradortiempos() {
       numeroParticipante: '',
       tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
       categoria: '',
-      sexo: ''
+      sexo: '',
+      nombreCarrera: '',
+      fecha: '',
+      edicion: ''
     });
   };
 
@@ -147,7 +181,10 @@ function Administradortiempos() {
         numeroParticipante: elementoAEditar.numeroParticipante,
         tiempo: { hours, minutes, seconds, nanoseconds },
         categoria: elementoAEditar.categoria,
-        sexo: elementoAEditar.sexo
+        sexo: elementoAEditar.sexo,
+        nombreCarrera: elementoAEditar.nombreCarrera,
+        fecha: elementoAEditar.fecha,
+        edicion: elementoAEditar.edicion
       });
 
       setEditIndex(index);
@@ -171,7 +208,10 @@ function Administradortiempos() {
       numeroParticipante: '',
       tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
       categoria: '',
-      sexo: ''
+      sexo: '',
+      nombreCarrera: '',
+      fecha: '',
+      edicion: ''
     });
     setEditIndex(null);
   };
@@ -251,158 +291,186 @@ function Administradortiempos() {
       </nav>
     );
   }
+
   return (
-  <div className="container">
-  <br />
-  <br />
-  <br />
-  <div className="form-container">
-    <Navbar />
-    <br />
-    <br />
-      <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-      <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
-    
-      <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+    <div className="container">
+      <br />
+      <br />
+      <br />
+      <div className="form-container">
+        <Navbar />
+        <br />
+        <br />
+        <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
         
-        <form className="mi-formulario" onSubmit={handleSubmit}>
+          <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
           
+          <form className="mi-formulario" onSubmit={handleSubmit}>
+
           <div>
-            
-            <label htmlFor="nombreAtleta">Nombre Atleta:</label>
-            <input
-              type="text"
-              id="nombreAtleta"
-              name="nombreAtleta"
-              value={formData.nombreAtleta}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="numeroParticipante">Numero Participante:</label>
-            <input
-              type="text"
-              id="numeroParticipante"
-              name="numeroParticipante"
-              value={formData.numeroParticipante}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="tiempo">Tiempo:</label>
-            <div className="tiempo-inputs">
+              <label htmlFor="nombreCarrera">Nombre Carrera:</label>
               <input
-                type="number"
-                name="hours"
-                value={formData.tiempo.hours}
-                onChange={handleTimeChange}
+                type="text"
+                id="nombreCarrera"
+                name="nombreCarrera"
+                value={formData.nombreCarrera}
+                onChange={handleChange}
               />
-              <span>H:</span>
-              <input
-                type="number"
-                name="minutes"
-                value={formData.tiempo.minutes}
-                onChange={handleTimeChange}
-              />
-              <span>M:</span>
-              <input
-                type="number"
-                name="seconds"
-                value={formData.tiempo.seconds}
-                onChange={handleTimeChange}
-              />
-              <span>S:</span>
-              <input
-                type="number"
-                name="nanoseconds"
-                value={formData.tiempo.nanoseconds}
-                onChange={handleTimeChange}
-              />
-              <span>NS</span>
             </div>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="categoria" className="block font-semibold">Categoría:</label>
-              <select
+            <div>
+              <label htmlFor="fecha">Fecha:</label>
+              <input
+                type="date"
+                id="fecha"
+                name="fecha"
+                value={formData.fecha}
+                onChange={handleDateChange}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edicion">Edición:</label>
+              <input
+                type="text"
+                id="edicion"
+                name="edicion"
+                value={formData.edicion}
+                onChange={handleEditionChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="categoria">Categoría:</label>
+              <input
+                type="text"
                 id="categoria"
                 name="categoria"
-                value={formData.categoria} 
-                onChange={(e) => setFormData(prevState => ({ ...prevState, categoria: e.target.value }))}
-                className="border p-2 w-full"
-              >
-                <option value="Categoria">Categoria</option>
-                <option value="Femenino, Junior">Femenina, Junior</option>
-                <option value="Femenino,Mayor">Femenina,Mayor</option>
-                <option value="Femenino,Veterano">Femenina,Veterano A</option>
-                <option value="Femenino,Veterano B">Femenina,Veterano B</option>
-                <option value="Femenino,Veterano C">Femenina,Veterano C</option>
-                <option value="Masculino,Junior">Masculino,Junior</option>
-                <option value="Masculono,Mayor">Masculino,Mayor</option>
-                <option value="Masculino,Veterano">Masculino,Veterano A</option>
-                <option value="Masculino,Veterano A">Masculino,Veterano A</option>
-                <option value="Masculino,Veterano B">Masculino,Veterano B</option>
-                <option value="Masculino,Veterano C">Masculino,Veterano C</option>
-              </select>
+                value={formData.categoria}
+                onChange={handleChange}
+              />
             </div>
-          <div>
-            <label htmlFor="sexo">Sexo:</label>
-            <input
-              type="text"
-              id="sexo"
-              name="sexo"
-              value={formData.sexo}
-              onChange={handleChange}
-            />
-          </div>
-          <button className="agregar" type="submit">Agregar</button>
-          <br />
-          <br />
-        </form>
-      </div>
-<br />
-<br />
-<br />
-<h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
-      <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
-        <thead style={{ backgroundColor: 'blue--700' }} className="">
-          <tr>
-            <th>Nombre Atleta</th>
-            <th>Numero Participante</th>
-            <th>Tiempo</th>
-            <th>Categoria</th>
-            <th>Sexo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>{item.nombreAtleta}</td>
-              <td>{item.numeroParticipante}</td>
-              <td>
-                {item.tiempo && item.tiempo.split(/[:.]/).map((part, index) => (
-                  <span key={index}>{part}{index === 1 ? ':' : (index === 2 ? '.' : '')}</span>
-                ))}
-              </td>
-              <td>{item.categoria}</td>
-              <td>{item.sexo}</td>
-              <td>
-                <button className="editar" onClick={() => handleEdit(index)}>
-                  Editar
-                </button>
-                <button
-                  className="eliminar"
-                  onClick={() => handleDelete(index)}
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            <div>
+              <label htmlFor="nombreAtleta">Nombre Atleta:</label>
+              <input
+                type="text"
+                id="nombreAtleta"
+                name="nombreAtleta"
+                value={formData.nombreAtleta}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="numeroParticipante">Numero Participante:</label>
+              <input
+                type="text"
+                id="numeroParticipante"
+                name="numeroParticipante"
+                value={formData.numeroParticipante}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="tiempo">Tiempo:</label>
+              <div className="tiempo-inputs">
+                <input
+                  type="number"
+                  name="hours"
+                  value={formData.tiempo.hours}
+                  onChange={handleTimeChange}
+                />
+                <span>H:</span>
+                <input
+                  type="number"
+                  name="minutes"
+                  value={formData.tiempo.minutes}
+                  onChange={handleTimeChange}
+                />
+                <span>M:</span>
+                <input
+                  type="number"
+                  name="seconds"
+                  value={formData.tiempo.seconds}
+                  onChange={handleTimeChange}
+                />
+                <span>S:</span>
+                <input
+                  type="number"
+                  name="nanoseconds"
+                  value={formData.tiempo.nanoseconds}
+                  onChange={handleTimeChange}
+                />
+                <span>NS</span>
+              </div>
+              
+            </div>
+            
+          
 
-      <style>
+            <div style={{ marginBottom: '20px' }}>
+    <label htmlFor="sexo" style={{ display: 'inline-block', width: '150px' }}>Sexo:</label>
+    <select
+      id="sexo"
+      name="sexo"
+      value={formData.sexo}
+     // onChange={handleInputChange}
+      required
+      style={{ display: 'inline-block' }}
+    >
+       <option value="">Seleccione</option>
+      <option value="femenino">Femenino</option>
+      <option value="masculino">Masculino</option>
+    </select>
+  </div>
+            
+            
+            
+            <button type="submit" className="btn-agregar">
+              Agregar
+            </button>
+          </form>
+        </div>
+      </div>
+      <div style={{ marginTop: '4rem' }}>
+        <table className="table-fixed w-full border-collapse border border-gray-500">
+          <thead>
+            <tr>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Nombre Carrera</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Nombre Atleta</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Numero Participante</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Tiempo</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Categoria</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Sexo</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Fecha</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Edición</th>
+              <th className="w-1/5 border border-gray-500 px-4 py-2 text-gray-600">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((atleta, index) => (
+              <tr key={atleta.id}>
+                <td className="border border-gray-500 px-4 py-2">{atleta.nombreCarrera}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.nombreAtleta}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.numeroParticipante}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.tiempo}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.categoria}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.sexo}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.fecha}</td>
+                <td className="border border-gray-500 px-4 py-2">{atleta.edicion}</td>
+                <td className="border border-gray-500 px-4 py-2">
+                  {editIndex === index ? (
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2" onClick={() => handleSave(index)}>Guardar</button>
+                  ) : (
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2" onClick={() => handleEdit(index)}>Editar</button>
+                  )}
+                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" onClick={() => handleEliminarAtleta(atleta.id)}>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <style>
         {`
           .mi-formulario {
             max-width: 500px;
@@ -510,4 +578,4 @@ function Administradortiempos() {
 }
 
 
-export default Administradortiempos;
+export default Administradortiempos; 
