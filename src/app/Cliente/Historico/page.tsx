@@ -23,12 +23,14 @@ export default function Historico() {
     const [carreras, setCarreras] = useState<Carrera[]>([]);
     const [resultados, setResultados] = useState<Carrera[]>([]);
     const [hayResultados, setHayResultados] = useState(true);
+    const [mensajeError, setMensajeError] = useState('');
 
     const handleBusquedaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBusqueda(e.target.value);
         if (!e.target.value) {
             setResultados([]);
             setHayResultados(true);
+            setMensajeError('');
         }
     };
 
@@ -58,19 +60,20 @@ export default function Historico() {
 
             setResultados(resultados);
             setHayResultados(resultados.length > 0);
+            setMensajeError('');
         } else {
-            setResultados([]);
-            setHayResultados(true);
+            // Mostrar mensaje de error si el campo de búsqueda está vacío
+            setHayResultados(false); // No hay resultados porque no se realizó ninguna búsqueda
+            setResultados([]); // Limpiar los resultados anteriores
+            setMensajeError('Debe escribir algo en el campo de búsqueda');
         }
     };
 
     const renderFilas = () => {
         let filas;
         if (resultados.length > 0) {
-           
             filas = [...resultados].sort((a, b) => a.posicion - b.posicion);
         } else {
-          
             filas = [...carreras];
         }
 
@@ -114,7 +117,12 @@ export default function Historico() {
                         Buscar
                     </button>
                 </div>
-                {!hayResultados && (
+                {mensajeError && (
+                    <div className="text-red-500 font-bold mb-4">
+                        {mensajeError}
+                    </div>
+                )}
+                {!hayResultados && !mensajeError && (
                     <div className="text-red-500 font-bold mb-4">
                         No se encontraron resultados.
                     </div>

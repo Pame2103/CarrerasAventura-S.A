@@ -20,6 +20,7 @@ function Records() {
     const [records, setRecords] = useState<Record[]>([]);
     const [carreras, setCarreras] = useState<string[]>([]);
     const [filtro, setFiltro] = useState<string>('');
+    const [mensajeError, setMensajeError] = useState<string>('');
 
     useEffect(() => {
         const obtenerRecordsDesdeFirebase = async () => {
@@ -82,12 +83,18 @@ function Records() {
     }, []);
 
     const handleBuscar = () => {
+        if (!filtro.trim()) {
+            setMensajeError('Por favor, escriba algo en el campo de búsqueda.');
+            return;
+        }
+        
         // Filtrar registros por nombre de atleta o categoría
         const registrosFiltrados = records.filter(record =>
             record.nombreAtleta.toLowerCase().includes(filtro.toLowerCase()) ||
             record.categoria.toLowerCase().includes(filtro.toLowerCase())
         );
         setRecords(registrosFiltrados);
+        setMensajeError(''); // Limpiar el mensaje de error si se realiza la búsqueda correctamente
     };
 
     return (
@@ -107,6 +114,7 @@ function Records() {
                     />
                     <button onClick={handleBuscar} className="px-4 py-2 bg-blue-500 text-white rounded-md">Buscar</button>
                 </div>
+                {mensajeError && <p style={{ color: 'red', textAlign: 'center' }}>{mensajeError}</p>}
                 <table className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
                     <thead style={{ backgroundColor: '#B1CEE3' }}>
                         <tr>
