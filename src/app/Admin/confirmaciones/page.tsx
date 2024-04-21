@@ -1,9 +1,9 @@
-'use client'
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
+import emailjs from 'emailjs-com'; // Importa emailjs-com para enviar correos electrónicos
 
 interface Participante {
   id: string;
@@ -11,7 +11,6 @@ interface Participante {
   apellidos: string;
   evento: string;
   codigoComprobante: string;
-  cedula: number;
 }
 
 function Confirmacionespago(): JSX.Element {
@@ -26,17 +25,17 @@ function Confirmacionespago(): JSX.Element {
 
     if (participanteAprobado) {
       try {
-        // Guarda el ID del documento antes de agregarlo
-        const docId = id;
-        
-        await setDoc(doc(db, 'listaparticipantes', docId), participanteAprobado);
-        console.log('Participante agregado a listaparticipantes. Document ID:', docId); // Utiliza el ID guardado
-        
+        const docRef = await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
+        console.log('Participante agregado a listaparticipantes. Document ID:', docRef.id);
+
         await deleteDoc(doc(db, 'Inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
 
-        setParticipantes(prevParticipantes => prevParticipantes.filter(participante => participante.id !== id));
+        const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
+        setParticipantes(updatedParticipantes); // Actualiza el estado de participantes eliminando al participante aprobado
 
+        // Envía el correo electrónico solo si el participante es aprobado
+        await enviarCorreoElectronico(participanteAprobado);
       } catch (error) {
         console.error('Error al aprobar el participante:', error);
       }
@@ -44,15 +43,40 @@ function Confirmacionespago(): JSX.Element {
   };
 
   const handleRechazar = async (id: string): Promise<void> => {
+    console.log('Botón Rechazar clickeado. ID:', id);
+    
     try {
-      // Eliminar el participante de la base de datos
+      // Elimina el documento de la colección "Inscripciones"
       await deleteDoc(doc(db, 'Inscripciones', id));
-      console.log('Participante eliminado de la base de datos.');
+      console.log('Participante eliminado de Inscripciones.');
 
-      // Filtrar al participante de la lista
-      setParticipantes(prevParticipantes => prevParticipantes.filter(participante => participante.id !== id));
+      // Actualiza el estado de participantes eliminando al participante rechazado
+      const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
+      setParticipantes(updatedParticipantes);
     } catch (error) {
       console.error('Error al rechazar el participante:', error);
+    }
+  };
+
+  const enviarCorreoElectronico = async (participante: Participante): Promise<void> => {
+    try {
+      const serviceID = 'service_bnz01rp';
+      const templateID = 'template_gj4zjzf';
+      const apiKey = 'JSjt1Iy2WCW_LmdQm'; // Reemplazar con tu propia API Key
+
+      // Aquí puedes construir el objeto `formData` para enviar en el correo electrónico
+      const formData = {
+        to_email: 'destinatario@example.com',
+        from_name: 'Remitente',
+        subject: 'Solicitud de participante aprobada',
+        message: `El participante ${participante.nombre} ${participante.apellidos} ha sido aprobado para el evento ${participante.evento}.`
+      };
+
+      await emailjs.send(serviceID, templateID, formData, apiKey);
+      console.log('Correo electrónico enviado exitosamente.');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw error;
     }
   };
 
@@ -61,8 +85,8 @@ function Confirmacionespago(): JSX.Element {
 
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
       const inscripcionesData = snapshot.docs.map((doc) => {
-        const { id, nombre, apellidos, costo, evento, codigoComprobante, cedula } = doc.data();
-        return { id: doc.id, nombre, apellidos, evento, codigoComprobante, cedula };
+        const { id, nombre, apellidos, costo, evento, codigoComprobante } = doc.data();
+        return { id: doc.id, nombre, apellidos, evento, codigoComprobante };
       });
 
       setParticipantes(inscripcionesData);
@@ -71,13 +95,6 @@ function Confirmacionespago(): JSX.Element {
 
     return () => unsubscribe();
   }, []);
-
-  const thStyle: React.CSSProperties = {
-    backgroundColor: '#B1CEE3',
-    fontWeight: 'bold',
-    padding: '8px',
-    border: '1px solid #ccc',
-  };
 
   return (
     <div>
@@ -147,61 +164,70 @@ function Confirmacionespago(): JSX.Element {
       <br />
       <br />
       <br />
+      <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Comprobantes de Pago</h2>
       <br />
-      <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>Comprobantes de Pago</h1>
-      
-      <img src="/SE.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
-      <div className="white-container">
-        <div className="table-container">
-          <table className="w-full border-collapse border border-gray-300 shadow-lg rounded-center">
-            <thead style={{ backgroundColor: '#B1CEE3' }} className="">
-              <tr>
-                <th style={thStyle}>Codigo Comprobante</th>
-                <th style={thStyle}>Nombre</th>
-                <th style={thStyle}>Apellidos</th>
-                <th style={thStyle}>Cedula</th>
-                <th style={thStyle}>Evento</th>
-                <th style={thStyle}>Acciones</th>
+      <br />
+      <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
+        <thead style={{ backgroundColor: '#B1CEE3' }} className="">
+          <tr>
+            <th style={thStyle}>Codigo Comprobante</th>
+            <th style={thStyle}>Nombre</th>
+            <th style={thStyle}>Apellidos</th>
+            <th style={thStyle}>Evento</th>
+            <th style={thStyle}>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {participantes.length === 0 ? (
+            <tr style={{ height: '600px' }}>
+              <td colSpan={5} className="p-4 text-center" style={{ height: '600px' }}>
+                No hay participantes disponibles.
+              </td>
+            </tr>
+          ) : (
+            participantes.map((participante) => (
+              <tr key={participante.id} className="hover:bg-gray-100">
+                <td className="border px-4 py-2">{participante.codigoComprobante}</td>
+                <td className="border px-4 py-2">{participante.nombre}</td>
+                <td className="border px-4 py-2">{participante.apellidos}</td>
+                <td className="border px-4 py-2">{participante.evento}</td>
+                <td className="border px-4 py-2">
+                  <button
+                    onClick={() => handleAprobar(participante.id)}
+                    style={{ backgroundColor: 'blue', color: 'white', marginRight: '5px' }}
+                  >
+                    Aprobar
+                  </button>
+                  <button
+                    onClick={() => handleRechazar(participante.id)}
+                    style={{ backgroundColor: 'red', color: 'white' }}
+                  >
+                    Rechazar
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {participantes.length === 0 ? (
-                <tr style={{ height: '600px' }}>
-                  <td colSpan={5} className="p-4 text-center" style={{ height: '600px' }}>
-                    No hay participantes disponibles.
-                  </td>
-                </tr>
-              ) : (
-                participantes.map((participante) => (
-                  <tr key={participante.id} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{participante.codigoComprobante}</td>
-                    <td className="border px-4 py-2">{participante.nombre}</td>
-                    <td className="border px-4 py-2">{participante.apellidos}</td>
-                    <td className="border px-4 py-2">{participante.cedula}</td>
-                    <td className="border px-4 py-2">{participante.evento}</td>
-                    <td className="border px-4 py-2">
-                      <button
-                        onClick={() => handleAprobar(participante.id)}
-                        style={{ backgroundColor: 'blue', color: 'white', marginRight: '5px' }}
-                      >
-                        Aprobar
-                      </button>
-                      <button
-                        onClick={() => handleRechazar(participante.id)}
-                        style={{ backgroundColor: 'red', color: 'white' }}
-                      >
-                        Rechazar
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            ))
+          )}
+        </tbody>
+      </table>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 }
+
+const thStyle: React.CSSProperties = {
+  backgroundColor: '#B1CEE3',
+  fontWeight: 'bold',
+  padding: '8px',
+  border: '1px solid #ccc',
+};
 
 export default Confirmacionespago;

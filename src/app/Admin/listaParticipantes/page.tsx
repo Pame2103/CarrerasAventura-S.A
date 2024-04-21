@@ -274,7 +274,7 @@ function ListaParticipantes(): JSX.Element {
       <br />
       <br />
       <div className="container mx-auto p-4">
-        <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Comprobantes de Pago</h2>
+        <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Lista de Participantes</h2>
         <div className="mb-4">
           <label htmlFor="evento">Seleccionar Evento:</label>
           <select 

@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { TextField, Button, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, Button, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { db } from '../../../../firebase/firebase';
 import { collection, getDocs, doc, updateDoc, query, where, doc as docRef } from 'firebase/firestore';
 import Link from 'next/link';
@@ -58,13 +58,27 @@ function Administradorcarreras() {
     setNuevaCarrera({ ...nuevaCarrera, [name as string]: value as string });
   };
 
-  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const selectedCarreraNombre = event.target.value as string;
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const selectedCarreraNombre = event.target.value;
     setSelectedCarrera(selectedCarreraNombre);
 
-    const carrera = carreras.find(carrera => carrera.nombre === selectedCarreraNombre);
+    const carrera = carreras.find(c => c.nombre === selectedCarreraNombre);
     if (carrera) {
       setNuevaCarrera(carrera);
+    } else {
+      setNuevaCarrera({
+        nombre: '',
+        fecha: '',
+        costo: '',
+        distancia: '',
+        edicion: '',
+        responsable: '',
+        contacto: '',
+        lugar: '',
+        hora: '',
+        cupoDisponible: '',
+        limiteParticipante: '',
+      });
     }
   };
 
@@ -179,9 +193,7 @@ function Administradorcarreras() {
           </div>
           <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
-        
       </nav>
-      
     );
   }
 
@@ -246,7 +258,7 @@ function Administradorcarreras() {
                 <InputLabel>Seleccionar Carrera:</InputLabel>
                 <Select
                   value={selectedCarrera}
-                  //onChange={handleSelectChange}
+                  onChange={handleSelectChange}
                   fullWidth
                 >
                   <MenuItem value="">
