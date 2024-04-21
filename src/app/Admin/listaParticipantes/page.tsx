@@ -138,7 +138,7 @@ function ListaParticipantes(): JSX.Element {
 
   const cargarCarreras = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'carreras'));
+      const querySnapshot = await getDocs(collection(db, 'listaparticipantes'));
       const carrerasData = querySnapshot.docs.map(doc => doc.data().nombre);
       setCarreras(carrerasData);
     } catch (error) {
@@ -187,75 +187,80 @@ function ListaParticipantes(): JSX.Element {
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Participantes');
-
     const headers = [
-      'Nombre Carrera',
+      'Evento',
       'Nombre',
       'Apellidos',
       'Cedula',
       'Sexo',
+      'Nacimiento',
       'Edad',
       'Email',
-      'Confirmar Email',
       'Telefono',
-      'Nacimiento',
+      'Pais',
       'Talla Camisa',
       'Lateralidad',
-      'Nombre Emergencia',
-      'Telefono Emergencia',
-      'Parentesco Emergencia',
-      'Provincia',
-      'Total Monto',
-      'Beneficiario Poliza',
-      'Metodo Pago',
-      'Guardar Datos',
-      'Aceptar Terminos',
       'Discapacidad',
       'Tipo Discapacidad',
       'Alergia Medicamento',
-      'Pais',
-      'Evento',
-      'Codigo Comprobante'
+      'Nombre Emergencia',
+      'Telefono Emergencia',
+      'Parentesco Emergencia',
+      'Beneficiario Poliza',
     ];
+
     worksheet.addRow(headers).font = { bold: true };
 
-    const filteredParticipantes = participantes.filter(participante => participante.evento === eventoSeleccionado);
-
-    filteredParticipantes.forEach((participante) => {
+    participantes.forEach((participante) => {
       worksheet.addRow([
-        participante.nombreCarrera || '-',
+        participante.evento || '-',
         participante.nombre || '-',
         participante.apellidos || '-',
-        participante.cedula || '-',
+        participante.cedula,
         participante.sexo || '-',
+        participante.nacimiento || '-',
         participante.edad || '-',
         participante.email || '-',
-        participante.confirmarEmail || '-',
         participante.telefono || '-',
-        participante.nacimiento || '-',
+        participante.pais || '-',
         participante.tallaCamisa || '-',
         participante.lateralidad || '-',
-        participante.nombreEmergencia || '-',
-        participante.telefonoEmergencia || '-',
-        participante.parentescoEmergencia || '-',
-        participante.provincia || '-',
-        participante.totalMonto || '-',
-        participante.beneficiarioPoliza || '-',
-        participante.metodoPago || '-',
-        participante.guardarDatos || '-',
-        participante.aceptarTerminos || '-',
         participante.discapacidad || '-',
         participante.tipoDiscapacidad || '-',
         participante.alergiaMedicamento || '-',
-        participante.pais || '-',
-        participante.evento || '-',
-        participante.codigoComprobante || '-'
-      ]);
+        participante.nombreEmergencia || '-',
+        participante.telefonoEmergencia || '-',
+        participante.parentescoEmergencia || '-',
+        participante.beneficiarioPoliza || '-',
+      ]).eachCell((cell) => {
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+      });
     });
+
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'C0C0C0' },
+    };
+
+    worksheet.columns.forEach((column) => {
+      if (column && typeof column.eachCell === 'function') {
+        let max = 0;
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const length = cell.value ? String(cell.value).length : 10;
+          if (length > max) {
+            max = length;
+          }
+        });
+        column.width = max < 10 ? 10 : max;
+      }
+    });
+    
+    
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
     link.download = 'participantes.xlsx';
@@ -263,7 +268,6 @@ function ListaParticipantes(): JSX.Element {
     link.click();
     document.body.removeChild(link);
   };
-
   const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
   const eventos = Array.from(new Set(participantes.map(participante => participante.evento)) || []);
 
@@ -310,10 +314,10 @@ function ListaParticipantes(): JSX.Element {
             ) : (
               filteredParticipantes.map(participante => (
                 <tr key={participante.id} className="hover:bg-gray-100">
-                  <td className="border px-4 py-2">{participante.cedula || '-'}</td>
-                  <td className="border px-4 py-2">{participante.nombre || '-'}</td>
-                  <td className="border px-4 py-2">{participante.apellidos || '-'}</td>
-                  <td className="border px-4 py-2">{participante.evento || '-'}</td>
+                  <td className="border px-4 py-2">{participante.cedula}</td>
+                  <td className="border px-4 py-2">{participante.nombre}</td>
+                  <td className="border px-4 py-2">{participante.apellidos}</td>
+                  <td className="border px-4 py-2">{participante.evento}</td>
                 </tr>
               ))
             )}

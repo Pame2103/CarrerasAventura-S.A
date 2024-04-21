@@ -102,7 +102,7 @@ export default function Inscripciones() {
 
   const addFormDataToFirebase = async () => {
     try {
-      const docRef = await addDoc(collection(db, 'Inscripciones'), formData);
+      const docRef = await addDoc(collection(db, 'inscripciones'), formData);
       console.log('Form data added with ID: ', docRef.id);
     } catch (error) {
       console.error('Error adding form data: ', error);

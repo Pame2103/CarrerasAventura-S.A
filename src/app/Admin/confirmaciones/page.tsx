@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
@@ -7,10 +8,31 @@ import emailjs from 'emailjs-com'; // Importa emailjs-com para enviar correos el
 
 interface Participante {
   id: string;
+  nombreCarrera: string;
   nombre: string;
   apellidos: string;
+  cedula: string;
+  sexo: string;
+  edad: string;
+  email: string;
+  telefono: string;
+  nacimiento: string;
+  tallaCamisa: string;
+  lateralidad: string;
+  nombreEmergencia: string;
+  telefonoEmergencia: string;
+  parentescoEmergencia: string;
+  provincia: string;
+  totalMonto: string;
+  beneficiarioPoliza: string;
+  metodoPago: string;
+  discapacidad: string;
+  tipoDiscapacidad: string;
+  alergiaMedicamento: string;
+  pais: string;
   evento: string;
   codigoComprobante: string;
+  
 }
 
 function Confirmacionespago(): JSX.Element {
@@ -25,14 +47,17 @@ function Confirmacionespago(): JSX.Element {
 
     if (participanteAprobado) {
       try {
+        // Agregar el participante aprobado a la colección "listaparticipantes"
         const docRef = await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
         console.log('Participante agregado a listaparticipantes. Document ID:', docRef.id);
 
+        // Eliminar el participante de la colección "Inscripciones"
         await deleteDoc(doc(db, 'Inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
 
+        // Actualizar el estado de participantes eliminando al participante aprobado
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
-        setParticipantes(updatedParticipantes); // Actualiza el estado de participantes eliminando al participante aprobado
+        setParticipantes(updatedParticipantes);
 
         // Envía el correo electrónico solo si el participante es aprobado
         await enviarCorreoElectronico(participanteAprobado);
@@ -47,7 +72,7 @@ function Confirmacionespago(): JSX.Element {
     
     try {
       // Elimina el documento de la colección "Inscripciones"
-      await deleteDoc(doc(db, 'Inscripciones', id));
+      await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
       // Actualiza el estado de participantes eliminando al participante rechazado
@@ -81,20 +106,53 @@ function Confirmacionespago(): JSX.Element {
   };
 
   useEffect(() => {
-    const inscripcionesCollection = collection(db, 'Inscripciones');
-
+    const inscripcionesCollection = collection(db, 'inscripciones');
+   
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
-      const inscripcionesData = snapshot.docs.map((doc) => {
-        const { id, nombre, apellidos, costo, evento, codigoComprobante } = doc.data();
-        return { id: doc.id, nombre, apellidos, evento, codigoComprobante };
-      });
-
-      setParticipantes(inscripcionesData);
-      setLoading(false);
+       const inscripcionesData = snapshot.docs.map((doc) => {
+         const { id, nombre, cedula, apellidos, sexo, edad, email, confirmarEmail, telefono, nacimiento, tallaCamisa, lateralidad, nombreEmergencia, telefonoEmergencia, parentescoEmergencia, provincia, totalMonto, beneficiarioPoliza, metodoPago, discapacidad, tipoDiscapacidad, alergiaMedicamento, pais, evento, codigoComprobante } = doc.data();
+         // Asegúrate de que todos los campos requeridos estén presentes y tengan un valor válido
+         // Si falta algún campo, puedes asignarle un valor predeterminado o manejarlo de otra manera
+         return {
+           id: doc.id,
+           nombreCarrera: '', // Asegúrate de que este campo esté presente y tenga un valor válido
+           nombre,
+           cedula,
+           apellidos,
+           sexo,
+           edad,
+           email,
+           confirmarEmail,
+           telefono,
+           nacimiento,
+           tallaCamisa,
+           lateralidad,
+           nombreEmergencia,
+           telefonoEmergencia,
+           parentescoEmergencia,
+           provincia,
+           totalMonto,
+           beneficiarioPoliza,
+           metodoPago,
+           discapacidad,
+           tipoDiscapacidad,
+           alergiaMedicamento,
+           pais,
+           evento,
+           codigoComprobante,
+           aprobado: false,
+         };
+       });
+   
+       const participantesPendientes = inscripcionesData.filter(participante => !participante.aprobado);
+       setParticipantes(participantesPendientes);
+       setLoading(false);
     });
-
+   
     return () => unsubscribe();
-  }, []);
+   }, []);
+   
+   
 
   return (
     <div>
