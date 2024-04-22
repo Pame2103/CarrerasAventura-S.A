@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
@@ -155,41 +156,6 @@ function Confirmacionespago(): JSX.Element {
                   <Link href="/Admin/administradorCarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaRunning className="mr-1" /> Administrar Carreras
-                    </span>
-                  </Link>
-                  <Link href="/Admin/administrarTiempos">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaInfoCircle className="mr-1" /> Administrar Tiempos
-                    </span>
-                  </Link>
-                  <Link href="/Admin/carreras">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaDumbbell className="mr-1" /> Carreras
-                    </span>
-                  </Link>
-                  <Link href="/Admin/confirmaciones">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaTrophy className="mr-1" /> Confirmación de Pagos
-                    </span>
-                  </Link>
-                  <Link href="/Admin/historicosadmin">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaInfoCircle className="mr-1" /> Históricos
-                    </span>
-                  </Link>
-                  <Link href="/Admin/listaParticipantes">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaTrophy className="mr-1" /> Lista de Participantes
-                    </span>
-                  </Link>
-                  <Link href="/Admin/record">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Records
-                    </span>
-                  </Link>
-                  <Link href="/Admin/resultados">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Resultados
                     </span>
                   </Link>
                 </div>
