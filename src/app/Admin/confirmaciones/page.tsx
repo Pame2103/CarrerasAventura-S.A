@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
-import emailjs from 'emailjs-com';
+import emailjs from 'emailjs-com'; // Importa emailjs-com para enviar correos electrónicos
 
 interface Participante {
   id: string;
@@ -32,6 +32,7 @@ interface Participante {
   pais: string;
   evento: string;
   codigoComprobante: string;
+  
 }
 
 function Confirmacionespago(): JSX.Element {
@@ -46,15 +47,19 @@ function Confirmacionespago(): JSX.Element {
 
     if (participanteAprobado) {
       try {
+        // Agregar el participante aprobado a la colección "listaparticipantes"
         const docRef = await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
         console.log('Participante agregado a listaparticipantes. Document ID:', docRef.id);
 
-        await deleteDoc(doc(db, 'inscripciones', id));
+        // Eliminar el participante de la colección "Inscripciones"
+        await deleteDoc(doc(db, 'Inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
 
+        // Actualizar el estado de participantes eliminando al participante aprobado
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
         setParticipantes(updatedParticipantes);
 
+        // Envía el correo electrónico solo si el participante es aprobado
         await enviarCorreoElectronico(participanteAprobado);
       } catch (error) {
         console.error('Error al aprobar el participante:', error);
@@ -66,9 +71,11 @@ function Confirmacionespago(): JSX.Element {
     console.log('Botón Rechazar clickeado. ID:', id);
     
     try {
+      // Elimina el documento de la colección "Inscripciones"
       await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
+      // Actualiza el estado de participantes eliminando al participante rechazado
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
@@ -80,8 +87,9 @@ function Confirmacionespago(): JSX.Element {
     try {
       const serviceID = 'service_bnz01rp';
       const templateID = 'template_gj4zjzf';
-      const apiKey = 'JSjt1Iy2WCW_LmdQm'; 
+      const apiKey = 'JSjt1Iy2WCW_LmdQm'; // Reemplazar con tu propia API Key
 
+      // Aquí puedes construir el objeto `formData` para enviar en el correo electrónico
       const formData = {
         to_email: 'destinatario@example.com',
         from_name: 'Remitente',
@@ -103,9 +111,11 @@ function Confirmacionespago(): JSX.Element {
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
        const inscripcionesData = snapshot.docs.map((doc) => {
          const { id, nombre, cedula, apellidos, sexo, edad, email, confirmarEmail, telefono, nacimiento, tallaCamisa, lateralidad, nombreEmergencia, telefonoEmergencia, parentescoEmergencia, provincia, totalMonto, beneficiarioPoliza, metodoPago, discapacidad, tipoDiscapacidad, alergiaMedicamento, pais, evento, codigoComprobante } = doc.data();
+         // Asegúrate de que todos los campos requeridos estén presentes y tengan un valor válido
+         // Si falta algún campo, puedes asignarle un valor predeterminado o manejarlo de otra manera
          return {
            id: doc.id,
-           nombreCarrera: '',
+           nombreCarrera: '', // Asegúrate de que este campo esté presente y tenga un valor válido
            nombre,
            cedula,
            apellidos,
@@ -142,6 +152,8 @@ function Confirmacionespago(): JSX.Element {
     return () => unsubscribe();
    }, []);
    
+   
+
   return (
     <div>
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
@@ -156,6 +168,41 @@ function Confirmacionespago(): JSX.Element {
                   <Link href="/Admin/administradorCarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaRunning className="mr-1" /> Administrar Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/administrarTiempos">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaInfoCircle className="mr-1" /> Administrar Tiempos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/carreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaDumbbell className="mr-1" /> Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/confirmaciones">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Confirmación de Pagos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/historicosadmin">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaInfoCircle className="mr-1" /> Históricos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/listaParticipantes">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Lista de Participantes
+                    </span>
+                  </Link>
+                  <Link href="/Admin/record">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaEnvelope className="mr-1" /> Records
+                    </span>
+                  </Link>
+                  <Link href="/Admin/resultados">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaEnvelope className="mr-1" /> Resultados
                     </span>
                   </Link>
                 </div>
