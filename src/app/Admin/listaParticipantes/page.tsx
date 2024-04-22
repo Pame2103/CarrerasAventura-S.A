@@ -211,7 +211,7 @@ function ListaParticipantes(): JSX.Element {
 
     worksheet.addRow(headers).font = { bold: true };
 
-    participantes.forEach((participante) => {
+    filteredParticipantes.forEach((participante) => { // Cambio aquí
       worksheet.addRow([
         participante.evento || '-',
         participante.nombre || '-',
@@ -256,8 +256,6 @@ function ListaParticipantes(): JSX.Element {
         column.width = max < 10 ? 10 : max;
       }
     });
-    
-    
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
