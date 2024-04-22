@@ -123,7 +123,6 @@ export default function Inscripciones() {
       throw error;
     }
   };
-
   return (
         <div>
           <Navbar />

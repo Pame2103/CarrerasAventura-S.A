@@ -1,10 +1,9 @@
-'use client'
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
-import emailjs from 'emailjs-com'; // Importa emailjs-com para enviar correos electrónicos
+import emailjs from 'emailjs-com';
 
 interface Participante {
   id: string;
@@ -32,7 +31,6 @@ interface Participante {
   pais: string;
   evento: string;
   codigoComprobante: string;
-  
 }
 
 function Confirmacionespago(): JSX.Element {
@@ -47,19 +45,15 @@ function Confirmacionespago(): JSX.Element {
 
     if (participanteAprobado) {
       try {
-        // Agregar el participante aprobado a la colección "listaparticipantes"
         const docRef = await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
         console.log('Participante agregado a listaparticipantes. Document ID:', docRef.id);
 
-        // Eliminar el participante de la colección "Inscripciones"
-        await deleteDoc(doc(db, 'Inscripciones', id));
+        await deleteDoc(doc(db, 'inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
 
-        // Actualizar el estado de participantes eliminando al participante aprobado
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
         setParticipantes(updatedParticipantes);
 
-        // Envía el correo electrónico solo si el participante es aprobado
         await enviarCorreoElectronico(participanteAprobado);
       } catch (error) {
         console.error('Error al aprobar el participante:', error);
@@ -71,11 +65,9 @@ function Confirmacionespago(): JSX.Element {
     console.log('Botón Rechazar clickeado. ID:', id);
     
     try {
-      // Elimina el documento de la colección "Inscripciones"
       await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
-      // Actualiza el estado de participantes eliminando al participante rechazado
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
@@ -87,9 +79,8 @@ function Confirmacionespago(): JSX.Element {
     try {
       const serviceID = 'service_bnz01rp';
       const templateID = 'template_gj4zjzf';
-      const apiKey = 'JSjt1Iy2WCW_LmdQm'; // Reemplazar con tu propia API Key
+      const apiKey = 'JSjt1Iy2WCW_LmdQm'; 
 
-      // Aquí puedes construir el objeto `formData` para enviar en el correo electrónico
       const formData = {
         to_email: 'destinatario@example.com',
         from_name: 'Remitente',
@@ -111,11 +102,9 @@ function Confirmacionespago(): JSX.Element {
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
        const inscripcionesData = snapshot.docs.map((doc) => {
          const { id, nombre, cedula, apellidos, sexo, edad, email, confirmarEmail, telefono, nacimiento, tallaCamisa, lateralidad, nombreEmergencia, telefonoEmergencia, parentescoEmergencia, provincia, totalMonto, beneficiarioPoliza, metodoPago, discapacidad, tipoDiscapacidad, alergiaMedicamento, pais, evento, codigoComprobante } = doc.data();
-         // Asegúrate de que todos los campos requeridos estén presentes y tengan un valor válido
-         // Si falta algún campo, puedes asignarle un valor predeterminado o manejarlo de otra manera
          return {
            id: doc.id,
-           nombreCarrera: '', // Asegúrate de que este campo esté presente y tenga un valor válido
+           nombreCarrera: '',
            nombre,
            cedula,
            apellidos,
@@ -152,8 +141,6 @@ function Confirmacionespago(): JSX.Element {
     return () => unsubscribe();
    }, []);
    
-   
-
   return (
     <div>
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
