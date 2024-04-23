@@ -46,8 +46,8 @@ export default function Login() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', /* Opacidad del fondo */
-        minHeight: '100vh', /* Ajuste la altura para cubrir la pantalla */
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        minHeight: '100vh', 
       }}>
         <div className="min-h-screen flex flex-col justify-center items-center text-white">
           <form className="border p-6 rounded-md shadow-md bg-white max-w-md w-full">
@@ -85,20 +85,20 @@ export default function Login() {
                 value={password}
                 onChange={handlePasswordChange}
                 className="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
-                style={{ fontSize: '1rem', color: 'black' }} // Cambiado el color del texto a negro
+                style={{ fontSize: '1rem', color: 'black' }} 
               />
             </div>
             <div className="flex justify-between items-center">
               <button
                 onClick={signIn}
                 className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 hover:text-black"
-                style={{ backgroundColor: '#2563eb' }}> {/* Color fijo para el botón */}
+                style={{ backgroundColor: '#2563eb' }}> 
                 Iniciar Sesión
               </button>
               <Link
                 href="/Admin/recuperar"
                 className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 hover:text-black"
-                style={{ backgroundColor: '#2563eb' }}> {/* Color fijo para el enlace */}
+                style={{ backgroundColor: '#2563eb' }}>
                 Olvidé mi Contraseña
               </Link>
             </div>
