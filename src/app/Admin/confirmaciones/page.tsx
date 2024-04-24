@@ -1,12 +1,11 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
-
 import Modal from 'react-modal';
-
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
+import emailjs from 'emailjs-com';
 
 interface Participante {
   id: string;
@@ -54,7 +53,7 @@ function Confirmacionespago(): JSX.Element {
         const correoParticipante = participanteAprobado.email;
 
         // Eliminar participante de la colección "Inscripciones"
-        await deleteDoc(doc(db, 'inscripciones', id)); // Cambiado de 'Inscripciones' a 'inscripciones'
+        await deleteDoc(doc(db, 'Inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
 
         // Eliminar participante de la lista de participantes
@@ -76,11 +75,9 @@ function Confirmacionespago(): JSX.Element {
     console.log('Botón Rechazar clickeado. ID:', id);
     
     try {
-      // Eliminar participante de la colección "Inscripciones"
       await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
-      // Eliminar participante de la lista de participantes
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
@@ -107,8 +104,12 @@ Gracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por comparti
 Saludos cordiales,
 El equipo de Carreras Aventura`;
 
-      // Simplemente abrir un enlace mailto
-      window.open(`mailto:${participante.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent(correoBody)}`);
+      await emailjs.send(serviceID, templateID, {
+        to_email: participante.email, // Usar el correo electrónico del participante aprobado
+        from_name: 'Remitente',
+        subject: 'Solicitud de participante aprobada',
+        message: correoBody
+      }, apiKey);
       console.log('Correo electrónico enviado exitosamente.');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -154,7 +155,6 @@ El equipo de Carreras Aventura`;
         };
       });
 
-      // Filtrar los participantes que aún no han sido aprobados
       const participantesPendientes = inscripcionesData.filter(participante => !participante.aprobado);
       setParticipantes(participantesPendientes);
       setLoading(false);
@@ -231,9 +231,13 @@ El equipo de Carreras Aventura`;
         <div>
           <h2>Enviar correo electrónico</h2>
           <p>¿Quieres enviar un correo electrónico al participante?</p>
-          <a href={`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`}>
+          <button
+            onClick={() => {
+              window.open(`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`);
+            }}
+          >
             Abrir correo electrónico
-          </a>
+          </button>
           <button onClick={() => setModalIsOpen(false)}>Cancelar</button>
         </div>
       </Modal>

@@ -1,9 +1,8 @@
 'use client'
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import Navbar from '@/app/componentes/navbar';
-import emailjs from 'emailjs-com';
 
 interface Carrera {
   nombre: string;
@@ -41,23 +40,20 @@ export default function Inscripciones() {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [carreraSeleccionada, setCarreraSeleccionada] = useState<Carrera | null>(null);
+  const [eventoSeleccionado, setEventoSeleccionado] = useState<string | null>(null);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [carreraSeleccionada, setCarreraSeleccionada] = useState<Carrera | null>(null);
 
   useEffect(() => {
     const obtenerCarreras = async () => {
-      try {
-        const carrerasCollection = collection(db, 'Configuracion Carreeras');
-        const snapshot = await getDocs(carrerasCollection);
-        const carrerasData: Carrera[] = [];
-        snapshot.forEach((doc) => {
-          const carrera = doc.data() as Carrera;
-          carrerasData.push(carrera);
-        });
-        setCarreras(carrerasData);
-      } catch (error) {
-        console.error('Error obteniendo las carreras:', error);
-      }
+      const carrerasCollection = collection(db, 'Configuracion Carreeras');
+      const snapshot = await getDocs(carrerasCollection);
+      const carrerasData: Carrera[] = [];
+      snapshot.forEach((doc) => {
+        const carrera = doc.data() as Carrera;
+        carrerasData.push(carrera);
+      });
+      setCarreras(carrerasData);
     };
 
     obtenerCarreras();
@@ -85,12 +81,11 @@ export default function Inscripciones() {
     return edad;
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       await addFormDataToFirebase();
-      await enviarCorreoElectronico();
       console.log('Form Data:', formData);
     } catch (error) {
       console.error('Error adding form data to Firebase:', error);
@@ -110,19 +105,6 @@ export default function Inscripciones() {
     }
   };
 
-  const enviarCorreoElectronico = async () => {
-    try {
-      const serviceID = 'service_bnz01rp';
-      const templateID = 'template_gj4zjzf';
-      const apiKey = 'JSjt1Iy2WCW_LmdQm'; // Reemplazar con tu propia API Key
-
-      await emailjs.send(serviceID, templateID, formData, apiKey);
-      console.log('Correo electrónico enviado exitosamente.');
-    } catch (error) {
-      console.error('Error sending email:', error);
-      throw error;
-    }
-  };
   return (
         <div>
           <Navbar />
@@ -553,6 +535,6 @@ export default function Inscripciones() {
           </form>
         </div>
       </div>   
-    </div>
-  )
+    </div>
+  )
 }
