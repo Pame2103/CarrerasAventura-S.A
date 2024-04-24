@@ -1,10 +1,12 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
+
+import Modal from 'react-modal';
+
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
-import emailjs from 'emailjs-com'; // Importa emailjs-com para enviar correos electrónicos
 
 interface Participante {
   id: string;
@@ -32,12 +34,13 @@ interface Participante {
   pais: string;
   evento: string;
   codigoComprobante: string;
-  
 }
 
 function Confirmacionespago(): JSX.Element {
   const [participantes, setParticipantes] = useState<Participante[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<Participante | null>(null);
 
   const handleAprobar = async (id: string): Promise<void> => {
     console.log('Botón Aprobar clickeado. ID:', id);
@@ -47,20 +50,22 @@ function Confirmacionespago(): JSX.Element {
 
     if (participanteAprobado) {
       try {
-        // Agregar el participante aprobado a la colección "listaparticipantes"
-        const docRef = await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
-        console.log('Participante agregado a listaparticipantes. Document ID:', docRef.id);
+        // Obtener el correo electrónico del participante aprobado
+        const correoParticipante = participanteAprobado.email;
 
-        // Eliminar el participante de la colección "Inscripciones"
-        await deleteDoc(doc(db, 'Inscripciones', id));
+        // Eliminar participante de la colección "Inscripciones"
+        await deleteDoc(doc(db, 'inscripciones', id)); // Cambiado de 'Inscripciones' a 'inscripciones'
         console.log('Participante eliminado de Inscripciones.');
 
-        // Actualizar el estado de participantes eliminando al participante aprobado
+        // Eliminar participante de la lista de participantes
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
         setParticipantes(updatedParticipantes);
 
-        // Envía el correo electrónico solo si el participante es aprobado
+        // Enviar correo electrónico al participante aprobado
         await enviarCorreoElectronico(participanteAprobado);
+
+        // Abrir el modal
+        setModalIsOpen(true);
       } catch (error) {
         console.error('Error al aprobar el participante:', error);
       }
@@ -71,11 +76,11 @@ function Confirmacionespago(): JSX.Element {
     console.log('Botón Rechazar clickeado. ID:', id);
     
     try {
-      // Elimina el documento de la colección "Inscripciones"
+      // Eliminar participante de la colección "Inscripciones"
       await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
-      // Actualiza el estado de participantes eliminando al participante rechazado
+      // Eliminar participante de la lista de participantes
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
@@ -89,15 +94,21 @@ function Confirmacionespago(): JSX.Element {
       const templateID = 'template_gj4zjzf';
       const apiKey = 'JSjt1Iy2WCW_LmdQm'; // Reemplazar con tu propia API Key
 
-      // Aquí puedes construir el objeto `formData` para enviar en el correo electrónico
-      const formData = {
-        to_email: 'destinatario@example.com',
-        from_name: 'Remitente',
-        subject: 'Solicitud de participante aprobada',
-        message: `El participante ${participante.nombre} ${participante.apellidos} ha sido aprobado para el evento ${participante.evento}.`
-      };
+      const correoBody = `¡Hola estimado participante!
 
-      await emailjs.send(serviceID, templateID, formData, apiKey);
+Nos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.
+
+¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.
+
+Pronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.
+
+Gracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.
+
+Saludos cordiales,
+El equipo de Carreras Aventura`;
+
+      // Simplemente abrir un enlace mailto
+      window.open(`mailto:${participante.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent(correoBody)}`);
       console.log('Correo electrónico enviado exitosamente.');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -107,52 +118,50 @@ function Confirmacionespago(): JSX.Element {
 
   useEffect(() => {
     const inscripcionesCollection = collection(db, 'inscripciones');
-   
+
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
-       const inscripcionesData = snapshot.docs.map((doc) => {
-         const { id, nombre, cedula, apellidos, sexo, edad, email, confirmarEmail, telefono, nacimiento, tallaCamisa, lateralidad, nombreEmergencia, telefonoEmergencia, parentescoEmergencia, provincia, totalMonto, beneficiarioPoliza, metodoPago, discapacidad, tipoDiscapacidad, alergiaMedicamento, pais, evento, codigoComprobante } = doc.data();
-         // Asegúrate de que todos los campos requeridos estén presentes y tengan un valor válido
-         // Si falta algún campo, puedes asignarle un valor predeterminado o manejarlo de otra manera
-         return {
-           id: doc.id,
-           nombreCarrera: '', // Asegúrate de que este campo esté presente y tenga un valor válido
-           nombre,
-           cedula,
-           apellidos,
-           sexo,
-           edad,
-           email,
-           confirmarEmail,
-           telefono,
-           nacimiento,
-           tallaCamisa,
-           lateralidad,
-           nombreEmergencia,
-           telefonoEmergencia,
-           parentescoEmergencia,
-           provincia,
-           totalMonto,
-           beneficiarioPoliza,
-           metodoPago,
-           discapacidad,
-           tipoDiscapacidad,
-           alergiaMedicamento,
-           pais,
-           evento,
-           codigoComprobante,
-           aprobado: false,
-         };
-       });
-   
-       const participantesPendientes = inscripcionesData.filter(participante => !participante.aprobado);
-       setParticipantes(participantesPendientes);
-       setLoading(false);
+      const inscripcionesData = snapshot.docs.map((doc) => {
+        const { id, nombre, cedula, apellidos, sexo, edad, email, confirmarEmail, telefono, nacimiento, tallaCamisa, lateralidad, nombreEmergencia, telefonoEmergencia, parentescoEmergencia, provincia, totalMonto, beneficiarioPoliza, metodoPago, discapacidad, tipoDiscapacidad, alergiaMedicamento, pais, evento, codigoComprobante } = doc.data();
+        
+        return {
+          id: doc.id,
+          nombreCarrera: '', // Asegúrate de que este campo esté presente y tenga un valor válido
+          nombre,
+          cedula,
+          apellidos,
+          sexo,
+          edad,
+          email,
+          confirmarEmail,
+          telefono,
+          nacimiento,
+          tallaCamisa,
+          lateralidad,
+          nombreEmergencia,
+          telefonoEmergencia,
+          parentescoEmergencia,
+          provincia,
+          totalMonto,
+          beneficiarioPoliza,
+          metodoPago,
+          discapacidad,
+          tipoDiscapacidad,
+          alergiaMedicamento,
+          pais,
+          evento,
+          codigoComprobante,
+          aprobado: false,
+        };
+      });
+
+      // Filtrar los participantes que aún no han sido aprobados
+      const participantesPendientes = inscripcionesData.filter(participante => !participante.aprobado);
+      setParticipantes(participantesPendientes);
+      setLoading(false);
     });
-   
+
     return () => unsubscribe();
-   }, []);
-   
-   
+  }, []);
 
   return (
     <div>
@@ -217,6 +226,18 @@ function Confirmacionespago(): JSX.Element {
           <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
       </nav>
+
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+        <div>
+          <h2>Enviar correo electrónico</h2>
+          <p>¿Quieres enviar un correo electrónico al participante?</p>
+          <a href={`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`}>
+            Abrir correo electrónico
+          </a>
+          <button onClick={() => setModalIsOpen(false)}>Cancelar</button>
+        </div>
+      </Modal>
+
       <br />
       <br />
       <br />
@@ -232,13 +253,14 @@ function Confirmacionespago(): JSX.Element {
             <th style={thStyle}>Nombre</th>
             <th style={thStyle}>Apellidos</th>
             <th style={thStyle}>Evento</th>
+            <th style={thStyle}>Email</th> {/* Nueva columna para mostrar el correo electrónico */}
             <th style={thStyle}>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {participantes.length === 0 ? (
             <tr style={{ height: '600px' }}>
-              <td colSpan={5} className="p-4 text-center" style={{ height: '600px' }}>
+              <td colSpan={6} className="p-4 text-center" style={{ height: '600px' }}>
                 No hay participantes disponibles.
               </td>
             </tr>
@@ -249,9 +271,13 @@ function Confirmacionespago(): JSX.Element {
                 <td className="border px-4 py-2">{participante.nombre}</td>
                 <td className="border px-4 py-2">{participante.apellidos}</td>
                 <td className="border px-4 py-2">{participante.evento}</td>
+                <td className="border px-4 py-2">{participante.email}</td> {/* Mostrar el correo electrónico */}
                 <td className="border px-4 py-2">
                   <button
-                    onClick={() => handleAprobar(participante.id)}
+                    onClick={() => {
+                      setSelectedParticipant(participante);
+                      handleAprobar(participante.id);
+                    }}
                     style={{ backgroundColor: 'blue', color: 'white', marginRight: '5px' }}
                   >
                     Aprobar
