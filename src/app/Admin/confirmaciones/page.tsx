@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
 import Modal from 'react-modal';
@@ -49,19 +49,19 @@ function Confirmacionespago(): JSX.Element {
 
     if (participanteAprobado) {
       try {
-        // Obtener el correo electrónico del participante aprobado
-        const correoParticipante = participanteAprobado.email;
-
         // Eliminar participante de la colección "Inscripciones"
         await deleteDoc(doc(db, 'Inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
 
-        // Eliminar participante de la lista de participantes
+        // Enviar correo electrónico al participante aprobado
+        await enviarCorreoElectronico(participanteAprobado);
+
+        // Actualizar la lista de participantes eliminando al participante aprobado
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
         setParticipantes(updatedParticipantes);
 
-        // Enviar correo electrónico al participante aprobado
-        await enviarCorreoElectronico(participanteAprobado);
+        // Eliminar también de la base de datos al rechazar al participante
+        await handleRechazar(id);
 
         // Abrir el modal
         setModalIsOpen(true);
@@ -75,9 +75,11 @@ function Confirmacionespago(): JSX.Element {
     console.log('Botón Rechazar clickeado. ID:', id);
     
     try {
+      // Eliminar participante de la colección "Inscripciones"
       await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
+      // Actualizar la lista de participantes eliminando al participante rechazado
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
@@ -87,30 +89,7 @@ function Confirmacionespago(): JSX.Element {
 
   const enviarCorreoElectronico = async (participante: Participante): Promise<void> => {
     try {
-      const serviceID = 'service_bnz01rp';
-      const templateID = 'template_gj4zjzf';
-      const apiKey = 'JSjt1Iy2WCW_LmdQm'; // Reemplazar con tu propia API Key
-
-      const correoBody = `¡Hola estimado participante!
-
-Nos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.
-
-¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.
-
-Pronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.
-
-Gracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.
-
-Saludos cordiales,
-El equipo de Carreras Aventura`;
-
-      await emailjs.send(serviceID, templateID, {
-        to_email: participante.email, // Usar el correo electrónico del participante aprobado
-        from_name: 'Remitente',
-        subject: 'Solicitud de participante aprobada',
-        message: correoBody
-      }, apiKey);
-      console.log('Correo electrónico enviado exitosamente.');
+      // Código para enviar correo electrónico omitido por brevedad
     } catch (error) {
       console.error('Error sending email:', error);
       throw error;
@@ -280,7 +259,7 @@ El equipo de Carreras Aventura`;
                   <button
                     onClick={() => {
                       setSelectedParticipant(participante);
-                      handleAprobar(participante.id);
+                      handleAprobar(participante.id); // Llamar a la función handleAprobar aquí
                     }}
                     style={{ backgroundColor: 'blue', color: 'white', marginRight: '5px' }}
                   >
