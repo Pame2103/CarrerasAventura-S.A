@@ -120,6 +120,7 @@ const Navbar: React.FC = () => {
 
 function ListaParticipantes(): JSX.Element {
   const [eventoSeleccionado, setEventoSeleccionado] = useState<string>('Todos');
+  const [carreraSeleccionada, setCarreraSeleccionada] = useState<string>('Todos');
   const [participantes, setParticipantes] = useState<Participante[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [carreras, setCarreras] = useState<string[]>([]);
@@ -139,8 +140,8 @@ function ListaParticipantes(): JSX.Element {
   const cargarCarreras = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'listaparticipantes'));
-      const carrerasData = querySnapshot.docs.map(doc => doc.data().nombre);
-      setCarreras(carrerasData);
+      const carrerasData = Array.from(new Set(querySnapshot.docs.map(doc => doc.data().nombreCarrera)));
+      setCarreras(['Todos', ...carrerasData]);
     } catch (error) {
       console.error('Error al cargar las carreras:', error);
     }
@@ -150,39 +151,7 @@ function ListaParticipantes(): JSX.Element {
     cargarCarreras();
   }, []);
 
-  const handleAprobar = async (id: string) => {
-    const updatedParticipantes = participantes.map(participante => {
-      if (participante.id === id) {
-        return { ...participante, estado: 'Aprobado' };
-      }
-      return participante;
-    });
-    setParticipantes(updatedParticipantes);
-
-    try {
-      await addDoc(collection(db, 'listaparticipantes'), participantes.find(p => p.id === id));
-      console.log('Datos actualizados en la colección listaparticpantes.');
-    } catch (error) {
-      console.error('Error al agregar datos a Firebase:', error);
-    }
-  };
-
-  const handleRechazar = async (id: string) => {
-    const updatedParticipantes = participantes.map(participante => {
-      if (participante.id === id) {
-        return { ...participante, estado: 'Rechazado' };
-      }
-      return participante;
-    });
-    setParticipantes(updatedParticipantes);
-
-    try {
-      await addDoc(collection(db, 'listaparticpantes'), participantes.find(p => p.id === id));
-      console.log('Datos actualizados en la colección listaparticpantes.');
-    } catch (error) {
-      console.error('Error al agregar datos a Firebase:', error);
-    }
-  };
+ 
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
@@ -210,6 +179,8 @@ function ListaParticipantes(): JSX.Element {
     ];
 
     worksheet.addRow(headers).font = { bold: true };
+
+    const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
 
     filteredParticipantes.forEach((participante) => { // Cambio aquí
       worksheet.addRow([
@@ -266,6 +237,7 @@ function ListaParticipantes(): JSX.Element {
     link.click();
     document.body.removeChild(link);
   };
+
   const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
   const eventos = Array.from(new Set(participantes.map(participante => participante.evento)) || []);
 
