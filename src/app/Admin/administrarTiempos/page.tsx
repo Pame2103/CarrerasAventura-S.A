@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
@@ -18,6 +18,9 @@ interface AtletaData {
   categoria: string;
   sexo: string;
   carrera: string;
+  posicion: number; 
+  distancia: string;
+  fecha: string;
 }
 
 interface FormData {
@@ -32,9 +35,12 @@ interface FormData {
   categoria: string;
   sexo: string;
   carrera: string;
+  posicion: number; 
+  distancia: string; 
+  fecha: string; 
 }
 
-function Administradortiempos() {
+function AdministradorTiempos() {
   const [data, setData] = useState<AtletaData[]>([]);
   const [formData, setFormData] = useState<FormData>({
     nombreAtleta: '',
@@ -42,7 +48,10 @@ function Administradortiempos() {
     tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
     categoria: '', 
     sexo: '',
-    carrera: ''
+    carrera: '',
+    posicion: 0, 
+    distancia: '', 
+    fecha: '' 
   });
   const [carreras, setCarreras] = useState<CarreraData[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -84,7 +93,7 @@ function Administradortiempos() {
 
   const addAtletaDataToFirebase = async (nuevoAtleta: FormData) => {
     try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera } = nuevoAtleta;
+      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera, posicion, distancia, fecha } = nuevoAtleta;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
       const docRef = await addDoc(collection(db, 'administradortiempos'), {
@@ -93,7 +102,10 @@ function Administradortiempos() {
         tiempo: tiempoString,
         categoria,
         sexo,
-        carrera
+        carrera,
+        posicion,
+        distancia,
+        fecha
       });
 
       console.log('Datos del atleta agregados con ID: ', docRef.id);
@@ -105,10 +117,7 @@ function Administradortiempos() {
 
   const handleEliminarAtleta = async (id: string) => {
     try {
-      // Eliminar el documento de Firestore
       await deleteDoc(doc(db, 'administradortiempos', id));
-
-      // Actualizar el estado local eliminando el elemento correspondiente de la matriz 'data'
       setData(prevData => prevData.filter(atleta => atleta.id !== id));
     } catch (error) {
       console.error('Error al eliminar el atleta:', error);
@@ -117,7 +126,7 @@ function Administradortiempos() {
 
   const handleEditarAtleta = async (id: string, atletaEditado: FormData) => {
     try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera } = atletaEditado;
+      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera, posicion, distancia, fecha } = atletaEditado;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
       await updateDoc(doc(db, 'administradortiempos', id), {
@@ -126,7 +135,10 @@ function Administradortiempos() {
         tiempo: tiempoString,
         categoria,
         sexo,
-        carrera
+        carrera,
+        posicion,
+        distancia,
+        fecha
       });
 
       obtenerAtletasDesdeFirebase();
@@ -172,7 +184,10 @@ function Administradortiempos() {
         tiempo: { hours, minutes, seconds, nanoseconds },
         categoria: elementoAEditar.categoria,
         sexo: elementoAEditar.sexo,
-        carrera: elementoAEditar.carrera
+        carrera: elementoAEditar.carrera,
+        posicion: elementoAEditar.posicion,
+        distancia: elementoAEditar.distancia,
+        fecha: elementoAEditar.fecha
       });
 
       setEditIndex(index);
@@ -189,9 +204,6 @@ function Administradortiempos() {
         tiempo: `${formData.tiempo.hours}:${formData.tiempo.minutes}:${formData.tiempo.seconds}.${formData.tiempo.nanoseconds}`
       };
 
-      // Actualizar el documento en Firestore
-     // await handleEditarAtleta(editedAtleta.id, editedAtleta);
-
       const newData = [...data];
       newData[index] = editedAtleta;
 
@@ -202,7 +214,10 @@ function Administradortiempos() {
         tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
         categoria: '',
         sexo: '',
-        carrera: ''
+        carrera: '',
+        posicion: 0, 
+        distancia: '', 
+        fecha: '' 
       });
       setEditIndex(null);
     } catch (error) {
@@ -256,7 +271,6 @@ function Administradortiempos() {
                       <FaTrophy className="mr-1" />Editar Carreras
                     </span>
                   </Link>
-                 
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" /> Lista de Participantes
@@ -267,7 +281,6 @@ function Administradortiempos() {
                       <FaEnvelope className="mr-1" /> Records
                     </span>
                   </Link>
-                  
                 </div>
               </div>
             </div>
@@ -299,7 +312,7 @@ function Administradortiempos() {
           <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
           <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '250px' }} />
           <form className="mi-formulario" onSubmit={handleSubmit}>
-          <div>
+            <div>
               <label htmlFor="carrera">Carrera:</label>
               <select
                 id="carrera"
@@ -322,6 +335,7 @@ function Administradortiempos() {
                 name="nombreAtleta"
                 value={formData.nombreAtleta}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             <div>
@@ -332,6 +346,7 @@ function Administradortiempos() {
                 name="numeroParticipante"
                 value={formData.numeroParticipante}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             <div>
@@ -342,6 +357,7 @@ function Administradortiempos() {
                   name="hours"
                   value={formData.tiempo.hours}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>H:</span>
                 <input
@@ -349,6 +365,7 @@ function Administradortiempos() {
                   name="minutes"
                   value={formData.tiempo.minutes}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>M:</span>
                 <input
@@ -356,6 +373,7 @@ function Administradortiempos() {
                   name="seconds"
                   value={formData.tiempo.seconds}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>S:</span>
                 <input
@@ -363,6 +381,7 @@ function Administradortiempos() {
                   name="nanoseconds"
                   value={formData.tiempo.nanoseconds}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>NS</span>
               </div>
@@ -404,13 +423,49 @@ function Administradortiempos() {
                 <option value="Masculino">Masculino</option>
               </select>
             </div>
+      
+            <div>
+              <label htmlFor="posicion">Posición:</label>
+              <input
+                type="text"
+                id="posicion"
+                name="posicion"
+                value={formData.posicion}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
+      
+            <div>
+              <label htmlFor="distancia">Distancia:</label>
+              <input
+                type="text"
+                id="distancia"
+                name="distancia"
+                value={formData.distancia}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
+           
+            <div>
+              <label htmlFor="fecha">Fecha:</label>
+              <input
+                type="date"
+                id="fecha"
+                name="fecha"
+                value={formData.fecha}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
             <button className="agregar" type="submit">Agregar</button>
           </form>
         </div>
         <br />
         <br />
         <br />
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>Informe de Tiempos:</h1>
         <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
           <thead style={{ backgroundColor: 'blue--700' }} className="">
             <tr>
@@ -421,6 +476,11 @@ function Administradortiempos() {
               <th className="px-4 py-2">Categoría</th>
               <th className="px-4 py-2">Sexo</th>
               <th className="px-4 py-2">Carrera</th>
+           
+              <th className="px-4 py-2">Posición</th>
+              <th className="px-4 py-2">Distancia</th>
+              <th className="px-4 py-2">Fecha</th>
+            
               <th className="px-4 py-2">Acciones</th>
             </tr>
           </thead>
@@ -438,6 +498,11 @@ function Administradortiempos() {
                 <td>{item.categoria}</td>
                 <td>{item.sexo}</td>
                 <td>{item.carrera}</td>
+              
+                <td>{item.posicion}</td>
+                <td>{item.distancia}</td>
+                <td>{item.fecha}</td>
+              
                 <td>
                   <button className="editar" onClick={() => handleEdit(index)}>
                     Editar
@@ -455,100 +520,83 @@ function Administradortiempos() {
         </table>
       </div>
       <style>
-        {`
-          .mi-formulario {
-            max-width: 500px;
-            margin: 0 auto;
-          }
+  {`
+    .mi-formulario {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .mi-formulario div {
+      margin-bottom: 10px;
+    }
+    
+    .mi-formulario label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .mi-formulario .input-field,
+    .mi-formulario select {
+      width: calc(100% - 16px); /* Cambio para considerar el padding y el borde */
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    
+    .mi-formulario .input-field[type="submit"] {
+      background-color: #4CAF50; /* Verde */
+      color: white;
+      cursor: pointer;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    
+    .mi-formulario .input-field[type="submit"]:hover {
+      background-color: #45a049; /* Verde más oscuro al hacer hover */
+    }
+    
+    .tiempo-inputs {
+      display: flex;
+      align-items: center;
+    }
+    
+    .tiempo-inputs input {
+      width: 60px;
+      margin-right: 10px;
+    }
+    
+    /* Estilos de la tabla */
+    .table-center {
+      margin: auto;
+      text-align: center;
+    }
+    
+    .table-center th,
+    .table-center td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    
+    .table-center th {
+      background-color: #007bff;
+      color: #fff;
+    }
+    
+    .table-center tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  `}
+</style>
 
-          .mi-formulario div {
-            margin-bottom: 10px;
-          }
 
-          .mi-formulario label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-
-          .mi-formulario input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-top: 3px;
-          }
-
-          .mi-formulario {
-            text-align: center;
-          }
-
-          .mi-formulario button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-          }
-
-          .mi-formulario button.agregar {
-            background-color: #0D47A1;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-          }
-
-          .mi-formulario button.agregar:hover {
-            background-color: #0056b3;
-          }
-
-          .tiempo-inputs {
-            display: flex;
-            align-items: center;
-          }
-
-          .tiempo-inputs label {
-            margin-right: 5px;
-          }
-
-          table {
-            border-collapse: collapse;
-            width: 100%;
-          }
-
-          th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-            overflow: hidden;
-            white-space: nowrap;
-          }
-
-          .editar,
-          .eliminar {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-right: 30px;
-          }
-
-          .editar {
-            background-color: #0D47A1;
-            color: #fff;
-          }
-
-          .eliminar {
-            background-color: red;
-            color: #fff;
-            margin-left: 5px;
-          }
-        `}
-      </style>
     </div>
   );
-};
+}
 
-export default Administradortiempos;
+export default AdministradorTiempos;
