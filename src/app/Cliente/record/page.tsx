@@ -12,7 +12,7 @@ interface Record {
     tiempo: string;
     posicion: string;
     sexo: string;
-    nombreCarrera: string;
+    carrera: string;
 }
 
 function Records() {
@@ -20,6 +20,7 @@ function Records() {
     const [carreraSeleccionada, setCarreraSeleccionada] = useState<string>('');
     const [carreras, setCarreras] = useState<string[]>([]);
 
+    // Función para obtener los registros desde Firebase
     useEffect(() => {
         const obtenerRecordsDesdeFirebase = async () => {
             try {
@@ -39,6 +40,7 @@ function Records() {
         obtenerRecordsDesdeFirebase();
     }, []);
 
+    // Función para obtener las carreras desde Firebase
     useEffect(() => {
         const obtenerCarrerasDesdeFirebase = async () => {
             try {
@@ -59,12 +61,14 @@ function Records() {
         obtenerCarrerasDesdeFirebase();
     }, []);
 
+    // Función para filtrar los registros según la carrera seleccionada
     const filtrarRecords = () => {
         return records.filter(record =>
-            (carreraSeleccionada === '' || record.nombreCarrera === carreraSeleccionada)
+            (carreraSeleccionada === '' || record.carrera === carreraSeleccionada)
         );
     };
 
+    // Manejar el cambio de carrera seleccionada
     const handleCarreraSeleccionada = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCarreraSeleccionada(e.target.value);
     };
@@ -100,7 +104,7 @@ function Records() {
                     <tbody>
                         {filtrarRecords().map((record, index) => (
                             <tr key={index}>
-                                <td className="border border-gray-500 p-2">{record.nombreCarrera}</td>
+                                <td className="border border-gray-500 p-2">{record.carrera}</td>
                                 <td className="border border-gray-500 p-2">{record.nombreAtleta}</td>
                                 <td className="border border-gray-500 p-2">{record.fecha}</td>
                                 <td className="border border-gray-500 p-2">{record.distancia}</td>

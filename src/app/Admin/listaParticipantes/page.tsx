@@ -177,7 +177,7 @@ function ListaParticipantes(): JSX.Element {
 
     const filteredParticipantes = eventoSeleccionado === 'Todos' ? participantes : participantes.filter(participante => participante.evento === eventoSeleccionado);
 
-    filteredParticipantes.forEach((participante) => { // Cambio aquí
+    filteredParticipantes.forEach((participante) => { 
       worksheet.addRow([
         participante.evento || '-',
         participante.nombre || '-',
