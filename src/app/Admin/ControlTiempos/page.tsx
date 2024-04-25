@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import Navbar from '@/app/componentes/navbar';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -20,7 +20,8 @@ interface Resultado {
 
 function Resultados() {
     const [resultados, setResultados] = useState<Resultado[]>([]);
-    const [filtro, setFiltro] = useState<string>('');
+    const [carreras, setCarreras] = useState<string[]>([]);
+    const [carreraSeleccionada, setCarreraSeleccionada] = useState<string>('');
 
     useEffect(() => {
         const obtenerResultadosDesdeFirebase = async () => {
@@ -41,40 +42,24 @@ function Resultados() {
         obtenerResultadosDesdeFirebase();
     }, []);
 
-    const filtrarResultados = () => {
-        const resultadosOrdenados = resultados.sort((a, b) => {
-            // Ordenar por tiempo ascendente
-            return parseInt(a.tiempo) - parseInt(b.tiempo);
-        });
+    useEffect(() => {
+        const obtenerCarrerasDesdeFirebase = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'Configuracion Carreeras'));
+                const carrerasData: string[] = [];
 
-        const mejoresTiemposPorCarrera: { [carrera: string]: Resultado[] } = {};
+                querySnapshot.forEach((doc) => {
+                    carrerasData.push(doc.data().nombreCarrera);
+                });
 
-        resultadosOrdenados.forEach(resultado => {
-            if (!mejoresTiemposPorCarrera[resultado.carrera]) {
-                mejoresTiemposPorCarrera[resultado.carrera] = [];
+                setCarreras(carrerasData);
+            } catch (error) {
+                console.error('Error al obtener carreras desde Firebase:', error);
             }
+        };
 
-            if (mejoresTiemposPorCarrera[resultado.carrera].length < 10) {
-                mejoresTiemposPorCarrera[resultado.carrera].push(resultado);
-            }
-        });
-
-        // Convertir el objeto a un array de resultados
-        const resultadosFiltrados: Resultado[] = [];
-        Object.values(mejoresTiemposPorCarrera).forEach(resultadosCarrera => {
-            resultadosCarrera.forEach(resultado => {
-                resultadosFiltrados.push(resultado);
-            });
-        });
-
-        return resultadosFiltrados;
-    };
-
-    const handleBuscar = () => {
-        // Filtrar los resultados y actualizar el estado
-        const resultadosFiltrados = filtrarResultados();
-        setResultados(resultadosFiltrados);
-    };
+        obtenerCarrerasDesdeFirebase();
+    }, []);
 
     const exportToPdf = () => {
         const input = document.getElementById('tabla-resultados');
@@ -99,14 +84,16 @@ function Resultados() {
             <div className="container mx-auto p-4">
                 <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Control Tiempos</h2>
                 <div className="flex items-center justify-center mb-4">
-                    <input
-                        type="text"
-                        placeholder="Buscar por nombre de atleta o nombre de carrera"
-                        value={filtro}
-                        onChange={(e) => setFiltro(e.target.value)}
-                        className="px-2 py-1 border border-gray-300 rounded-md mr-2"
-                    />
-                    <button onClick={handleBuscar} className="px-3 py-1 bg-blue-500 text-white rounded-md">Buscar</button>
+                    <select
+                        value={carreraSeleccionada}
+                        onChange={(e) => setCarreraSeleccionada(e.target.value)}
+                        className="px-2 py-1 border border-gray-300 rounded-md mr-2 text-black" // Añade "text-black" para asegurar que el texto sea visible
+                    >
+                        <option value="">Seleccionar carrera</option>
+                        {carreras.map((carrera, index) => (
+                            <option key={index} value={carrera}>{carrera}</option>
+                        ))}
+                    </select>
                     <button onClick={exportToPdf} className="px-3 py-1 bg-green-500 text-white rounded-md ml-2">Exportar a PDF</button>
                 </div>
                 <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
