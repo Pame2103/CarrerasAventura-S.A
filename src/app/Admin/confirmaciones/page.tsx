@@ -185,7 +185,11 @@ function Confirmacionespago(): JSX.Element {
                       <FaTrophy className="mr-1" /> Confirmación de Pagos
                     </span>
                   </Link>
-                 
+                  <Link href="/Admin/ControlTiempos">
+                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                                            <FaTrophy className="mr-1" />Control Tiempos
+                                        </span>
+                                    </Link>
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" /> Lista de Participantes

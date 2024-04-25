@@ -78,6 +78,11 @@ const Navbar: React.FC = () => {
                     <FaTrophy className="mr-1" />Confirmación de Pagos
                   </span>
                 </Link>
+                <Link href="/Admin/ControlTiempos">
+                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                                            <FaTrophy className="mr-1" />Control Tiempos
+                                        </span>
+                                    </Link>
                 <Link href="/Admin/editarcarreras">
                   <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
                     <FaTrophy className="mr-1" />Editar Carreras

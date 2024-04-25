@@ -266,6 +266,11 @@ function AdministradorTiempos() {
                       <FaTrophy className="mr-1" />Confirmación de Pagos
                     </span>
                   </Link>
+                  <Link href="/Admin/ControlTiempos">
+                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                                            <FaTrophy className="mr-1" />Control Tiempos
+                                        </span>
+                                    </Link>
                   <Link href="/Admin/editarcarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" />Editar Carreras
@@ -285,7 +290,7 @@ function AdministradorTiempos() {
               </div>
             </div>
             <div className="flex">
-              <Link href="/Login"className="bg-blue-700 hover:bg-blue-700 text-white px-2 py-0 rounded-md font-medium flex items-center">
+              <Link href="/Login"className="bg-blue-700 hover:bg-blue-700 text-white px-2  py-0 rounded-md font-medium flex items-center">
                 <FaSignInAlt className="mr-1" /> Cerrar sesión
               </Link>
             </div>

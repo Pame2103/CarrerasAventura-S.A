@@ -157,6 +157,7 @@ function Administradorcarreras() {
                       Confirmación de Pagos
                     </span>
                   </Link>
+                  
                   <Link href="/Admin/editarcarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
                       Editar Carreras

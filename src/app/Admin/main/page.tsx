@@ -117,6 +117,8 @@ const MainMenu = () => {
            <br />
            <Sidebar link="/Admin/confirmaciones" text="Confirmación de Pagos" description="" />
            <br />
+           <Sidebar link="/Admin/ControlTiempos" text="Control de Tiempos" description="" />
+           <br />
            <Sidebar link="/Admin/editarcarreras" text="Editar Carreras" description="" />
            <br />
            <Sidebar link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
