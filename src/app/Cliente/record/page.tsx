@@ -23,7 +23,7 @@ function Records() {
     useEffect(() => {
         const obtenerRecordsDesdeFirebase = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'records'));
+                const querySnapshot = await getDocs(collection(db, 'administradortiempos'));
                 const recordsData: Record[] = [];
 
                 querySnapshot.forEach((doc) => {
