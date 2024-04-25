@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import Navbar from '@/app/componentes/navbar';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import Link from 'next/link'; // Importar el componente Link de Next.js
 
 interface Resultado {
     id: string;
@@ -78,7 +78,66 @@ function Resultados() {
 
     return (
         <div>
-            <Navbar />
+            {/* Navbar */}
+            <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
+                <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
+                    <div className="flex items-center justify-between h-full">
+                        <div className="flex items-center">
+                            <Link href="/">
+                                <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" />
+                            </Link>
+                            <div className="hidden md:block">
+                                <div className="ml-10 flex items-baseline space-x-4">
+                                    <Link href="/Admin/administradorCarreras">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Administrar Carreras
+                                        </span>
+                                    </Link>
+                                    <Link href="/Admin/administrarTiempos">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Administrar Tiempos
+                                        </span>
+                                    </Link>
+                                    <Link href="/Admin/carreras">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Carreras
+                                        </span>
+                                    </Link>
+                                    <Link href="/Admin/confirmaciones">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Confirmación de Pagos
+                                        </span>
+                                    </Link>
+                                    <Link href="/Admin/ControlTiempos">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Control Tiempos
+                                        </span>
+                                    </Link>
+                                    <Link href="/Admin/listaParticipantes">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Lista de Participantes
+                                        </span>
+                                    </Link>
+                                    <Link href="/Admin/record">
+                                        <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                            Records
+                                        </span>
+                                    </Link>
+                                    {/* Agrega aquí los enlaces adicionales según necesites */}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex">
+                            <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
+                                Cerrar sesión
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
+                </div>
+            </nav>
+
+            {/* Contenido principal */}
             <br />
             <br />
             <div className="container mx-auto p-4">
@@ -96,6 +155,7 @@ function Resultados() {
                     </select>
                     <button onClick={exportToPdf} className="px-3 py-1 bg-green-500 text-white rounded-md ml-2">Exportar a PDF</button>
                 </div>
+                {/* Tabla de resultados */}
                 <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
                     <thead style={{ backgroundColor: '#B1CEE3' }} className="">
                         <tr>
