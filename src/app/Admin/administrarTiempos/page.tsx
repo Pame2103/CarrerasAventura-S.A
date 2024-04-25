@@ -5,6 +5,11 @@ import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt 
 import { db } from '../../../../firebase/firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firestore';
 
+interface CarreraData {
+  id: string;
+  nombre: string;
+}
+
 interface AtletaData {
   id: string;
   tiempo: string;
@@ -39,10 +44,12 @@ function Administradortiempos() {
     sexo: '',
     carrera: ''
   });
+  const [carreras, setCarreras] = useState<CarreraData[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   useEffect(() => {
     obtenerAtletasDesdeFirebase();
+    obtenerCarrerasDesdeFirebase();
   }, []);
 
   const obtenerAtletasDesdeFirebase = async () => {
@@ -57,6 +64,21 @@ function Administradortiempos() {
       setData(atletasData);
     } catch (error) {
       console.error('Error al obtener atletas desde Firebase:', error);
+    }
+  };
+
+  const obtenerCarrerasDesdeFirebase = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'Configuracion Carreeras'));
+      const carrerasData: CarreraData[] = [];
+
+      querySnapshot.forEach((doc) => {
+        carrerasData.push({ id: doc.id, nombre: doc.data().nombre } as CarreraData);
+      });
+
+      setCarreras(carrerasData);
+    } catch (error) {
+      console.error('Error al obtener carreras desde Firebase:', error);
     }
   };
 
@@ -131,6 +153,14 @@ function Administradortiempos() {
     }));
   };
 
+  const handleCarreraChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      carrera: value
+    }));
+  };
+
   const handleEdit = (index: number) => {
     const elementoAEditar = data[index];
     if (elementoAEditar && elementoAEditar.tiempo) {
@@ -151,26 +181,33 @@ function Administradortiempos() {
     }
   };
 
-  const handleSave = (index: number) => {
-    const editedAtleta: AtletaData = {
-      id: data[index].id,
-      ...formData,
-      tiempo: `${formData.tiempo.hours}:${formData.tiempo.minutes}:${formData.tiempo.seconds}.${formData.tiempo.nanoseconds}`
-    };
+  const handleSave = async (index: number) => {
+    try {
+      const editedAtleta: AtletaData = {
+        id: data[index].id,
+        ...formData,
+        tiempo: `${formData.tiempo.hours}:${formData.tiempo.minutes}:${formData.tiempo.seconds}.${formData.tiempo.nanoseconds}`
+      };
 
-    const newData = [...data];
-    newData[index] = editedAtleta;
+      // Actualizar el documento en Firestore
+     // await handleEditarAtleta(editedAtleta.id, editedAtleta);
 
-    setData(newData);
-    setFormData({
-      nombreAtleta: '',
-      numeroParticipante: '',
-      tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
-      categoria: '',
-      sexo: '',
-      carrera: ''
-    });
-    setEditIndex(null);
+      const newData = [...data];
+      newData[index] = editedAtleta;
+
+      setData(newData);
+      setFormData({
+        nombreAtleta: '',
+        numeroParticipante: '',
+        tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
+        categoria: '',
+        sexo: '',
+        carrera: ''
+      });
+      setEditIndex(null);
+    } catch (error) {
+      console.error('Error al guardar los cambios del atleta:', error);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -260,19 +297,30 @@ function Administradortiempos() {
       <div className="form-container">
         <br />
         <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
           <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
           <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
           <form className="mi-formulario" onSubmit={handleSubmit}>
-            <div>
+          <div>
               <label htmlFor="carrera">Carrera:</label>
-              <input
-                type="text"
+              <select
                 id="carrera"
                 name="carrera"
                 value={formData.carrera}
-                onChange={handleChange}
-              />
+                onChange={handleCarreraChange}
+                className="border p-2 w-full"
+              >
+                <option value="">Seleccione una carrera</option>
+                {carreras.map(carrera => (
+                  <option key={carrera.id} value={carrera.nombre}>{carrera.nombre}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label htmlFor="nombreAtleta">Nombre Atleta:</label>
