@@ -40,7 +40,6 @@ function Confirmacionespago(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participante | null>(null);
-  const [rejectionReason, setRejectionReason] = useState<string>("");
 
   const handleAprobar = async (id: string): Promise<void> => {
     console.log('Botón Aprobar clickeado. ID:', id);
@@ -61,6 +60,9 @@ function Confirmacionespago(): JSX.Element {
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
         setParticipantes(updatedParticipantes);
 
+        // Eliminar también de la base de datos al rechazar al participante
+        await handleRechazar(id);
+
         // Abrir el modal
         setModalIsOpen(true);
       } catch (error) {
@@ -77,9 +79,9 @@ function Confirmacionespago(): JSX.Element {
       await deleteDoc(doc(db, 'inscripciones', id));
       console.log('Participante eliminado de Inscripciones.');
 
-      // Abrir el modal para ingresar el motivo de rechazo
-      setModalIsOpen(true);
-      setSelectedParticipant(participantes.find((participante) => participante.id === id) || null);
+      // Actualizar la lista de participantes eliminando al participante rechazado
+      const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
+      setParticipantes(updatedParticipantes);
     } catch (error) {
       console.error('Error al rechazar el participante:', error);
     }
@@ -87,22 +89,12 @@ function Confirmacionespago(): JSX.Element {
 
   const enviarCorreoElectronico = async (participante: Participante): Promise<void> => {
     try {
-      // Código para enviar correo electrónico de aceptación
+      // Código para enviar correo electrónico omitido por brevedad
     } catch (error) {
       console.error('Error sending email:', error);
       throw error;
     }
   };
-
-  const enviarCorreoRechazo = async (participante: Participante, motivo: string): Promise<void> => {
-    try {
-      // Código para enviar correo electrónico de rechazo
-    } catch (error) {
-      console.error('Error sending rejection email:', error);
-      throw error;
-    }
-  };
-
   const modalStyles = {
     content: {
       top: '50%',
@@ -162,41 +154,74 @@ function Confirmacionespago(): JSX.Element {
     return () => unsubscribe();
   }, []);
 
-  const handleSendRejectionEmail = async (): Promise<void> => {
-    if (selectedParticipant) {
-      await enviarCorreoRechazo(selectedParticipant, rejectionReason);
-      setRejectionReason("");
-      setModalIsOpen(false);
-    }
-  };
-
   return (
     <div>
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
-        {/* Contenido de la barra de navegación */}
+        <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
+          <div className="flex items-center justify-between h-full">
+            <div className="flex items-center">
+              <Link href="/">
+                <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" />
+              </Link>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <Link href="/Admin/administradorCarreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaRunning className="mr-1" /> Administrar Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/administrarTiempos">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaInfoCircle className="mr-1" /> Administrar Tiempos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/carreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaDumbbell className="mr-1" /> Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/confirmaciones">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Confirmación de Pagos
+                    </span>
+                  </Link>
+                 
+                  <Link href="/Admin/listaParticipantes">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Lista de Participantes
+                    </span>
+                  </Link>
+                  <Link href="/Admin/record">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaEnvelope className="mr-1" /> Records
+                    </span>
+                  </Link>
+                
+                </div>
+              </div>
+            </div>
+            <div className="flex">
+              <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
+                <FaSignInAlt className="mr-2" /> Cerrar sesión
+              </Link>
+            </div>
+          </div>
+          <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
+        </div>
       </nav>
 
       <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} style={modalStyles}>
         <div style={{ textAlign: 'center' }}>
-          <h2>{selectedParticipant ? "Enviar correo electrónico" : "Motivo de rechazo"}</h2>
-          {selectedParticipant ? (
-            <>
-              <p>¿Quieres enviar un correo electrónico al participante?</p>
-              <button
-                onClick={() => {
-                  window.open(`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`);
-                }}
-                className="modal-button modal-button-primary"
-              >
-                Abrir correo electrónico
-              </button>
-            </>
-          ) : (
-            <>
-              <textarea value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} placeholder="Motivo de rechazo" className="w-full p-2" />
-              <button onClick={handleSendRejectionEmail} className="modal-button modal-button-primary">Enviar correo de rechazo</button>
-            </>
-          )}
+          <h2>Enviar correo electrónico</h2>
+          <p>¿Quieres enviar un correo electrónico al participante?</p>
+          <button
+            onClick={() => {
+              window.open(`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`);
+            }}
+            className="modal-button modal-button-primary"
+          >
+            Abrir correo electrónico
+          </button>
           <button onClick={() => setModalIsOpen(false)} className="modal-button modal-button-cancel">Cancelar</button>
         </div>
       </Modal>

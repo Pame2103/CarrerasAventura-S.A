@@ -83,11 +83,7 @@ const Navbar: React.FC = () => {
                     <FaTrophy className="mr-1" />Editar Carreras
                   </span>
                 </Link>
-                <Link href="/Admin/historicosadmin">
-                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
-                    <FaInfoCircle className="mr-1" /> Históricos
-                  </span>
-                </Link>
+                
                 <Link href="/Admin/listaParticipantes">
                   <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
                     <FaTrophy className="mr-1" /> Lista de Participantes
@@ -98,11 +94,7 @@ const Navbar: React.FC = () => {
                     <FaEnvelope className="mr-1" /> Records
                   </span>
                 </Link>
-                <Link href="/Admin/resultados">
-                  <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
-                    <FaEnvelope className="mr-1" /> Resultados
-                  </span>
-                </Link>
+                
               </div>
             </div>
           </div>

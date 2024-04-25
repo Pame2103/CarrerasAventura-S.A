@@ -162,11 +162,7 @@ function Administradorcarreras() {
                       Editar Carreras
                     </span>
                   </Link>
-                  <Link href="/Admin/historicosadmin">
-                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      Históricos
-                    </span>
-                  </Link>
+              
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
                       Lista de Participantes
@@ -177,11 +173,7 @@ function Administradorcarreras() {
                       Records
                     </span>
                   </Link>
-                  <Link href="/Admin/resultados">
-                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      Resultados
-                    </span>
-                  </Link>
+                 
                 </div>
               </div>
             </div>

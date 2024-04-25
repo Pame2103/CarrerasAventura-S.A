@@ -119,13 +119,11 @@ const MainMenu = () => {
            <br />
            <Sidebar link="/Admin/editarcarreras" text="Editar Carreras" description="" />
            <br />
-           <Sidebar link="/Admin/historicosadmin" text="Históricos" description="" />
-           <br />
            <Sidebar link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
            <br />
            <Sidebar link="/Admin/record" text="Records" description="" />
            <br />
-           <Sidebar link="/Admin/resultados" text="Resultados" description="" />
+          
          </div>
          
        </nav>
