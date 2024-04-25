@@ -8,7 +8,7 @@ function Resultados() {
     const [resultados, setResultados] = useState<Resultado[]>([]);
     const [nuevoResultado, setNuevoResultado] = useState({
         nombreAtleta: '', 
-        nombreCarrera: '',
+        carrera: '',
         fecha: '',
         distancia: '',
         categoria: '',
@@ -32,7 +32,7 @@ function Resultados() {
         nanosegundos: string;
         posicion: string;
         sexo: string;
-        nombreCarrera: string;
+        carrera: string;
     }
 
     useEffect(() => {
@@ -57,7 +57,7 @@ function Resultados() {
     const filtrarResultados = () => {
         return resultados.filter(resultado =>
             resultado.nombreAtleta.toLowerCase().includes(filtro.toLowerCase()) ||
-            resultado.nombreCarrera.toLowerCase().includes(filtro.toLowerCase())
+            resultado.carrera.toLowerCase().includes(filtro.toLowerCase())
         );
     };
 
@@ -101,7 +101,7 @@ function Resultados() {
                     <tbody>
                         {resultados.map((resultado, index) => (
                             <tr key={index}>
-                                <td className="border border-gray-500 p-2">{resultado.nombreCarrera}</td>
+                                <td className="border border-gray-500 p-2">{resultado.carrera}</td>
                                 <td className="border border-gray-500 p-2">{resultado.nombreAtleta}</td>
                                 <td className="border border-gray-500 p-2">{resultado.fecha}</td>
                                 <td className="border border-gray-500 p-2">{resultado.distancia}</td>

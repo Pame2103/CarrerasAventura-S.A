@@ -49,8 +49,7 @@ export default function Historico() {
                 const busquedaLowerCase = busqueda.toLowerCase();
                 return (
                     nombreAtleta.toLowerCase().includes(busquedaLowerCase) ||
-                    categoria.toLowerCase().includes(busquedaLowerCase) ||
-                    carrera.toLowerCase().includes(busquedaLowerCase) ||
+                    carrera.toLowerCase().includes(busquedaLowerCase) || // Modificado para buscar solo por nombre y carrera
                     fecha.includes(busquedaLowerCase) 
                 );
             });
@@ -98,7 +97,7 @@ export default function Historico() {
                 <div className="mb-4 flex justify-center items-center">
                     <input 
                         type="text" 
-                        placeholder="Buscar por nombre,carrera " 
+                        placeholder="Buscar por nombre, carrera" 
                         value={busqueda} 
                         onChange={handleBusquedaChange} 
                         className="p-2 border rounded mr-2"
@@ -134,82 +133,3 @@ export default function Historico() {
         </div>
     );
 }
-
-// Estilos CSS
-const styles = `
-    .p-2 {
-        padding: 0.6rem;
-    }
-
-    .border {
-        border: 2px  blue;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .bg-blue-700 {
-        background-color: #3b82f6;
-    }
-
-    .hover\:bg-blue-700:hover {
-        background-color: blue;
-    }
-
-    .text-white {
-        color: #fff;
-    }
-
-    .font-bold {
-        font-weight: bold;
-    }
-
-    .py-2 {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-    }
-
-    .px-4 {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-
-    .rounded {
-        border-radius: 0.25rem;
-    }
-
-    .mb-4 {
-        margin-bottom: 1rem;
-    }
-
-    .flex {
-        display: flex;
-    }
-
-    .justify-center {
-        justify-content: center;
-    }
-
-    .items-center {
-        align-items: center;
-    }
-
-    .text-red-500 {
-        color: #dc2626;
-    }
-
-    .titulo {
-        font-size: 3rem;
-        font-weight: bold;
-        margin-bottom: 2rem;
-        color: #333;
-        text-align: center;
-    }
-    
-`;
-
-
-const styleElement = document.createElement('style');
-styleElement.textContent = styles;
-document.body.appendChild(styleElement);
