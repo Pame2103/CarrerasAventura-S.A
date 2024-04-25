@@ -423,7 +423,7 @@ function AdministradorTiempos() {
                 <option value="Masculino">Masculino</option>
               </select>
             </div>
-          
+            {/* Nuevo campo: posición */}
             <div>
               <label htmlFor="posicion">Posición:</label>
               <input
@@ -435,7 +435,7 @@ function AdministradorTiempos() {
                 className="border p-2 w-full"
               />
             </div>
-           
+            {/* Nuevo campo: distancia */}
             <div>
               <label htmlFor="distancia">Distancia:</label>
               <input
@@ -447,7 +447,7 @@ function AdministradorTiempos() {
                 className="border p-2 w-full"
               />
             </div>
-           
+            {/* Nuevo campo: fecha */}
             <div>
               <label htmlFor="fecha">Fecha:</label>
               <input
@@ -476,9 +476,11 @@ function AdministradorTiempos() {
               <th className="px-4 py-2">Categoría</th>
               <th className="px-4 py-2">Sexo</th>
               <th className="px-4 py-2">Carrera</th>
+              {/* Nuevas columnas: posición, distancia, fecha */}
               <th className="px-4 py-2">Posición</th>
               <th className="px-4 py-2">Distancia</th>
               <th className="px-4 py-2">Fecha</th>
+              {/* Fin de las nuevas columnas */}
               <th className="px-4 py-2">Acciones</th>
             </tr>
           </thead>
@@ -496,10 +498,11 @@ function AdministradorTiempos() {
                 <td>{item.categoria}</td>
                 <td>{item.sexo}</td>
                 <td>{item.carrera}</td>
+                {/* Nuevas celdas: posición, distancia, fecha */}
                 <td>{item.posicion}</td>
                 <td>{item.distancia}</td>
                 <td>{item.fecha}</td>
-          
+                {/* Fin de las nuevas celdas */}
                 <td>
                   <button className="editar" onClick={() => handleEdit(index)}>
                     Editar
@@ -525,15 +528,14 @@ function AdministradorTiempos() {
             margin-bottom: 20px;
           }
           .agregar {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 3px 8px; /* Reducir el padding para hacer el botón más pequeño */
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 20px; /* Reducir el tamaño de la fuente para hacer el texto más pequeño */
-}
-
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+          }
           
           .editar {
             background-color: #007bff;
@@ -542,7 +544,7 @@ function AdministradorTiempos() {
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 8px;
+            font-size: 14px;
             margin-right: 5px;
           }
           .eliminar {

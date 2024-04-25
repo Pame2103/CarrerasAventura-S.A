@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
@@ -6,17 +6,13 @@ import Navbar from '@/app/componentes/navbar';
 
 export default function Historico() {
     interface Carrera {
-        id: string; // Cambiado a string para un identificador único
-        nombre: string;
-        cedula: string;
+        id: string;
+        nombreAtleta: string;
         posicion: number;
         tiempo: string;
         categoria: string;
-        distancia: string;
-        costo: string;
-        responsable: string;
-        contacto: string;
-        nombrecarrera: string;
+        carrera: string;
+        fecha: string; // Ajusta el tipo según el formato de fecha
     }
 
     const [busqueda, setBusqueda] = useState('');
@@ -37,7 +33,7 @@ export default function Historico() {
       
         const unsubscribe = onSnapshot(historicosCollection, (snapshot) => {
             const historicosData: Carrera[] = snapshot.docs.map((doc) => {
-                return { id: doc.id, ...doc.data() } as Carrera; // Agregar id único
+                return { id: doc.id, ...doc.data() } as Carrera;
             });
             setCarreras(historicosData);
         });
@@ -48,16 +44,17 @@ export default function Historico() {
       
     const handleSearch = () => {
         if (busqueda.trim() !== '') {
-            const resultados = carreras.filter((carrera: Carrera) => {
-                const { nombre, cedula, categoria, nombrecarrera } = carrera;
+            const resultados = carreras.filter((carreraItem: Carrera) => {
+                const { nombreAtleta, categoria, carrera, fecha } = carreraItem;
+                const busquedaLowerCase = busqueda.toLowerCase();
                 return (
-                    nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-                    cedula.includes(busqueda) ||
-                    categoria.toLowerCase().includes(busqueda.toLowerCase()) ||
-                    nombrecarrera.toLowerCase().includes(busqueda.toLowerCase()) // Incluir búsqueda por nombre de carrera
+                    nombreAtleta.toLowerCase().includes(busquedaLowerCase) ||
+                    categoria.toLowerCase().includes(busquedaLowerCase) ||
+                    carrera.toLowerCase().includes(busquedaLowerCase) ||
+                    fecha.includes(busquedaLowerCase) 
                 );
             });
-
+    
             setResultados(resultados);
             setHayResultados(resultados.length > 0);
         } else {
@@ -65,29 +62,26 @@ export default function Historico() {
             setHayResultados(true);
         }
     };
-
+    
     const renderFilas = () => {
         let filas;
         if (resultados.length > 0) {
-            // Ordenar los resultados por posición antes de renderizar
             filas = [...resultados].sort((a, b) => a.posicion - b.posicion);
         } else {
-            // Si no hay resultados, renderizar todas las carreras
             filas = [...carreras];
         }
 
         return filas.map(carrera => (
             <tr key={carrera.id}>
-                <td className="p-2 border text-center">{carrera.nombre}</td>
-                <td className="p-2 border text-center">{carrera.cedula}</td>
+                <td className="p-2 border text-center">{carrera.nombreAtleta}</td>
                 <td className="p-2 border text-center">{carrera.posicion}</td>
                 <td className="p-2 border text-center">{carrera.tiempo}</td>
                 <td className="p-2 border text-center">{carrera.categoria}</td>
-                <td className="p-2 border text-center">{carrera.nombrecarrera}</td>
+                <td className="p-2 border text-center">{carrera.fecha}</td>
+                <td className="p-2 border text-center">{carrera.carrera}</td>
             </tr>
         ));
     };
-
 
     return (
         <div>
@@ -99,12 +93,12 @@ export default function Historico() {
             <br />
             <br />
             <div className="p-4">
-                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>Histórico de Corredores</h1> {/* Ajuste de la tilde */}
+                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>Histórico de Corredores</h1>
                
-                <div className="mb-4 flex justify-center items-center"> {/* Flex y centrado horizontal */}
+                <div className="mb-4 flex justify-center items-center">
                     <input 
                         type="text" 
-                        placeholder="Buscar por nombre, cédula o carrera" 
+                        placeholder="Buscar por nombre, cédula, carrera o fecha" 
                         value={busqueda} 
                         onChange={handleBusquedaChange} 
                         className="p-2 border rounded mr-2"
@@ -125,11 +119,11 @@ export default function Historico() {
                     <thead style={{ backgroundColor: '#eee' }}>
                         <tr>
                             <th >Nombre</th>
-                            <th >Cédula</th>
                             <th >Posición</th>
                             <th >Tiempo</th>
                             <th >Categoría</th>
-                            <th >Nombre Carrera</th>
+                            <th >Fecha</th>
+                            <th >Carrera</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -140,3 +134,82 @@ export default function Historico() {
         </div>
     );
 }
+
+// Estilos CSS
+const styles = `
+    .p-2 {
+        padding: 0.6rem;
+    }
+
+    .border {
+        border: 2px  blue;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .bg-blue-700 {
+        background-color: #3b82f6;
+    }
+
+    .hover\:bg-blue-700:hover {
+        background-color: blue;
+    }
+
+    .text-white {
+        color: #fff;
+    }
+
+    .font-bold {
+        font-weight: bold;
+    }
+
+    .py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .rounded {
+        border-radius: 0.25rem;
+    }
+
+    .mb-4 {
+        margin-bottom: 1rem;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .justify-center {
+        justify-content: center;
+    }
+
+    .items-center {
+        align-items: center;
+    }
+
+    .text-red-500 {
+        color: #dc2626;
+    }
+
+    .titulo {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+        color: #333;
+        text-align: center;
+    }
+    
+`;
+
+
+const styleElement = document.createElement('style');
+styleElement.textContent = styles;
+document.body.appendChild(styleElement);
