@@ -561,7 +561,7 @@ function AdministradorTiempos() {
           }
           
           .editar {
-            background-color: #28a745;
+            background-color: #007bff;
             padding: 5px 10px;
             margin-right: 5px;
           }
@@ -571,9 +571,13 @@ function AdministradorTiempos() {
             padding: 5px 10px;
           }
           
-          .table-center {
-            margin: auto;
-            text-align: center;
+          .table-center th {
+            background-color: #007bff;
+            color: #fff;
+          }
+          
+          .table-center tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
           }
           
         `}
