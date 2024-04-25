@@ -335,7 +335,6 @@ function AdministradorTiempos() {
                 name="nombreAtleta"
                 value={formData.nombreAtleta}
                 onChange={handleChange}
-                className="border p-2 w-full"
               />
             </div>
             <div>
@@ -346,7 +345,6 @@ function AdministradorTiempos() {
                 name="numeroParticipante"
                 value={formData.numeroParticipante}
                 onChange={handleChange}
-                className="border p-2 w-full"
               />
             </div>
             <div>
@@ -357,7 +355,6 @@ function AdministradorTiempos() {
                   name="hours"
                   value={formData.tiempo.hours}
                   onChange={handleTimeChange}
-                  className="border p-2"
                 />
                 <span>H:</span>
                 <input
@@ -365,7 +362,6 @@ function AdministradorTiempos() {
                   name="minutes"
                   value={formData.tiempo.minutes}
                   onChange={handleTimeChange}
-                  className="border p-2"
                 />
                 <span>M:</span>
                 <input
@@ -373,7 +369,6 @@ function AdministradorTiempos() {
                   name="seconds"
                   value={formData.tiempo.seconds}
                   onChange={handleTimeChange}
-                  className="border p-2"
                 />
                 <span>S:</span>
                 <input
@@ -381,7 +376,6 @@ function AdministradorTiempos() {
                   name="nanoseconds"
                   value={formData.tiempo.nanoseconds}
                   onChange={handleTimeChange}
-                  className="border p-2"
                 />
                 <span>NS</span>
               </div>
@@ -423,7 +417,7 @@ function AdministradorTiempos() {
                 <option value="Masculino">Masculino</option>
               </select>
             </div>
-      
+            {/* Nuevo campo: posición */}
             <div>
               <label htmlFor="posicion">Posición:</label>
               <input
@@ -432,10 +426,9 @@ function AdministradorTiempos() {
                 name="posicion"
                 value={formData.posicion}
                 onChange={handleChange}
-                className="border p-2 w-full"
               />
             </div>
-      
+            {/* Nuevo campo: distancia */}
             <div>
               <label htmlFor="distancia">Distancia:</label>
               <input
@@ -444,10 +437,9 @@ function AdministradorTiempos() {
                 name="distancia"
                 value={formData.distancia}
                 onChange={handleChange}
-                className="border p-2 w-full"
               />
             </div>
-           
+            {/* Nuevo campo: fecha */}
             <div>
               <label htmlFor="fecha">Fecha:</label>
               <input
@@ -456,7 +448,6 @@ function AdministradorTiempos() {
                 name="fecha"
                 value={formData.fecha}
                 onChange={handleChange}
-                className="border p-2 w-full"
               />
             </div>
             <button className="agregar" type="submit">Agregar</button>
@@ -465,7 +456,7 @@ function AdministradorTiempos() {
         <br />
         <br />
         <br />
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>Informe de Tiempos:</h1>
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
         <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
           <thead style={{ backgroundColor: 'blue--700' }} className="">
             <tr>
@@ -476,11 +467,11 @@ function AdministradorTiempos() {
               <th className="px-4 py-2">Categoría</th>
               <th className="px-4 py-2">Sexo</th>
               <th className="px-4 py-2">Carrera</th>
-           
+              {/* Nuevas columnas: posición, distancia, fecha */}
               <th className="px-4 py-2">Posición</th>
               <th className="px-4 py-2">Distancia</th>
               <th className="px-4 py-2">Fecha</th>
-            
+              {/* Fin de las nuevas columnas */}
               <th className="px-4 py-2">Acciones</th>
             </tr>
           </thead>
@@ -498,11 +489,11 @@ function AdministradorTiempos() {
                 <td>{item.categoria}</td>
                 <td>{item.sexo}</td>
                 <td>{item.carrera}</td>
-              
+                {/* Nuevas celdas: posición, distancia, fecha */}
                 <td>{item.posicion}</td>
                 <td>{item.distancia}</td>
                 <td>{item.fecha}</td>
-              
+                {/* Fin de las nuevas celdas */}
                 <td>
                   <button className="editar" onClick={() => handleEdit(index)}>
                     Editar
@@ -520,81 +511,73 @@ function AdministradorTiempos() {
         </table>
       </div>
       <style>
-  {`
-    .mi-formulario {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    
-    .mi-formulario div {
-      margin-bottom: 10px;
-    }
-    
-    .mi-formulario label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    
-    .mi-formulario .input-field,
-    .mi-formulario select {
-      width: calc(100% - 16px); /* Cambio para considerar el padding y el borde */
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    
-    .mi-formulario .input-field[type="submit"] {
-      background-color: #4CAF50; /* Verde */
-      color: white;
-      cursor: pointer;
-      border: none;
-      padding: 10px 20px;
-      margin-top: 10px;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
-    
-    .mi-formulario .input-field[type="submit"]:hover {
-      background-color: #45a049; /* Verde más oscuro al hacer hover */
-    }
-    
-    .tiempo-inputs {
-      display: flex;
-      align-items: center;
-    }
-    
-    .tiempo-inputs input {
-      width: 60px;
-      margin-right: 10px;
-    }
-    
-    /* Estilos de la tabla */
-    .table-center {
-      margin: auto;
-      text-align: center;
-    }
-    
-    .table-center th,
-    .table-center td {
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-    
-    .table-center th {
-      background-color: #007bff;
-      color: #fff;
-    }
-    
-    .table-center tbody tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-  `}
-</style>
-
-
+        {`
+          .mi-formulario {
+            max-width: 500px;
+            margin: 0 auto;
+          }
+          
+          .mi-formulario div {
+            margin-bottom: 10px;
+          }
+          
+          .mi-formulario label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+          }
+          
+          .mi-formulario .input-field,
+          .mi-formulario select {
+            width: calc(100% - 16px); /* Cambio para considerar el padding y el borde */
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+          }
+          
+          .tiempo-inputs {
+            display: flex;
+            align-items: center;
+          }
+          
+          .tiempo-inputs input {
+            width: 60px;
+            margin-right: 10px;
+          }
+          
+          .agregar,
+          .editar,
+          .eliminar {
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+          
+          .agregar {
+            background-color: #007bff;
+            padding: 10px 20px;
+          }
+          
+          .editar {
+            background-color: #28a745;
+            padding: 5px 10px;
+            margin-right: 5px;
+          }
+          
+          .eliminar {
+            background-color: #dc3545;
+            padding: 5px 10px;
+          }
+          
+          .table-center {
+            margin: auto;
+            text-align: center;
+          }
+          
+        `}
+      </style>
     </div>
   );
 }
