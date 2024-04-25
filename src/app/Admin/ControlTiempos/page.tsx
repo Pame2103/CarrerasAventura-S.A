@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import Navbar from '@/app/componentes/navbar';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -42,10 +42,32 @@ function Resultados() {
     }, []);
 
     const filtrarResultados = () => {
-        return resultados.filter(resultado =>
-            resultado.nombreAtleta.toLowerCase().includes(filtro.toLowerCase()) ||
-            resultado.carrera.toLowerCase().includes(filtro.toLowerCase())
-        );
+        const resultadosOrdenados = resultados.sort((a, b) => {
+            // Ordenar por tiempo ascendente
+            return parseInt(a.tiempo) - parseInt(b.tiempo);
+        });
+
+        const mejoresTiemposPorCarrera: { [carrera: string]: Resultado[] } = {};
+
+        resultadosOrdenados.forEach(resultado => {
+            if (!mejoresTiemposPorCarrera[resultado.carrera]) {
+                mejoresTiemposPorCarrera[resultado.carrera] = [];
+            }
+
+            if (mejoresTiemposPorCarrera[resultado.carrera].length < 10) {
+                mejoresTiemposPorCarrera[resultado.carrera].push(resultado);
+            }
+        });
+
+        // Convertir el objeto a un array de resultados
+        const resultadosFiltrados: Resultado[] = [];
+        Object.values(mejoresTiemposPorCarrera).forEach(resultadosCarrera => {
+            resultadosCarrera.forEach(resultado => {
+                resultadosFiltrados.push(resultado);
+            });
+        });
+
+        return resultadosFiltrados;
     };
 
     const handleBuscar = () => {

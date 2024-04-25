@@ -136,11 +136,7 @@ const Carreras: React.FC = () => {
                                             <FaTrophy className="mr-1" />Control Tiempos
                                         </span>
                                     </Link>
-                  <Link href="/Admin/historicosadmin">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaInfoCircle className="mr-1" /> Históricos
-                    </span>
-                  </Link>
+                
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" /> Lista de Participantes

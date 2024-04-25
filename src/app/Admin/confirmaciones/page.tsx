@@ -1,11 +1,11 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc, addDoc } from 'firebase/firestore';
 import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
 import Modal from 'react-modal';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
-import emailjs from 'emailjs-com';
+
 
 interface Participante {
   id: string;
@@ -50,8 +50,12 @@ function Confirmacionespago(): JSX.Element {
     if (participanteAprobado) {
       try {
         // Eliminar participante de la colección "Inscripciones"
-        await deleteDoc(doc(db, 'Inscripciones', id));
+        await deleteDoc(doc(db, 'inscripciones', id));
         console.log('Participante eliminado de Inscripciones.');
+
+        // Agregar participante a la colección "listaparticipantes"
+        await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
+        console.log('Participante agregado a listaparticipantes.');
 
         // Enviar correo electrónico al participante aprobado
         await enviarCorreoElectronico(participanteAprobado);
@@ -95,6 +99,7 @@ function Confirmacionespago(): JSX.Element {
       throw error;
     }
   };
+  
   const modalStyles = {
     content: {
       top: '50%',
@@ -186,10 +191,10 @@ function Confirmacionespago(): JSX.Element {
                     </span>
                   </Link>
                   <Link href="/Admin/ControlTiempos">
-                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                                            <FaTrophy className="mr-1" />Control Tiempos
-                                        </span>
-                                    </Link>
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Control Tiempos
+                    </span>
+                  </Link>
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" /> Lista de Participantes
@@ -200,7 +205,6 @@ function Confirmacionespago(): JSX.Element {
                       <FaEnvelope className="mr-1" /> Records
                     </span>
                   </Link>
-                
                 </div>
               </div>
             </div>
