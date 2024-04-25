@@ -285,7 +285,7 @@ function AdministradorTiempos() {
               </div>
             </div>
             <div className="flex">
-              <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-0 py-0 rounded-md font-medium flex items-center">
+              <Link href="/Login"className="bg-blue-700 hover:bg-blue-700 text-white px-2 py-0 rounded-md font-medium flex items-center">
                 <FaSignInAlt className="mr-1" /> Cerrar sesión
               </Link>
             </div>
