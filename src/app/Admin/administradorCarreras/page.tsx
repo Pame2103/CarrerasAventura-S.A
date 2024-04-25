@@ -46,10 +46,9 @@ function Administradorcarreras() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Verificar si algún campo está vacío
+  
     const emptyFields = Object.entries(nuevaCarrera).filter(([key, value]) => !value);
 
-    // Si hay campos vacíos, mostrar mensaje de error y detener el envío del formulario
     if (emptyFields.length > 0) {
       setOperacionExitosa(false);
       setErrorMessage('Todos los campos son obligatorios.');

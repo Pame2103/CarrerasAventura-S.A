@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
@@ -12,6 +12,7 @@ interface AtletaData {
   numeroParticipante: string;
   categoria: string;
   sexo: string;
+  carrera: string;
 }
 
 interface FormData {
@@ -25,6 +26,7 @@ interface FormData {
   };
   categoria: string;
   sexo: string;
+  carrera: string;
 }
 
 function Administradortiempos() {
@@ -34,7 +36,8 @@ function Administradortiempos() {
     numeroParticipante: '',
     tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
     categoria: '', 
-    sexo: ''
+    sexo: '',
+    carrera: ''
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -59,7 +62,7 @@ function Administradortiempos() {
 
   const addAtletaDataToFirebase = async (nuevoAtleta: FormData) => {
     try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo } = nuevoAtleta;
+      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera } = nuevoAtleta;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
       const docRef = await addDoc(collection(db, 'administradortiempos'), {
@@ -68,6 +71,7 @@ function Administradortiempos() {
         tiempo: tiempoString,
         categoria,
         sexo,
+        carrera
       });
 
       console.log('Datos del atleta agregados con ID: ', docRef.id);
@@ -79,8 +83,11 @@ function Administradortiempos() {
 
   const handleEliminarAtleta = async (id: string) => {
     try {
+      // Eliminar el documento de Firestore
       await deleteDoc(doc(db, 'administradortiempos', id));
-      obtenerAtletasDesdeFirebase();
+
+      // Actualizar el estado local eliminando el elemento correspondiente de la matriz 'data'
+      setData(prevData => prevData.filter(atleta => atleta.id !== id));
     } catch (error) {
       console.error('Error al eliminar el atleta:', error);
     }
@@ -88,7 +95,7 @@ function Administradortiempos() {
 
   const handleEditarAtleta = async (id: string, atletaEditado: FormData) => {
     try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo } = atletaEditado;
+      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera } = atletaEditado;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
       await updateDoc(doc(db, 'administradortiempos', id), {
@@ -97,6 +104,7 @@ function Administradortiempos() {
         tiempo: tiempoString,
         categoria,
         sexo,
+        carrera
       });
 
       obtenerAtletasDesdeFirebase();
@@ -123,20 +131,6 @@ function Administradortiempos() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    addAtletaDataToFirebase(formData);
-
-    setFormData({
-      nombreAtleta: '',
-      numeroParticipante: '',
-      tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
-      categoria: '',
-      sexo: ''
-    });
-  };
-
   const handleEdit = (index: number) => {
     const elementoAEditar = data[index];
     if (elementoAEditar && elementoAEditar.tiempo) {
@@ -147,7 +141,8 @@ function Administradortiempos() {
         numeroParticipante: elementoAEditar.numeroParticipante,
         tiempo: { hours, minutes, seconds, nanoseconds },
         categoria: elementoAEditar.categoria,
-        sexo: elementoAEditar.sexo
+        sexo: elementoAEditar.sexo,
+        carrera: elementoAEditar.carrera
       });
 
       setEditIndex(index);
@@ -157,32 +152,39 @@ function Administradortiempos() {
   };
 
   const handleSave = (index: number) => {
-    const newData = data.slice();
     const editedAtleta: AtletaData = {
       id: data[index].id,
       ...formData,
       tiempo: `${formData.tiempo.hours}:${formData.tiempo.minutes}:${formData.tiempo.seconds}.${formData.tiempo.nanoseconds}`
     };
+
+    const newData = [...data];
     newData[index] = editedAtleta;
-  
+
     setData(newData);
     setFormData({
       nombreAtleta: '',
       numeroParticipante: '',
       tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
       categoria: '',
-      sexo: ''
+      sexo: '',
+      carrera: ''
     });
     setEditIndex(null);
   };
 
-  const handleDelete = (index: number) => {
-    const newData = data.filter((_, i) => i !== index);
-    setData(newData);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (editIndex !== null) {
+      handleSave(editIndex);
+    } else {
+      addAtletaDataToFirebase(formData);
+    }
   };
 
   const Navbar: React.FC = () => {
-    return (
+    return(
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
         <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
           <div className="flex items-center justify-between h-full">
@@ -251,77 +253,81 @@ function Administradortiempos() {
       </nav>
     );
   }
+
   return (
-  <div className="container">
-  <br />
-  <br />
-  <br />
-  <div className="form-container">
-    <Navbar />
-    <br />
-    <br />
-      <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-      <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
-    
-      <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
-        
-        <form className="mi-formulario" onSubmit={handleSubmit}>
-          
-          <div>
-            
-            <label htmlFor="nombreAtleta">Nombre Atleta:</label>
-            <input
-              type="text"
-              id="nombreAtleta"
-              name="nombreAtleta"
-              value={formData.nombreAtleta}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="numeroParticipante">Numero Participante:</label>
-            <input
-              type="text"
-              id="numeroParticipante"
-              name="numeroParticipante"
-              value={formData.numeroParticipante}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="tiempo">Tiempo:</label>
-            <div className="tiempo-inputs">
+    <div className="container">
+      <Navbar />
+      <div className="form-container">
+        <br />
+        <br />
+        <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
+          <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+          <form className="mi-formulario" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="carrera">Carrera:</label>
               <input
-                type="number"
-                name="hours"
-                value={formData.tiempo.hours}
-                onChange={handleTimeChange}
+                type="text"
+                id="carrera"
+                name="carrera"
+                value={formData.carrera}
+                onChange={handleChange}
               />
-              <span>H:</span>
-              <input
-                type="number"
-                name="minutes"
-                value={formData.tiempo.minutes}
-                onChange={handleTimeChange}
-              />
-              <span>M:</span>
-              <input
-                type="number"
-                name="seconds"
-                value={formData.tiempo.seconds}
-                onChange={handleTimeChange}
-              />
-              <span>S:</span>
-              <input
-                type="number"
-                name="nanoseconds"
-                value={formData.tiempo.nanoseconds}
-                onChange={handleTimeChange}
-              />
-              <span>NS</span>
             </div>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
+            <div>
+              <label htmlFor="nombreAtleta">Nombre Atleta:</label>
+              <input
+                type="text"
+                id="nombreAtleta"
+                name="nombreAtleta"
+                value={formData.nombreAtleta}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="numeroParticipante">Numero Participante:</label>
+              <input
+                type="text"
+                id="numeroParticipante"
+                name="numeroParticipante"
+                value={formData.numeroParticipante}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="tiempo">Tiempo:</label>
+              <div className="tiempo-inputs">
+                <input
+                  type="number"
+                  name="hours"
+                  value={formData.tiempo.hours}
+                  onChange={handleTimeChange}
+                />
+                <span>H:</span>
+                <input
+                  type="number"
+                  name="minutes"
+                  value={formData.tiempo.minutes}
+                  onChange={handleTimeChange}
+                />
+                <span>M:</span>
+                <input
+                  type="number"
+                  name="seconds"
+                  value={formData.tiempo.seconds}
+                  onChange={handleTimeChange}
+                />
+                <span>S:</span>
+                <input
+                  type="number"
+                  name="nanoseconds"
+                  value={formData.tiempo.nanoseconds}
+                  onChange={handleTimeChange}
+                />
+                <span>NS</span>
+              </div>
+            </div>
+            <div style={{ marginBottom: '10px' }}>
               <label htmlFor="categoria" className="block font-semibold">Categoría:</label>
               <select
                 id="categoria"
@@ -337,71 +343,77 @@ function Administradortiempos() {
                 <option value="Femenino,Veterano B">Femenina,Veterano B</option>
                 <option value="Femenino,Veterano C">Femenina,Veterano C</option>
                 <option value="Masculino,Junior">Masculino,Junior</option>
-                <option value="Masculono,Mayor">Masculino,Mayor</option>
+                <option value="Masculino,Mayor">Masculino,Mayor</option>
                 <option value="Masculino,Veterano">Masculino,Veterano A</option>
                 <option value="Masculino,Veterano A">Masculino,Veterano A</option>
                 <option value="Masculino,Veterano B">Masculino,Veterano B</option>
                 <option value="Masculino,Veterano C">Masculino,Veterano C</option>
               </select>
             </div>
-          <div>
-            <label htmlFor="sexo">Sexo:</label>
-            <input
-              type="text"
-              id="sexo"
-              name="sexo"
-              value={formData.sexo}
-              onChange={handleChange}
-            />
-          </div>
-          <button className="agregar" type="submit">Agregar</button>
-          <br />
-          <br />
-        </form>
-      </div>
-<br />
-<br />
-<br />
-<h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
-      <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
-        <thead style={{ backgroundColor: 'blue--700' }} className="">
-          <tr>
-            <th>Nombre Atleta</th>
-            <th>Numero Participante</th>
-            <th>Tiempo</th>
-            <th>Categoria</th>
-            <th>Sexo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>{item.nombreAtleta}</td>
-              <td>{item.numeroParticipante}</td>
-              <td>
-                {item.tiempo && item.tiempo.split(/[:.]/).map((part, index) => (
-                  <span key={index}>{part}{index === 1 ? ':' : (index === 2 ? '.' : '')}</span>
-                ))}
-              </td>
-              <td>{item.categoria}</td>
-              <td>{item.sexo}</td>
-              <td>
-                <button className="editar" onClick={() => handleEdit(index)}>
-                  Editar
-                </button>
-                <button
-                  className="eliminar"
-                  onClick={() => handleDelete(index)}
-                >
-                  Eliminar
-                </button>
-              </td>
+            <div>
+              <label htmlFor="sexo" className="block font-semibold">Sexo:</label>
+              <select
+                id="sexo"
+                name="sexo"
+                value={formData.sexo} 
+                onChange={(e) => setFormData(prevState => ({ ...prevState, sexo: e.target.value }))}
+                className="border p-2 w-full"
+              >
+                <option value="Sexo">Sexo</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Masculino">Masculino</option>
+              </select>
+            </div>
+            <button className="agregar" type="submit">Agregar</button>
+          </form>
+        </div>
+        <br />
+        <br />
+        <br />
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
+        <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
+          <thead style={{ backgroundColor: 'blue--700' }} className="">
+            <tr>
+              <th className="px-4 py-2">#</th>
+              <th className="px-4 py-2">Nombre Atleta</th>
+              <th className="px-4 py-2">Numero Participante</th>
+              <th className="px-4 py-2">Tiempo</th>
+              <th className="px-4 py-2">Categoría</th>
+              <th className="px-4 py-2">Sexo</th>
+              <th className="px-4 py-2">Carrera</th>
+              <th className="px-4 py-2">Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{item.nombreAtleta}</td>
+                <td>{item.numeroParticipante}</td>
+                <td>
+                  {item.tiempo && item.tiempo.split(/[:.]/).map((part, index) => (
+                    <span key={index}>{part}{index === 1 ? ':' : (index === 2 ? '.' : '')}</span>
+                  ))}
+                </td>
+                <td>{item.categoria}</td>
+                <td>{item.sexo}</td>
+                <td>{item.carrera}</td>
+                <td>
+                  <button className="editar" onClick={() => handleEdit(index)}>
+                    Editar
+                  </button>
+                  <button
+                    className="eliminar"
+                    onClick={() => handleEliminarAtleta(item.id)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <style>
         {`
           .mi-formulario {
@@ -462,17 +474,8 @@ function Administradortiempos() {
 
           table {
             border-collapse: collapse;
-            width: 50%;
-            table-layout: fixed;
+            width: 100%;
           }
-          .container {
-            max-width: 1400px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: rgba(250, 250, 250, 0.3);
-          }
-          
 
           th, td {
             border: 1px solid black;
@@ -498,16 +501,14 @@ function Administradortiempos() {
           }
 
           .eliminar {
-            background-color:red;
+            background-color: red;
             color: #fff;
             margin-left: 5px;
           }
         `}
       </style>
-      </div>
     </div>
   );
-}
-
+};
 
 export default Administradortiempos;
