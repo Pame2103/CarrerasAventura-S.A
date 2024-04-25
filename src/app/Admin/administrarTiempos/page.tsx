@@ -303,9 +303,9 @@ function Administradortiempos() {
         <br />
         <br />
         <br />
-        <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+        <div style={{ backgroundColor: '#fff', padding: '30px', borderRadius: '10px', boxShadow: '0 6px 8px rgba(0, 0, 0, 0.1)' }}>
           <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
-          <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+          <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '250px' }} />
           <form className="mi-formulario" onSubmit={handleSubmit}>
           <div>
               <label htmlFor="carrera">Carrera:</label>

@@ -95,6 +95,18 @@ function Confirmacionespago(): JSX.Element {
       throw error;
     }
   };
+  const modalStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width: '50%', 
+      maxWidth: '400px',
+    },
+  };
 
   useEffect(() => {
     const inscripcionesCollection = collection(db, 'inscripciones');
@@ -206,18 +218,19 @@ function Confirmacionespago(): JSX.Element {
         </div>
       </nav>
 
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
-        <div>
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} style={modalStyles}>
+        <div style={{ textAlign: 'center' }}>
           <h2>Enviar correo electrónico</h2>
           <p>¿Quieres enviar un correo electrónico al participante?</p>
           <button
             onClick={() => {
               window.open(`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`);
             }}
+            className="modal-button modal-button-primary"
           >
             Abrir correo electrónico
           </button>
-          <button onClick={() => setModalIsOpen(false)}>Cancelar</button>
+          <button onClick={() => setModalIsOpen(false)} className="modal-button modal-button-cancel">Cancelar</button>
         </div>
       </Modal>
 
