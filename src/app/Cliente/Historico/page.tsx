@@ -98,7 +98,7 @@ export default function Historico() {
                 <div className="mb-4 flex justify-center items-center">
                     <input 
                         type="text" 
-                        placeholder="Buscar por nombre, cédula, carrera o fecha" 
+                        placeholder="Buscar por nombre,carrera " 
                         value={busqueda} 
                         onChange={handleBusquedaChange} 
                         className="p-2 border rounded mr-2"
