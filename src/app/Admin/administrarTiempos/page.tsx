@@ -528,22 +528,24 @@ function AdministradorTiempos() {
             margin-bottom: 20px;
           }
           .agregar {
-            background-color: blue--700;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-          }
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 3px 8px; /* Reducir el padding para hacer el botón más pequeño */
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px; /* Reducir el tamaño de la fuente para hacer el texto más pequeño */
+}
+
+          
           .editar {
-            background-color: blue;
+            background-color: #007bff;
             color: #fff;
             border: none;
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 8px;
             margin-right: 5px;
           }
           .eliminar {
