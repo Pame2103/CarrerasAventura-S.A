@@ -38,7 +38,7 @@ function Resultados() {
     useEffect(() => {
         const obtenerResultadosDesdeFirebase = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'resultados'));
+                const querySnapshot = await getDocs(collection(db, 'administradortiempos'));
                 const resultadosData: Resultado[] = [];
 
                 querySnapshot.forEach((doc) => {

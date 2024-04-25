@@ -33,7 +33,7 @@ export default function Historico() {
     };
 
     useEffect(() => {
-        const historicosCollection = collection(db, 'Historicos');
+        const historicosCollection = collection(db, 'administradortiempos');
       
         const unsubscribe = onSnapshot(historicosCollection, (snapshot) => {
             const historicosData: Carrera[] = snapshot.docs.map((doc) => {
