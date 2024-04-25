@@ -335,6 +335,7 @@ function AdministradorTiempos() {
                 name="nombreAtleta"
                 value={formData.nombreAtleta}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             <div>
@@ -345,6 +346,7 @@ function AdministradorTiempos() {
                 name="numeroParticipante"
                 value={formData.numeroParticipante}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             <div>
@@ -355,6 +357,7 @@ function AdministradorTiempos() {
                   name="hours"
                   value={formData.tiempo.hours}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>H:</span>
                 <input
@@ -362,6 +365,7 @@ function AdministradorTiempos() {
                   name="minutes"
                   value={formData.tiempo.minutes}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>M:</span>
                 <input
@@ -369,6 +373,7 @@ function AdministradorTiempos() {
                   name="seconds"
                   value={formData.tiempo.seconds}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>S:</span>
                 <input
@@ -376,6 +381,7 @@ function AdministradorTiempos() {
                   name="nanoseconds"
                   value={formData.tiempo.nanoseconds}
                   onChange={handleTimeChange}
+                  className="border p-2"
                 />
                 <span>NS</span>
               </div>
@@ -426,6 +432,7 @@ function AdministradorTiempos() {
                 name="posicion"
                 value={formData.posicion}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             {/* Nuevo campo: distancia */}
@@ -437,6 +444,7 @@ function AdministradorTiempos() {
                 name="distancia"
                 value={formData.distancia}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             {/* Nuevo campo: fecha */}
@@ -448,6 +456,7 @@ function AdministradorTiempos() {
                 name="fecha"
                 value={formData.fecha}
                 onChange={handleChange}
+                className="border p-2 w-full"
               />
             </div>
             <button className="agregar" type="submit">Agregar</button>
@@ -456,7 +465,7 @@ function AdministradorTiempos() {
         <br />
         <br />
         <br />
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>RESULTADOS</h1>
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>Informe de tiempos:</h1>
         <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
           <thead style={{ backgroundColor: 'blue--700' }} className="">
             <tr>
@@ -513,73 +522,62 @@ function AdministradorTiempos() {
       <style>
         {`
           .mi-formulario {
-            max-width: 500px;
-            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
           }
-          
-          .mi-formulario div {
-            margin-bottom: 10px;
-          }
-          
-          .mi-formulario label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-          
-          .mi-formulario .input-field,
-          .mi-formulario select {
-            width: calc(100% - 16px); /* Cambio para considerar el padding y el borde */
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-          }
-          
-          .tiempo-inputs {
-            display: flex;
-            align-items: center;
-          }
-          
-          .tiempo-inputs input {
-            width: 60px;
-            margin-right: 10px;
-          }
-          
-          .agregar,
-          .editar,
-          .eliminar {
+          .agregar {
+            background-color: blue--700;
             color: #fff;
             border: none;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
           }
-          
-          .agregar {
-            background-color: #007bff;
-            padding: 10px 20px;
-          }
-          
           .editar {
-            background-color: #007bff;
+            background-color: blue;
+            color: #fff;
+            border: none;
             padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
             margin-right: 5px;
           }
-          
           .eliminar {
-            background-color: #dc3545;
+            background-color:  red;
+            color: #fff;
+            border: none;
             padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+          }
+          .table-center {
+            margin: auto;
+            text-align: center;
+            border-collapse: separate; /* Para separar los bordes de las celdas */
+            border-spacing: 0; /* Espacio entre los bordes de las celdas */
           }
           
+          .table-center th,
+          .table-center td {
+            padding: 5px; /* Ajusta el espacio interno de las celdas según sea necesario */
+            border: 1px solid #ccc; /* Agrega un borde a todas las celdas */
+          }
+          
+          /* Estilo para las celdas del encabezado de la tabla */
           .table-center th {
             background-color: #007bff;
             color: #fff;
           }
           
+          /* Estilo para las filas pares de la tabla */
           .table-center tbody tr:nth-child(even) {
             background-color: #f2f2f2;
           }
-          
         `}
       </style>
     </div>
