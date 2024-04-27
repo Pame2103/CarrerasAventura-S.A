@@ -38,6 +38,10 @@ function Confirmacionespago() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participante | null>(null);
 
+  // New state for the rejection modal
+  const [rejectModalIsOpen, setRejectModalIsOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+
   const handleAprobar = async (id: string): Promise<void> => {
     console.log("Botón Aprobar clickeado. ID:", id);
 
@@ -123,7 +127,6 @@ function Confirmacionespago() {
           sexo,
           edad,
           email,
-          confirmarEmail,
           telefono,
           nacimiento,
           tallaCamisa,
@@ -131,8 +134,6 @@ function Confirmacionespago() {
           nombreEmergencia,
           telefonoEmergencia,
           parentescoEmergencia,
-          provincia,
-          totalMonto,
           beneficiarioPoliza,
           metodoPago,
           discapacidad,
@@ -145,7 +146,7 @@ function Confirmacionespago() {
 
         return {
           id: doc.id,
-          nombreCarrera: "", // Asegúrate de que este campo esté presente y tenga un valor válido
+          nombreCarrera: "", 
           nombre,
           cedula,
           apellidos,
@@ -180,6 +181,29 @@ function Confirmacionespago() {
 
     return () => unsubscribe();
   }, []);
+
+  const handleReject = (participant: Participante) => {
+    setSelectedParticipant(participant);
+    setRejectModalIsOpen(true);
+  };
+
+  const handleRejectSubmit = async () => {
+    if (selectedParticipant) {
+      await handleRechazar(selectedParticipant.id);
+      await enviarCorreoElectronicoRechazo(selectedParticipant, rejectReason);
+      setRejectModalIsOpen(false);
+    }
+  };
+
+  const enviarCorreoElectronicoRechazo = async (participante: Participante, reason: string): Promise<void> => {
+    try {
+      // Código para enviar correo electrónico de rechazo omitido por brevedad
+      console.log(`Enviando correo de rechazo a ${participante.email} con motivo: ${reason}`);
+    } catch (error) {
+      console.error("Error sending rejection email:", error);
+      throw error;
+    }
+  };
 
   return (
     <div>
