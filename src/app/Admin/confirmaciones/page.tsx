@@ -1,11 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, deleteDoc, doc, addDoc } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase';
-import Link from 'next/link';
-import Modal from 'react-modal';
-import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
-
+import React, { useState, useEffect } from "react";
+import { collection, onSnapshot, deleteDoc, doc, addDoc } from "firebase/firestore";
+import { db } from "../../../../firebase/firebase";
+import Link from "next/link";
+import Modal from "react-modal";
+import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from "react-icons/fa";
 
 interface Participante {
   id: string;
@@ -23,8 +22,6 @@ interface Participante {
   nombreEmergencia: string;
   telefonoEmergencia: string;
   parentescoEmergencia: string;
-  provincia: string;
-  totalMonto: string;
   beneficiarioPoliza: string;
   metodoPago: string;
   discapacidad: string;
@@ -35,27 +32,27 @@ interface Participante {
   codigoComprobante: string;
 }
 
-function Confirmacionespago(): JSX.Element {
+function Confirmacionespago() {
   const [participantes, setParticipantes] = useState<Participante[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participante | null>(null);
 
   const handleAprobar = async (id: string): Promise<void> => {
-    console.log('Botón Aprobar clickeado. ID:', id);
+    console.log("Botón Aprobar clickeado. ID:", id);
 
     const participanteAprobado = participantes.find((participante) => participante.id === id);
-    console.log('Participante encontrado:', participanteAprobado);
+    console.log("Participante encontrado:", participanteAprobado);
 
     if (participanteAprobado) {
       try {
         // Eliminar participante de la colección "Inscripciones"
-        await deleteDoc(doc(db, 'inscripciones', id));
-        console.log('Participante eliminado de Inscripciones.');
+        await deleteDoc(doc(db, "inscripciones", id));
+        console.log("Participante eliminado de Inscripciones.");
 
         // Agregar participante a la colección "listaparticipantes"
-        await addDoc(collection(db, 'listaparticipantes'), participanteAprobado);
-        console.log('Participante agregado a listaparticipantes.');
+        await addDoc(collection(db, "listaparticipantes"), participanteAprobado);
+        console.log("Participante agregado a listaparticipantes.");
 
         // Enviar correo electrónico al participante aprobado
         await enviarCorreoElectronico(participanteAprobado);
@@ -70,24 +67,24 @@ function Confirmacionespago(): JSX.Element {
         // Abrir el modal
         setModalIsOpen(true);
       } catch (error) {
-        console.error('Error al aprobar el participante:', error);
+        console.error("Error al aprobar el participante:", error);
       }
     }
   };
 
   const handleRechazar = async (id: string): Promise<void> => {
-    console.log('Botón Rechazar clickeado. ID:', id);
-    
+    console.log("Botón Rechazar clickeado. ID:", id);
+
     try {
       // Eliminar participante de la colección "Inscripciones"
-      await deleteDoc(doc(db, 'inscripciones', id));
-      console.log('Participante eliminado de Inscripciones.');
+      await deleteDoc(doc(db, "inscripciones", id));
+      console.log("Participante eliminado de Inscripciones.");
 
       // Actualizar la lista de participantes eliminando al participante rechazado
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
-      console.error('Error al rechazar el participante:', error);
+      console.error("Error al rechazar el participante:", error);
     }
   };
 
@@ -95,34 +92,31 @@ function Confirmacionespago(): JSX.Element {
     try {
       // Código para enviar correo electrónico omitido por brevedad
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error("Error sending email:", error);
       throw error;
     }
   };
-  
+
   const modalStyles = {
     content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      width: '50%', 
-      maxWidth: '400px',
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      width: "50%",
+      maxWidth: "400px",
     },
   };
 
   useEffect(() => {
-    const inscripcionesCollection = collection(db, 'inscripciones');
+    const inscripcionesCollection = collection(db, "inscripciones");
 
     const unsubscribe = onSnapshot(inscripcionesCollection, (snapshot) => {
       const inscripcionesData = snapshot.docs.map((doc) => {
-        const { id, nombre, cedula, apellidos, sexo, edad, email, confirmarEmail, telefono, nacimiento, tallaCamisa, lateralidad, nombreEmergencia, telefonoEmergencia, parentescoEmergencia, provincia, totalMonto, beneficiarioPoliza, metodoPago, discapacidad, tipoDiscapacidad, alergiaMedicamento, pais, evento, codigoComprobante } = doc.data();
-        
-        return {
-          id: doc.id,
-          nombreCarrera: '', // Asegúrate de que este campo esté presente y tenga un valor válido
+        const {
+          id,
           nombre,
           cedula,
           apellidos,
@@ -147,11 +141,39 @@ function Confirmacionespago(): JSX.Element {
           pais,
           evento,
           codigoComprobante,
+        } = doc.data();
+
+        return {
+          id: doc.id,
+          nombreCarrera: "", // Asegúrate de que este campo esté presente y tenga un valor válido
+          nombre,
+          cedula,
+          apellidos,
+          sexo,
+          edad,
+          email,
+          telefono,
+          nacimiento,
+          tallaCamisa,
+          lateralidad,
+          nombreEmergencia,
+          telefonoEmergencia,
+          parentescoEmergencia,
+          beneficiarioPoliza,
+          metodoPago,
+          discapacidad,
+          tipoDiscapacidad,
+          alergiaMedicamento,
+          pais,
+          evento,
+          codigoComprobante,
           aprobado: false,
         };
       });
 
-      const participantesPendientes = inscripcionesData.filter(participante => !participante.aprobado);
+      const participantesPendientes = inscripcionesData.filter(
+        (participante) => !participante.aprobado
+      );
       setParticipantes(participantesPendientes);
       setLoading(false);
     });
@@ -171,7 +193,7 @@ function Confirmacionespago(): JSX.Element {
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
                   <Link href="/Admin/administradorCarreras">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                   <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaRunning className="mr-1" /> Administrar Carreras
                     </span>
                   </Link>
