@@ -17,7 +17,6 @@ export default function Inscripciones() {
     sexo: '',
     edad: '',
     email: '',
-    confirmarEmail: '',
     telefono: '',
     nacimiento: '',
     tallaCamisa: '',
@@ -25,11 +24,8 @@ export default function Inscripciones() {
     nombreEmergencia: '',
     telefonoEmergencia: '',
     parentescoEmergencia: '',
-    provincia: '',
-    totalMonto: '',
     beneficiarioPoliza: '',
     metodoPago: '',
-    guardarDatos: false,
     aceptarTerminos: false,
     discapacidad: '',
     tipoDiscapacidad: '',
@@ -190,6 +186,7 @@ export default function Inscripciones() {
       required
       style={{ display: 'inline-block' }}
     >
+      <option value="">Seleccione</option>
       <option value="femenino">Femenino</option>
       <option value="masculino">Masculino</option>
     </select>
@@ -259,7 +256,7 @@ export default function Inscripciones() {
       required
       style={{ display: 'inline-block' }}
     >
-      <option value="">Argentina</option>
+       <option value="">Seleccione</option>
       <option value="Argentina">Argentina</option>
       <option value="Colombia">Colombia</option>
       <option value="Costa Rica">Costa Rica</option>
@@ -283,6 +280,7 @@ export default function Inscripciones() {
       required
       style={{ display: 'inline-block' }}
     >
+      <option value="">Seleccione</option>
       <option value="">XS</option>
       <option value="XS">XS</option>
       <option value="S">S</option>
@@ -303,6 +301,7 @@ export default function Inscripciones() {
       required
       style={{ display: 'inline-block' }}
     >
+      <option value="">Seleccione</option>
       <option value="derecha">Derecha</option>
       <option value="izquierda">Izquierda</option>
     </select>
@@ -318,6 +317,7 @@ export default function Inscripciones() {
       required
       style={{ display: 'inline-block' }}
     >
+      <option value="">Seleccione</option>
       <option value="no">No</option>
       <option value="si">Sí</option>
     </select>
@@ -348,6 +348,7 @@ export default function Inscripciones() {
       required
       style={{ display: 'inline-block' }}
     >
+      <option value="">Seleccione</option>
       <option value="no">No</option>
       <option value="si">Sí</option>
     </select>
@@ -369,8 +370,6 @@ export default function Inscripciones() {
   )}
 
 </div>
-
-
 
           </form>
           <form onSubmit={handleSubmit} style={{ width: '45%', marginLeft: '5%' }}>
@@ -484,9 +483,10 @@ export default function Inscripciones() {
       onChange={handleInputChange}
       style={{ display: 'inline-block' }}
     >
+      <option value="">Seleccione</option>
       <option value="sinpe">Sinpe</option>
       <option value="Patrocinador">Patrocinador</option>
-      <option value="Otro">Otro</option>
+      
     </select>
   </div>
 
