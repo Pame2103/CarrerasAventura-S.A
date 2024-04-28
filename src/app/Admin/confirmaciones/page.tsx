@@ -40,7 +40,6 @@ function Confirmacionespago() {
 
   // New state for the rejection modal
   const [rejectModalIsOpen, setRejectModalIsOpen] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
 
   const handleAprobar = async (id: string): Promise<void> => {
     console.log("Botón Aprobar clickeado. ID:", id);
@@ -94,10 +93,50 @@ function Confirmacionespago() {
 
   const enviarCorreoElectronico = async (participante: Participante): Promise<void> => {
     try {
-      // Código para enviar correo electrónico omitido por brevedad
+      // Código para enviar correo electrónico de aprobación omitido por brevedad
+      console.log(`Enviando correo de aprobación a ${participante.email}`);
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error("Error sending approval email:", error);
       throw error;
+    }
+  };
+
+  const sendRejectionEmail = async (participante: Participante): Promise<void> => {
+    try {
+      // Código para enviar correo electrónico de rechazo omitido por brevedad
+      const subject = "Solicitud de participante rechazada";
+      const body = `¡Hola estimado participante!
+
+Lamentamos informarte que tu solicitud de participación para nuestro evento ha sido rechazada. Hemos revisado cuidadosamente todos los detalles y lamentablemente no podemos admitirte en esta ocasión.
+
+Entendemos que esto puede ser decepcionante, pero queremos agradecerte por tu interés en nuestro evento y por tomarte el tiempo para aplicar. Te animamos a seguir buscando oportunidades que se ajusten a tus intereses y habilidades.
+
+Si tienes alguna pregunta sobre nuestra decisión o necesitas más información, no dudes en ponerte en contacto con nosotros.
+
+Gracias por tu comprensión.
+
+Saludos cordiales,
+El equipo de Carreras Aventura`;
+
+      window.open(`mailto:${participante.email}?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`);
+    } catch (error) {
+      console.error("Error sending rejection email:", error);
+      throw error;
+    }
+  };
+
+  const handleReject = (participant: Participante) => {
+    setSelectedParticipant(participant);
+    setRejectModalIsOpen(true);
+  };
+
+  const handleRejectSubmit = async () => {
+    if (selectedParticipant) {
+      await sendRejectionEmail(selectedParticipant);
+      await handleRechazar(selectedParticipant.id);
+      setRejectModalIsOpen(false);
     }
   };
 
@@ -147,8 +186,7 @@ function Confirmacionespago() {
         return {
           id: doc.id,
           nombreCarrera: "", 
-          nombre,
-          cedula,
+          nombre,cedula,
           apellidos,
           sexo,
           edad,
@@ -182,29 +220,6 @@ function Confirmacionespago() {
     return () => unsubscribe();
   }, []);
 
-  const handleReject = (participant: Participante) => {
-    setSelectedParticipant(participant);
-    setRejectModalIsOpen(true);
-  };
-
-  const handleRejectSubmit = async () => {
-    if (selectedParticipant) {
-      await handleRechazar(selectedParticipant.id);
-      await enviarCorreoElectronicoRechazo(selectedParticipant, rejectReason);
-      setRejectModalIsOpen(false);
-    }
-  };
-
-  const enviarCorreoElectronicoRechazo = async (participante: Participante, reason: string): Promise<void> => {
-    try {
-      // Código para enviar correo electrónico de rechazo omitido por brevedad
-      console.log(`Enviando correo de rechazo a ${participante.email} con motivo: ${reason}`);
-    } catch (error) {
-      console.error("Error sending rejection email:", error);
-      throw error;
-    }
-  };
-
   return (
     <div>
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
@@ -217,7 +232,7 @@ function Confirmacionespago() {
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
                   <Link href="/Admin/administradorCarreras">
-                   <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaRunning className="mr-1" /> Administrar Carreras
                     </span>
                   </Link>
@@ -250,7 +265,7 @@ function Confirmacionespago() {
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaEnvelope className="mr-1" /> Records
                     </span>
-                  </Link>
+                </Link>
                 </div>
               </div>
             </div>
@@ -269,7 +284,7 @@ function Confirmacionespago() {
           <h2>Enviar correo electrónico</h2>
           <p>¿Quieres enviar un correo electrónico al participante?</p>
           <button
-            onClick={() => {
+            onClick={() =>{
               window.open(`mailto:${selectedParticipant?.email}?subject=Solicitud de participante aprobada&body=${encodeURIComponent("¡Hola estimado participante!\n\nNos complace informarte que tu inscripción para nuestro evento ha sido verificada con éxito y tu comprobante de pago ha sido recibido.\n\n¡Felicitaciones! Has sido admitido/a en la carrera seleccionada. Estamos emocionados de tenerte con nosotros y queremos asegurarte que estamos preparando todos los detalles para hacerte vivir una experiencia inolvidable.\n\nPronto te enviaremos más información sobre el evento, así que mantén un ojo en tu bandeja de entrada.\n\nGracias por elegir ser parte de Carreras Aventura. Estamos ansiosos por compartir esta aventura contigo.\n\nSaludos cordiales,\nEl equipo de Carreras Aventura")}`);
             }}
             className="modal-button modal-button-primary"
@@ -277,6 +292,19 @@ function Confirmacionespago() {
             Abrir correo electrónico
           </button>
           <button onClick={() => setModalIsOpen(false)} className="modal-button modal-button-cancel">Cancelar</button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={rejectModalIsOpen} onRequestClose={() => setRejectModalIsOpen(false)} style={modalStyles}>
+        <div style={{ textAlign: 'center' }}>
+          <h2>Rechazar participante</h2>
+          <p>¿Estás seguro de querer rechazar al participante?</p>
+          <button onClick={handleRejectSubmit} className="modal-button modal-button-primary">
+            Rechazar
+          </button>
+          <button onClick={() => setRejectModalIsOpen(false)} className="modal-button modal-button-cancel">
+            Cancelar
+          </button>
         </div>
       </Modal>
 
@@ -325,7 +353,7 @@ function Confirmacionespago() {
                     Aprobar
                   </button>
                   <button
-                    onClick={() => handleRechazar(participante.id)}
+                    onClick={() => handleReject(participante)}
                     style={{ backgroundColor: 'red', color: 'white' }}
                   >
                     Rechazar
