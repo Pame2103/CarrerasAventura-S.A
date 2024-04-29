@@ -41,7 +41,7 @@ interface FormData {
 }
 
 function AdministradorTiempos() {
-  // Estados
+
   const [data, setData] = useState<AtletaData[]>([]);
   const [formData, setFormData] = useState<FormData>({
     nombreAtleta: '',
@@ -57,13 +57,13 @@ function AdministradorTiempos() {
   const [carreras, setCarreras] = useState<CarreraData[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  // Obtener datos de Firebase al cargar el componente
+
   useEffect(() => {
     obtenerAtletasDesdeFirebase();
     obtenerCarrerasDesdeFirebase();
   }, []);
 
-  // Función para obtener los datos de los atletas desde Firebase
+
   const obtenerAtletasDesdeFirebase = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'administradortiempos'));
@@ -79,7 +79,7 @@ function AdministradorTiempos() {
     }
   };
 
-  // Función para obtener los datos de las carreras desde Firebase
+
   const obtenerCarrerasDesdeFirebase = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'Configuracion Carreeras'));
@@ -95,7 +95,7 @@ function AdministradorTiempos() {
     }
   };
 
-  // Función para agregar datos de un atleta a Firebase
+
   const addAtletaDataToFirebase = async (nuevoAtleta: FormData) => {
     try {
       const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera, posicion, distancia, fecha } = nuevoAtleta;
@@ -120,7 +120,7 @@ function AdministradorTiempos() {
     }
   };
 
-  // Función para eliminar un atleta de Firebase
+ 
   const handleEliminarAtleta = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'administradortiempos', id));
@@ -130,7 +130,7 @@ function AdministradorTiempos() {
     }
   };
 
-  // Función para manejar cambios en los campos del formulario
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prevFormData => ({
@@ -139,7 +139,7 @@ function AdministradorTiempos() {
     }));
   };
 
-  // Función para manejar cambios en el tiempo
+
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newTime = { ...formData.tiempo, [name]: parseInt(value) || 0 };
@@ -149,7 +149,7 @@ function AdministradorTiempos() {
     }));
   };
 
-  // Función para manejar cambios en la selección de carrera
+
   const handleCarreraChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
     setFormData(prevFormData => ({
@@ -161,7 +161,7 @@ function AdministradorTiempos() {
     }));
   };
 
-  // Función para editar un atleta
+ 
   const handleEdit = (index: number) => {
     const elementoAEditar = data[index];
     if (elementoAEditar && elementoAEditar.tiempo) {
@@ -185,7 +185,7 @@ function AdministradorTiempos() {
     }
   };
 
-  // Función para guardar los cambios realizados en la edición de un atleta
+
   const handleSave = async (index: number) => {
     try{
       const editedAtleta: AtletaData = {
@@ -201,27 +201,27 @@ function AdministradorTiempos() {
 
       await updateDoc(doc(db, 'administradortiempos', editedAtleta.id), editedAtleta as any);
 
-      setEditIndex(null); // Limpiar el índice de edición
+      setEditIndex(null); 
     } catch(error){
       console.error('Error al guardar los cambios:', error);
     }
   };
 
-  // Función para cancelar la edición de un atleta
+
   const handleCancel = () => {
     setEditIndex(null);
   };
 
-  // Función para manejar el envío del formulario
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Validar si hay campos vacíos
+
     const isEmpty = Object.values(formData).some(value => value === '');
 
     if (isEmpty) {
       alert('Por favor completa todos los campos.');
-      return; // Detener el envío del formulario si hay campos vacíos
+
     }
 
     if (editIndex !== null) {
@@ -239,7 +239,7 @@ function AdministradorTiempos() {
       posicion: 0, 
       distancia: '', 
       fecha: '' 
-    }); // Limpiar el formulario después de enviar
+    }); 
   };
   const Navbar: React.FC = () => {
     return(
