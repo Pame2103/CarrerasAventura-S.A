@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../../../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import Navbar from '@/app/componentes/navbar';
+
 interface Record {
     id: string;
     nombreAtleta: string;
@@ -61,11 +62,23 @@ function Records() {
         obtenerCarrerasDesdeFirebase();
     }, []);
 
-    // Función para filtrar los registros según la carrera seleccionada
+    // Función para filtrar los registros según la carrera seleccionada y mostrar solo los 3 mejores tiempos
     const filtrarRecords = () => {
-        return records.filter(record =>
+        // Filtrar registros por carrera seleccionada
+        const registrosFiltrados = records.filter(record =>
             (carreraSeleccionada === '' || record.carrera === carreraSeleccionada)
         );
+
+        // Ordenar registros por tiempo en orden ascendente
+        registrosFiltrados.sort((a, b) => {
+            // Asumiendo que el tiempo está en formato "mm:ss" o similar
+            const tiempoA = Number(a.tiempo.split(':')[0]) * 60 + Number(a.tiempo.split(':')[1]);
+            const tiempoB = Number(b.tiempo.split(':')[0]) * 60 + Number(b.tiempo.split(':')[1]);
+            return tiempoA - tiempoB;
+        });
+
+        // Tomar solo los primeros 3 registros
+        return registrosFiltrados.slice(0, 3);
     };
 
     // Manejar el cambio de carrera seleccionada
