@@ -41,6 +41,7 @@ interface FormData {
 }
 
 function AdministradorTiempos() {
+  // Estados
   const [data, setData] = useState<AtletaData[]>([]);
   const [formData, setFormData] = useState<FormData>({
     nombreAtleta: '',
@@ -56,11 +57,13 @@ function AdministradorTiempos() {
   const [carreras, setCarreras] = useState<CarreraData[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
+  // Obtener datos de Firebase al cargar el componente
   useEffect(() => {
     obtenerAtletasDesdeFirebase();
     obtenerCarrerasDesdeFirebase();
   }, []);
 
+  // Función para obtener los datos de los atletas desde Firebase
   const obtenerAtletasDesdeFirebase = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'administradortiempos'));
@@ -76,6 +79,7 @@ function AdministradorTiempos() {
     }
   };
 
+  // Función para obtener los datos de las carreras desde Firebase
   const obtenerCarrerasDesdeFirebase = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'Configuracion Carreeras'));
@@ -91,12 +95,13 @@ function AdministradorTiempos() {
     }
   };
 
+  // Función para agregar datos de un atleta a Firebase
   const addAtletaDataToFirebase = async (nuevoAtleta: FormData) => {
     try {
       const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera, posicion, distancia, fecha } = nuevoAtleta;
       const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
 
-      const docRef = await addDoc(collection(db, 'administradortiempos'), {
+      const docRef= await addDoc(collection(db, 'administradortiempos'), {
         nombreAtleta,
         numeroParticipante,
         tiempo: tiempoString,
@@ -115,6 +120,7 @@ function AdministradorTiempos() {
     }
   };
 
+  // Función para eliminar un atleta de Firebase
   const handleEliminarAtleta = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'administradortiempos', id));
@@ -124,30 +130,7 @@ function AdministradorTiempos() {
     }
   };
 
-  const handleEditarAtleta = async (id: string, atletaEditado: FormData) => {
-    try {
-      const { nombreAtleta, numeroParticipante, tiempo, categoria, sexo, carrera, posicion, distancia, fecha } = atletaEditado;
-      const tiempoString = `${tiempo.hours}:${tiempo.minutes}:${tiempo.seconds}.${tiempo.nanoseconds}`;
-
-      await updateDoc(doc(db, 'administradortiempos', id), {
-        nombreAtleta,
-        numeroParticipante,
-        tiempo: tiempoString,
-        categoria,
-        sexo,
-        carrera,
-        posicion,
-        distancia,
-        fecha
-      });
-
-      obtenerAtletasDesdeFirebase();
-      setEditIndex(null);
-    } catch (error) {
-      console.error('Error al editar el atleta:', error);
-    }
-  };
-
+  // Función para manejar cambios en los campos del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prevFormData => ({
@@ -156,6 +139,7 @@ function AdministradorTiempos() {
     }));
   };
 
+  // Función para manejar cambios en el tiempo
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newTime = { ...formData.tiempo, [name]: parseInt(value) || 0 };
@@ -165,14 +149,19 @@ function AdministradorTiempos() {
     }));
   };
 
+  // Función para manejar cambios en la selección de carrera
   const handleCarreraChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
     setFormData(prevFormData => ({
       ...prevFormData,
-      carrera: value
+      carrera: value,
+      posicion: 0,
+      distancia: '',
+      fecha: ''
     }));
   };
 
+  // Función para editar un atleta
   const handleEdit = (index: number) => {
     const elementoAEditar = data[index];
     if (elementoAEditar && elementoAEditar.tiempo) {
@@ -196,8 +185,9 @@ function AdministradorTiempos() {
     }
   };
 
+  // Función para guardar los cambios realizados en la edición de un atleta
   const handleSave = async (index: number) => {
-    try {
+    try{
       const editedAtleta: AtletaData = {
         id: data[index].id,
         ...formData,
@@ -207,34 +197,50 @@ function AdministradorTiempos() {
       const newData = [...data];
       newData[index] = editedAtleta;
 
-      setData(newData);
-      setFormData({
-        nombreAtleta: '',
-        numeroParticipante: '',
-        tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
-        categoria: '',
-        sexo: '',
-        carrera: '',
-        posicion: 0, 
-        distancia: '', 
-        fecha: '' 
-      });
-      setEditIndex(null);
-    } catch (error) {
-      console.error('Error al guardar los cambios del atleta:', error);
+      setData(newData); 
+
+      await updateDoc(doc(db, 'administradortiempos', editedAtleta.id), editedAtleta as any);
+
+      setEditIndex(null); // Limpiar el índice de edición
+    } catch(error){
+      console.error('Error al guardar los cambios:', error);
     }
   };
 
+  // Función para cancelar la edición de un atleta
+  const handleCancel = () => {
+    setEditIndex(null);
+  };
+
+  // Función para manejar el envío del formulario
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validar si hay campos vacíos
+    const isEmpty = Object.values(formData).some(value => value === '');
+
+    if (isEmpty) {
+      alert('Por favor completa todos los campos.');
+      return; // Detener el envío del formulario si hay campos vacíos
+    }
 
     if (editIndex !== null) {
       handleSave(editIndex);
     } else {
       addAtletaDataToFirebase(formData);
     }
+    setFormData({
+      nombreAtleta: '',
+      numeroParticipante: '',
+      tiempo: { hours: 0, minutes: 0, seconds: 0, nanoseconds: 0 },
+      categoria: '', 
+      sexo: '',
+      carrera: '',
+      posicion: 0, 
+      distancia: '', 
+      fecha: '' 
+    }); // Limpiar el formulario después de enviar
   };
-
   const Navbar: React.FC = () => {
     return(
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
@@ -262,15 +268,15 @@ function AdministradorTiempos() {
                     </span>
                   </Link>
                   <Link href="/Admin/confirmaciones">
-                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" />Confirmación de Pagos
                     </span>
                   </Link>
                   <Link href="/Admin/ControlTiempos">
-                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                                            <FaTrophy className="mr-1" />Control Tiempos
-                                        </span>
-                                    </Link>
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" />Control Tiempos
+                    </span>
+                  </Link>
                   <Link href="/Admin/editarcarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" />Editar Carreras
@@ -317,14 +323,14 @@ function AdministradorTiempos() {
           <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE TIEMPOS</h1>
           <img src="/T.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '250px' }} />
           <form className="mi-formulario" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="carrera">Carrera:</label>
+            <div className="form-field">
+            <label htmlFor="Carrera" className="block font-semibold">Carrera:</label>
               <select
                 id="carrera"
                 name="carrera"
                 value={formData.carrera}
                 onChange={handleCarreraChange}
-                className="border p-2 w-full"
+                className="form-input"
               >
                 <option value="">Seleccione una carrera</option>
                 {carreras.map(carrera => (
@@ -332,37 +338,36 @@ function AdministradorTiempos() {
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor="nombreAtleta">Nombre Atleta:</label>
+            <div className="form-field">
+            <label htmlFor="Nombre Atleta" className="block font-semibold">Nombre Atleta:</label>
               <input
                 type="text"
                 id="nombreAtleta"
                 name="nombreAtleta"
                 value={formData.nombreAtleta}
                 onChange={handleChange}
-                className="border p-2 w-full"
+                className="form-input"
               />
             </div>
-            <div>
-              <label htmlFor="numeroParticipante">Numero Participante:</label>
+            <div className="form-field">
+            <label htmlFor="Numero Participante" className="block font-semibold">Numero de participante:</label>
               <input
                 type="text"
                 id="numeroParticipante"
                 name="numeroParticipante"
                 value={formData.numeroParticipante}
                 onChange={handleChange}
-                className="border p-2 w-full"
+                className="form-input"
               />
             </div>
-            <div>
-              <label htmlFor="tiempo">Tiempo:</label>
-              <div className="tiempo-inputs">
+            <div className="form-field">
+              <label htmlFor="tiempo">Tiempo:</label><div className="tiempo-inputs,block font-semibold">
                 <input
                   type="number"
                   name="hours"
                   value={formData.tiempo.hours}
                   onChange={handleTimeChange}
-                  className="border p-2"
+                  className="form-input"
                 />
                 <span>H:</span>
                 <input
@@ -370,7 +375,7 @@ function AdministradorTiempos() {
                   name="minutes"
                   value={formData.tiempo.minutes}
                   onChange={handleTimeChange}
-                  className="border p-2"
+                  className="form-input"
                 />
                 <span>M:</span>
                 <input
@@ -378,7 +383,7 @@ function AdministradorTiempos() {
                   name="seconds"
                   value={formData.tiempo.seconds}
                   onChange={handleTimeChange}
-                  className="border p-2"
+                  className="form-input"
                 />
                 <span>S:</span>
                 <input
@@ -386,22 +391,22 @@ function AdministradorTiempos() {
                   name="nanoseconds"
                   value={formData.tiempo.nanoseconds}
                   onChange={handleTimeChange}
-                  className="border p-2"
+                  className="form-input"
                 />
-                <span>NS</span>
+                <span>NS:</span>
               </div>
             </div>
-            <div style={{ marginBottom: '10px' }}>
+            <div className="form-field">
               <label htmlFor="categoria" className="block font-semibold">Categoría:</label>
               <select
                 id="categoria"
                 name="categoria"
                 value={formData.categoria} 
                 onChange={(e) => setFormData(prevState => ({ ...prevState, categoria: e.target.value }))}
-                className="border p-2 w-full"
+                className="form-input"
               >
                 <option value="Categoria">Categoria</option>
-                <option value="Femenino, Junior">Femenina, Junior</option>
+                <option value="Femenino,Junior">Femenina,Junior</option>
                 <option value="Femenino,Mayor">Femenina,Mayor</option>
                 <option value="Femenino,Veterano">Femenina,Veterano A</option>
                 <option value="Femenino,Veterano B">Femenina,Veterano B</option>
@@ -414,176 +419,201 @@ function AdministradorTiempos() {
                 <option value="Masculino,Veterano C">Masculino,Veterano C</option>
               </select>
             </div>
-            <div>
+            <div className="form-field">
               <label htmlFor="sexo" className="block font-semibold">Sexo:</label>
               <select
                 id="sexo"
                 name="sexo"
                 value={formData.sexo} 
                 onChange={(e) => setFormData(prevState => ({ ...prevState, sexo: e.target.value }))}
-                className="border p-2 w-full"
+                className="form-input"
               >
                 <option value="Sexo">Sexo</option>
                 <option value="Femenino">Femenino</option>
                 <option value="Masculino">Masculino</option>
               </select>
             </div>
-            {/* Nuevo campo: posición */}
-            <div>
-              <label htmlFor="posicion">Posición:</label>
+     
+            <div className="form-field">
+            <label htmlFor="Posición" className="block font-semibold">Posición:</label>
               <input
                 type="text"
                 id="posicion"
                 name="posicion"
                 value={formData.posicion}
                 onChange={handleChange}
-                className="border p-2 w-full"
+                className="form-input"
               />
             </div>
-            {/* Nuevo campo: distancia */}
-            <div>
-              <label htmlFor="distancia">Distancia:</label>
+      
+            <div className="form-field">
+            <label htmlFor="Distancia" className="block font-semibold">Distancia:</label>
               <input
                 type="text"
                 id="distancia"
                 name="distancia"
                 value={formData.distancia}
                 onChange={handleChange}
-                className="border p-2 w-full"
+                className="form-input"
               />
             </div>
-            {/* Nuevo campo: fecha */}
-            <div>
-              <label htmlFor="fecha">Fecha:</label>
+  
+            <div className="form-field">
+            <label htmlFor="fecha" className="block font-semibold">Fecha:</label>
               <input
                 type="date"
                 id="fecha"
                 name="fecha"
                 value={formData.fecha}
                 onChange={handleChange}
-                className="border p-2 w-full"
+                className="form-input"
               />
             </div>
-            <button className="agregar" type="submit">Agregar</button>
+            <div className="form-field">
+              <button className="agregar" type="submit">Agregar</button>
+            </div>
           </form>
         </div>
         <br />
         <br />
         <br />
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: 'blue--700', textAlign: 'center' }}>Informe de tiempos:</h1>
-        <table className="table-center w-full border-collapse border border-gray-300 shadow-lg rounded-center">
-          <thead style={{ backgroundColor: 'blue--700' }} className="">
-            <tr>
-              <th className="px-4 py-2">#</th>
-              <th className="px-4 py-2">Nombre Atleta</th>
-              <th className="px-4 py-2">Numero Participante</th>
-              <th className="px-4 py-2">Tiempo</th>
-              <th className="px-4 py-2">Categoría</th>
-              <th className="px-4 py-2">Sexo</th>
-              <th className="px-4 py-2">Carrera</th>
-              {/* Nuevas columnas: posición, distancia, fecha */}
-              <th className="px-4 py-2">Posición</th>
-              <th className="px-4 py-2">Distancia</th>
-              <th className="px-4 py-2">Fecha</th>
-              {/* Fin de las nuevas columnas */}
-              <th className="px-4 py-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{item.nombreAtleta}</td>
-                <td>{item.numeroParticipante}</td>
-                <td>
-                  {item.tiempo && item.tiempo.split(/[:.]/).map((part, index) => (
-                    <span key={index}>{part}{index === 1 ? ':' : (index === 2 ? '.' : '')}</span>
-                  ))}
-                </td>
-                <td>{item.categoria}</td>
-                <td>{item.sexo}</td>
-                <td>{item.carrera}</td>
-                {/* Nuevas celdas: posición, distancia, fecha */}
-                <td>{item.posicion}</td>
-                <td>{item.distancia}</td>
-                <td>{item.fecha}</td>
-                {/* Fin de las nuevas celdas */}
-                <td>
-                  <button className="editar" onClick={() => handleEdit(index)}>
-                    Editar
-                  </button>
-                  <button
-                    className="eliminar"
-                    onClick={() => handleEliminarAtleta(item.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '3rem', color: 'blue--700', textAlign: 'center' }}>Informe de tiempos:</h1>
+<table className="w-full border-collapse border border-gray-300 shadow-lg rounded-center table-center">
+  <thead className="bg-blue-700">
+    <tr>
+      <th className="px-4 py-2">#</th>
+      <th className="px-4 py-2">Nombre Atleta</th>
+      <th className="px-4 py-2">Numero Participante</th>
+      <th className="px-4 py-2">Tiempo</th>
+      <th className="px-4 py-2">Categoría</th>
+      <th className="px-4 py-2">Sexo</th>
+      <th className="px-4 py-2">Carrera</th>
+      <th className="px-4 py-2">Posición</th>
+      <th className="px-4 py-2">Distancia</th>
+      <th className="px-4 py-2">Fecha</th>
+
+      <th className="px-4 py-2">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {data.map((item, index) => (
+      <tr key={index}>
+        <td>{index + 1}</td>
+        <td>{item.nombreAtleta}</td>
+        <td>{item.numeroParticipante}</td>
+        <td>
+          {item.tiempo && item.tiempo.split(/[:.]/).map((part, index) => (
+            <span key={index}>{part}{index === 0 ? ':' : (index === 1 ? ':' : index === 2 ? ':' :index === 3 ? '.' : '')}</span>
+          ))}
+        </td>
+        <td>{item.categoria}</td>
+        <td>{item.sexo}</td>
+        <td>{item.carrera}</td>
+
+        <td>{item.posicion}</td>
+        <td>{item.distancia}</td>
+        <td>{item.fecha}</td>
+
+        <td>
+          <button className="editar" onClick={() => handleEdit(index)}>
+            Editar
+          </button>
+          <button
+            className="eliminar"
+            onClick={() => handleEliminarAtleta(item.id)}
+          >
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
       </div>
       <style>
         {`
-          .mi-formulario {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-          }
-          .agregar {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 5px 2px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-          }
-          
-          .editar {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-right: 5px;
-          }
-          .eliminar {
-            background-color:  red;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-          }
-          .table-center {
-            margin: auto;
-            text-align: center;
-            border-collapse: separate; /* Para separar los bordes de las celdas */
-            border-spacing: 0; /* Espacio entre los bordes de las celdas */
-          }
-          
-          .table-center th,
-          .table-center td {
-            padding: 5px; /* Ajusta el espacio interno de las celdas según sea necesario */
-            border: 1px solid #ccc; /* Agrega un borde a todas las celdas */
-          }
-          
-          /* Estilo para las celdas del encabezado de la tabla */
-          .table-center th {
-            background-color: #007bff;
-            color: #fff;
-          }
-          
-          /* Estilo para las filas pares de la tabla */
-          .table-center tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
-          }
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .form-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .table-container {
+          width: 90%; /* Ajusta el ancho de la tabla según sea necesario */
+          margin-top: 50px; /* Espacio superior */
+          margin-bottom: 20px; /* Espacio inferior */
+        }
+        
+        .mi-formulario {
+          margin: 0 auto; /* Esto centra el formulario horizontalmente */
+          max-width: 1500px; /* Ajusta el ancho máximo según sea necesario */
+        }
+        
+        .form-field {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 10px;
+          width: 100%;
+        }
+        
+        .form-input {
+          padding: 5px 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 16px;
+        }
+        
+        .agregar {
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          padding: 3px 2px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+        }
+        
+        .editar {
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          margin-right: 5px;
+        }
+        
+        .eliminar {
+          background-color:  red;
+          color: #fff;
+          border: none;
+          padding: 5px 8px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+        
+       
+        
+        .table-center th,
+        .table-center td {
+          padding: 4px; /* Ajusta el espacio interno de las celdas según sea necesario */
+          border: 1px solid #ccc; /* Agrega un borde a todas las celdas */
+        }
+        
+        /* Estilo para las celdas del encabezado de la tabla */
+        .table-center th {
+          background-color: #007bff;
+          color: #fff;
+        }
+     
+        
         `}
       </style>
     </div>

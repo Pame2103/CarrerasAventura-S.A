@@ -242,8 +242,14 @@ function ListaParticipantes(): JSX.Element {
       <br />
       <br />
       <br />
+      <br />
+      <br />
+      <br />
       <div className="container mx-auto p-4">
-        <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Lista de Participantes</h2>
+       
+       <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Lista de Participantes</h2>
+      <br />
+      <div className="flex justify-center"></div>
         <div className="mb-4">
           <label htmlFor="evento">Seleccionar Evento:</label>
           <select 
