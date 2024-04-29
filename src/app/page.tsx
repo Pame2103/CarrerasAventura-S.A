@@ -59,9 +59,9 @@ export default function Home() {
   }, []);
 
   const carouselImages = [
-    "/PIES.png",
-    "/25Aniversario.png",
-    "/HAHA.png",
+    "\Carre.gif",
+    "\Carreras Aventura (1).gif",
+    "\Ca(1).gif",
   ];
 
   const faqs = [
@@ -106,10 +106,10 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Sección de Próximos Eventos */}
+      
           <div className="mb-8 mx-auto flex items-center justify-center">
             <div className="flex justify-center">
-              {/* División izquierda */}
+       
               <div className="w-1/2 p-2 flex flex-col">
                 <h2 className="text-2xl font-bold mb-4">Categorias Femeninas</h2>
                 <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
