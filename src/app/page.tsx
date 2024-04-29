@@ -1,7 +1,15 @@
-'use client';
+'use client'
+import React, { useState, useEffect } from "react";
 import Navbar from "./componentes/navbar";
 import Fotter from "./componentes/fotter";
-import { useState, useEffect } from "react"; // Importa useState y useEffect si no los tienes importados
+import { db } from "../../firebase/firebase";
+import { collection, getDocs } from 'firebase/firestore'; // Importa los métodos necesarios de Firestore
+
+interface Evento {
+  title: string;
+  date: string;
+  location: string;
+}
 
 interface FAQItemProps {
   pregunta: string;
@@ -10,6 +18,7 @@ interface FAQItemProps {
 
 export default function Home() {
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [upcomingEvents, setUpcomingEvents] = useState<Evento[]>([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,6 +41,29 @@ export default function Home() {
     );
   };
 
+  useEffect(() => {
+    async function fetchEvents() {
+      const eventosCollection = collection(db, 'Configuracion Carreeras');
+      const eventosSnapshot = await getDocs(eventosCollection);
+
+      const eventos: Evento[] = eventosSnapshot.docs.map(doc => ({
+        title: doc.data().nombre,
+        date: doc.data().fecha,
+        location: doc.data().lugar
+      }));
+
+      setUpcomingEvents(eventos);
+    }
+
+    fetchEvents();
+  }, []);
+
+  const carouselImages = [
+    "/PIES.png",
+    "/25Aniversario.png",
+    "/HAHA.png",
+  ];
+
   const faqs = [
     {
       pregunta: '¿Cómo me registro para una carrera?',
@@ -49,32 +81,6 @@ export default function Home() {
       pregunta: '¿Qué debo hacer en caso de tener una emergencia durante la carrera?',
       respuesta: 'Si experimentas una lesión o emergencia durante la carrera, te recomendamos buscar ayuda de inmediato en uno de nuestros puestos de primeros auxilios o notificar a uno de los voluntarios.',
     },
-  ];
-
-  const upcomingEvents = [
-    {
-      title: 'Carrera ecologica',
-      date: '2023-01-15',
-      location: 'Campus Coto',
-    },
-
-    {
-      title: 'Carrera de Montaña',
-      date: '2023-02-20',
-      location: 'San Vito',
-    },
-
-    {
-      title: 'Carrera de Montaña',
-      date: '2023-02-20',
-      location: 'Cerro Chirripó',
-    },
-  ];
-  const carouselImages = [
-    "/PIES.png",
-    "/25Aniversario.png",
-    "/HAHA.png",
-   
   ];
 
   return (
