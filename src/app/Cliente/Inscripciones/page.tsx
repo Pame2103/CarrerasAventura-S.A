@@ -522,10 +522,21 @@ lateralidad: '',
                 <strong>He leído y acepto los siguientes términos y condiciones</strong>
               </label>
             </div>
-
+            <input 
+              type="submit" 
+              value="Enviar Inscripción" 
+              style={{ 
+                padding: '10px 20px', 
+                fontSize: '16px',
+                background: 'blue',  
+                color: 'white',       
+              }} 
+            />
           </form>
         </div>
+  
+        </div>
       </div>
-    </div>
+
   );
 }
