@@ -92,8 +92,9 @@ export default function Historico() {
       <br />
       <br />
       <div className="p-4">
-        <h1 className="text-3xl font-bold mb-8 text-center">Histórico de Corredores</h1>
-       
+
+        <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold', backgroundColor: '#3B79D8', color: 'white' }}>Histórico de Corredores</h2>
+                <br/>
         <div className="mb-4 flex flex-col md:flex-row justify-center items-center">
           <input 
             type="text" 

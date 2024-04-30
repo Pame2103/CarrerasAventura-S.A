@@ -91,8 +91,14 @@ function Records() {
              <Navbar />
              <br />
              <br />
-            <div className="container mx-auto p-4">
-                <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Récords de corredores</h2>
+             <br />
+             <br />
+             <br />
+             <br />
+            <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold', backgroundColor: '#3B79D8', color: 'white' }}>Récords de corredores</h2>
+<br />
+
+
                 <div className="flex items-center justify-center mb-4">
                     <select value={carreraSeleccionada} onChange={handleCarreraSeleccionada} className="px-2 py-1 border border-gray-300 rounded-md mr-2">
                         <option value="">Todas las carreras</option>
@@ -102,7 +108,7 @@ function Records() {
                     </select>
                 </div>
                 <table className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
-                    <thead style={{ backgroundColor: '#B1CEE3' }}>
+                    <thead style={{ backgroundColor: '#3B79D8' }}>
                         <tr>
                             <th className="border border-gray-500 p-2">Nombre de la carrera</th>
                             <th className="border border-gray-500 p-2">Nombre del Atleta</th>
@@ -129,27 +135,6 @@ function Records() {
                         ))}
                     </tbody>
                 </table>
-            </div>
-            <style>
-                {`
-                    body {
-                        margin: 0;
-                        padding: 0;
-                        background-size: cover;
-                        height: 100vh;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
-                    .container {
-                        max-width: 1600px;
-                        padding: 20px;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        background: rgba(200, 200, 200, 0.7);
-                    }
-                `}
-            </style>
         </div>
     );
 }

@@ -6,20 +6,6 @@ import Navbar from '@/app/componentes/navbar';
 
 function Resultados() {
     const [resultados, setResultados] = useState<Resultado[]>([]);
-    const [nuevoResultado, setNuevoResultado] = useState({
-        nombreAtleta: '', 
-        carrera: '',
-        fecha: '',
-        distancia: '',
-        categoria: '',
-        horas: '',
-        minutos: '',
-        segundos: '',
-        nanosegundos: '',
-        posicion: '',
-        sexo: '',
-    });
-    const [posicion, setPosicion] = useState<number>(1);
     const [filtro, setFiltro] = useState<string>('');
 
     interface Resultado {
@@ -68,17 +54,23 @@ function Resultados() {
     };
 
     return (
-
         <div>
              <Navbar />
              <br/>
              <br/>
-            <div className="container mx-auto p-4">
-                <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Resultados de las carreras</h2>
+             <br/>
+             <br/>
+             <br/>
+             <br/>
+             <div className="container mx-auto p-4">
+              
+                <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold', backgroundColor: '#3B79D8', color: 'white' }}>Resultados de las carreras</h2>
+                <br/>
+             
                 <div className="flex items-center justify-center mb-4">
                     <input
                         type="text"
-                        placeholder="Buscar por nombre de atleta o nombre de carrera"
+                        placeholder="Por nombre atleta o por carrera"
                         value={filtro}
                         onChange={(e) => setFiltro(e.target.value)}
                         className="px-2 py-1 border border-gray-300 rounded-md mr-2"
@@ -86,7 +78,7 @@ function Resultados() {
                     <button onClick={handleBuscar} className="px-3 py-1 bg-blue-500 text-white rounded-md">Buscar</button>
                 </div>
                 <table className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
-                    <thead style={{ backgroundColor: '#B1CEE3' }} className="">
+                    <thead style={{ backgroundColor: '#3B79D8', color: 'white' }} className="">
                         <tr>
                             <th className="border border-gray-500 p-2">Nombre de la carrera</th>
                             <th className="border border-gray-500 p-2">Nombre del Atleta</th>
@@ -114,26 +106,6 @@ function Resultados() {
                     </tbody>
                 </table>
             </div>
-            <style>
-                {`
-                    body {
-                        margin: 0;
-                        padding: 0;
-                        background-size: cover;
-                        height: 100vh;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
-                    .container {
-                        max-width: 1600px;
-                        padding: 20px;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        background: rgba(200, 200, 200, 0.7);
-                    }
-                `}
-            </style>
         </div>
     );
 }
