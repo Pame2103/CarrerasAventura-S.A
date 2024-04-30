@@ -103,10 +103,10 @@ function Carreras() {
       <div style={{ fontFamily: 'Arial', color: '#3c78f2#', backgroundColor: '#E0E6F3', padding: '20px' }}>
       <br />
         <br />
-        <Typography variant="h1" align="center" sx={{ fontSize: '30px', color: 'black', marginBottom: '20px' }}>EVENTOS DISPONIBLES</Typography>
+        <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold', backgroundColor: '#3B79D8', color: 'white' }}>EVENTOS DISPONIBLES</h2>
         <br />
-       
-        
+        <br />
+        <br />
         <Grid container spacing={2} justifyContent="center">
           {Object.keys(carrerasByMonth)
             .sort((a, b) => {
