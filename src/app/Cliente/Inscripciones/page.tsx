@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { db } from '../../../../firebase/firebase';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, getDoc, doc, updateDoc } from 'firebase/firestore';
 import Navbar from '@/app/componentes/navbar';
 
 interface Carrera {
@@ -20,7 +20,7 @@ export default function Inscripciones() {
     telefono: '',
     nacimiento: '',
     tallaCamisa: '',
-lateralidad: '',
+    lateralidad: '',
     nombreEmergencia: '',
     telefonoEmergencia: '',
     parentescoEmergencia: '',
@@ -89,6 +89,7 @@ lateralidad: '',
 
     try {
       await addFormDataToFirebase();
+      await actualizarCupoDisponible();
       console.log('Form Data:', formData);
     } catch (error) {
       console.error('Error adding form data to Firebase:', error);
@@ -105,6 +106,25 @@ lateralidad: '',
     } catch (error) {
       console.error('Error adding form data: ', error);
       throw error;
+    }
+  };
+
+  const actualizarCupoDisponible = async () => {
+    if (carreraSeleccionada) {
+      const carreraQuery = query(collection(db, 'Configuracion Carreeras'), where('nombre', '==', carreraSeleccionada.nombre));
+      const carreraSnapshot = await getDocs(carreraQuery);
+      carreraSnapshot.forEach(async (doc) => {
+        const carreraRef = doc.ref;
+        const cupoActual = parseInt(doc.data().cupoDisponible);
+        if (!isNaN(cupoActual) && cupoActual > 0) {
+          await updateDoc(carreraRef, { cupoDisponible: (cupoActual - 1).toString() });
+          console.log('Cupo disponible actualizado para', carreraSeleccionada.nombre);
+        } else {
+          console.error('El valor de cupoDisponible para', carreraSeleccionada.nombre, 'no es válido:', cupoActual);
+        }
+      });
+    } else {
+      console.error('No se ha seleccionado ninguna carrera');
     }
   };
 
