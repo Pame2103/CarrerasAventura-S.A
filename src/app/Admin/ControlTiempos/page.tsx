@@ -156,107 +156,88 @@ function Resultados() {
        
       </nav>
       <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-           
-            <br />
-            <br />
-            <br />
-            <br />
-  
-            <div className="container mx-auto p-4">
-              
-                <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Control Tiempos</h2>
-                <br />
-            <br />
-            <br />
             
-                <div className="flex items-center justify-center mb-4">
-                    <select
-                        value={carreraSeleccionada}
-                        onChange={(e) => setCarreraSeleccionada(e.target.value)}
-                        className="px-2 py-1 border border-gray-300 rounded-md mr-2 text-black"
-                        style={{ textAlign: 'center', fontWeight: 'bold', color: '#000' }}
-                    >
-                        <option value="">Seleccionar carrera</option>
-                        {carreras.map((nombre, index) => (
-                            <option  style={{ textAlign: 'center', fontWeight: 'bold', color: '#000' }}  key={index} value={nombre}>
-                                {nombre}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={exportToPdf} className="px-3 py-1 bg-green-500 text-white rounded-md ml-2">Exportar a PDF</button>
-                </div>
-                <br />
-            <br />
-            <br />
-            <br />
-        
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-                <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
-                <br />
-            <br />
-        \
-                    <thead style={{ backgroundColor: '#B1CEE3' }} className="">
-                        <tr>
-                            <th className="border border-gray-500 p-2">Nombre de la carrera</th>
-                            <th className="border border-gray-500 p-2">Nombre del Atleta</th>
-                            <th className="border border-gray-500 p-2">Fecha</th>
-                            <th className="border border-gray-500 p-2">Distancia</th>
-                            <th className="border border-gray-500 p-2">Categoría</th>
-                            <th className="border border-gray-500 p-2">Tiempo</th>
-                            <th className="border border-gray-500 p-2">Posición</th>
-                            <th className="border border-gray-500 p-2">Sexo</th>
-                        </tr>
-                    </thead>
-                    <br />
            
-                    <tbody>
-                        {resultadosFiltradosOrdenados.map((resultado, index) => (
-                            <tr key={index}>
-                                <td className="border border-gray-500 p-2">{resultado.carrera}</td>
-                                <td className="border border-gray-500 p-2">{resultado.nombreAtleta}</td>
-                                <td className="border border-gray-500 p-2">{resultado.fecha}</td>
-                                <td className="border border-gray-500 p-2">{resultado.distancia}</td>
-                                <td className="border border-gray-500 p-2">{resultado.categoria}</td>
-                                <td className="border border-gray-500 p-2">{resultado.tiempo}</td>
-                                <td className="border border-gray-500 p-2">{resultado.posicion}</td>
-                                <td className="border border-gray-500 p-2">{resultado.sexo}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            <style>
-                {`
-                    body {
-                        margin: 0;
-                        padding: 0;
-                        background-size: cover;
-                        height: 100vh;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
-                    .container {
-                        max-width: 1600px;
-                        padding: 20px;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        background: rgba(200, 200, 200, 0.7);
-                    }
-                `}
-            </style>
-        </div>
+         
+       
+      <br />
+      <br />
+  
+      <div className="container mx-auto p-4" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+  <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Control Tiempos</h2>
+  <div className="flex items-center justify-center mb-4">
+    <select
+      value={carreraSeleccionada}
+      onChange={(e) => setCarreraSeleccionada(e.target.value)}
+      className="px-2 py-1 border border-gray-300 rounded-md mr-2 text-black"
+      style={{ textAlign: 'center', fontWeight: 'bold', color: '#000' }}
+    >
+      <option value="">Seleccionar carrera</option>
+      {carreras.map((nombre, index) => (
+        <option style={{ textAlign: 'center', fontWeight: 'bold', color: '#000' }} key={index} value={nombre}>
+          {nombre}
+        </option>
+      ))}
+    </select>
+    <button onClick={exportToPdf} className="px-3 py-1 bg-green-500 text-white rounded-md ml-2">
+      Exportar a PDF
+    </button>
+  </div>
+
+  <div style={{ flexGrow: 1, overflowY: 'auto' }}>
+    <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
+      <thead style={{ backgroundColor: '#B1CEE3' }} className="">
+        <tr>
+          <th className="border border-gray-500 p-2">Nombre de la carrera</th>
+          <th className="border border-gray-500 p-2">Nombre del Atleta</th>
+          <th className="border border-gray-500 p-2">Fecha</th>
+          <th className="border border-gray-500 p-2">Distancia</th>
+          <th className="border border-gray-500 p-2">Categoría</th>
+          <th className="border border-gray-500 p-2">Tiempo</th>
+          <th className="border border-gray-500 p-2">Posición</th>
+          <th className="border border-gray-500 p-2">Sexo</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {resultadosFiltradosOrdenados.map((resultado, index) => (
+          <tr key={index}>
+            <td className="border border-gray-500 p-2">{resultado.carrera}</td>
+            <td className="border border-gray-500 p-2">{resultado.nombreAtleta}</td>
+            <td className="border border-gray-500 p-2">{resultado.fecha}</td>
+            <td className="border border-gray-500 p-2">{resultado.distancia}</td>
+            <td className="border border-gray-500 p-2">{resultado.categoria}</td>
+            <td className="border border-gray-500 p-2">{resultado.tiempo}</td>
+            <td className="border border-gray-500 p-2">{resultado.posicion}</td>
+            <td className="border border-gray-500 p-2">{resultado.sexo}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <style>
+    {`
+      body {
+        margin: 0;
+        padding: 0;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        max-width: 1600px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: rgba(200, 200, 200, 0.7);
+      }
+    `}
+  </style>
+      </div>
+      </div>
     );
 }
 
