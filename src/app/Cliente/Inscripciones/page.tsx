@@ -7,6 +7,7 @@ import Navbar from '@/app/componentes/navbar';
 interface Carrera {
   nombre: string;
   cupoDisponible: string;
+  fecha:string;
 }
 
 export default function Inscripciones() {
@@ -475,26 +476,31 @@ export default function Inscripciones() {
             <div style={{ marginBottom: '20px' }}>
               <label htmlFor="evento" style={{ display: 'inline-block', width: '150px' }}>Carreras Disponibles:</label>
               <select
-                id="evento"
-                name="evento"
-                value={formData.evento}
-                onChange={(event) => {
-                  handleInputChange(event);
-                  const carrera = carreras.find(carrera => carrera.nombre === event.target.value);
-                  if (carrera) {
-                    setCarreraSeleccionada(carrera);
-                  }
-                }}
-                required
-                style={{ display: 'inline-block' }}
-              >
-                <option value="">Selecciona una carrera</option>
-                {carreras
-                  .filter(carrera => parseInt(carrera.cupoDisponible) > 0)
-                  .map((carrera, index) => (
-                    <option key={index} value={carrera.nombre}>{carrera.nombre}</option>
-                  ))}
-              </select>
+  id="evento"
+  name="evento"
+  value={formData.evento}
+  onChange={(event) => {
+    handleInputChange(event);
+    const carrera = carreras.find(carrera => carrera.nombre === event.target.value);
+    if (carrera) {
+      setCarreraSeleccionada(carrera);
+    }
+  }}
+  required
+  style={{ display: 'inline-block' }}
+>
+  <option value="">Selecciona una carrera</option>
+  {carreras
+    .filter(carrera => parseInt(carrera.cupoDisponible) > 0) // Filtrar por cupo disponible mayor que 0
+    .filter(carrera => new Date(carrera.fecha) > new Date())
+
+
+
+    .map((carrera, index) => (
+      <option key={index} value={carrera.nombre}>{carrera.nombre}</option>
+    ))}
+</select>
+
             </div>
 
             <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Formas de pago:</h1>
