@@ -70,7 +70,6 @@ function RecuperarContrasena() {
           </Link>
         </form>
 
-        {/* Ventana emergente de éxito */}
         {showSuccessModal && (
           <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-white p-6 rounded-md shadow-md">
@@ -80,7 +79,6 @@ function RecuperarContrasena() {
           </div>
         )}
 
-        {/* Ventana emergente de error */}
         {showErrorModal && (
           <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-white p-6 rounded-md shadow-md">

@@ -49,25 +49,23 @@ function Confirmacionespago() {
 
     if (participanteAprobado) {
       try {
-        // Eliminar participante de la colección "Inscripciones"
+     
         await deleteDoc(doc(db, "inscripciones", id));
         console.log("Participante eliminado de Inscripciones.");
 
-        // Agregar participante a la colección "listaparticipantes"
         await addDoc(collection(db, "listaparticipantes"), participanteAprobado);
         console.log("Participante agregado a listaparticipantes.");
 
-        // Enviar correo electrónico al participante aprobado
         await enviarCorreoElectronico(participanteAprobado);
 
-        // Actualizar la lista de participantes eliminando al participante aprobado
+ 
         const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
         setParticipantes(updatedParticipantes);
 
-        // Eliminar también de la base de datos al rechazar al participante
+
         await handleRechazar(id);
 
-        // Abrir el modal
+//modal
         setModalIsOpen(true);
       } catch (error) {
         console.error("Error al aprobar el participante:", error);
@@ -79,11 +77,11 @@ function Confirmacionespago() {
     console.log("Botón Rechazar clickeado. ID:", id);
 
     try {
-      // Eliminar participante de la colección "Inscripciones"
+
       await deleteDoc(doc(db, "inscripciones", id));
       console.log("Participante eliminado de Inscripciones.");
 
-      // Actualizar la lista de participantes eliminando al participante rechazado
+
       const updatedParticipantes = participantes.filter((participante) => participante.id !== id);
       setParticipantes(updatedParticipantes);
     } catch (error) {
@@ -93,7 +91,7 @@ function Confirmacionespago() {
 
   const enviarCorreoElectronico = async (participante: Participante): Promise<void> => {
     try {
-      // Código para enviar correo electrónico de aprobación omitido por brevedad
+
       console.log(`Enviando correo de aprobación a ${participante.email}`);
     } catch (error) {
       console.error("Error sending approval email:", error);
@@ -103,7 +101,7 @@ function Confirmacionespago() {
 
   const sendRejectionEmail = async (participante: Participante): Promise<void> => {
     try {
-      // Código para enviar correo electrónico de rechazo omitido por brevedad
+  
       const subject = "Solicitud de participante rechazada";
       const body = `¡Hola estimado participante!
 
@@ -261,11 +259,7 @@ El equipo de Carreras Aventura`;
                       <FaTrophy className="mr-1" /> Lista de Participantes
                     </span>
                   </Link>
-                  <Link href="/Admin/record">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Records
-                    </span>
-                </Link>
+              
                 </div>
               </div>
             </div>

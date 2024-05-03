@@ -123,8 +123,8 @@ const MainMenu = () => {
            <br />
            <Sidebar link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
            <br />
-           <Sidebar link="/Admin/record" text="Records" description="" />
-           <br />
+         
+         
           
          </div>
          

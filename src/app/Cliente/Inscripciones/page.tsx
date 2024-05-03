@@ -95,7 +95,7 @@ export default function Inscripciones() {
       console.error('Error adding form data to Firebase:', error);
     }
 
-    // Reset the form data
+  
     setFormData(initialFormData);
   };
 

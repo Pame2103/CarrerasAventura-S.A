@@ -125,11 +125,6 @@ function Administradorcarreras() {
                       <FaTrophy className="mr-1" /> Lista de Participantes
                     </span>
                   </Link>
-                  <Link href="/Admin/record">
-                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Records
-                    </span>
-                  </Link>
                 
                 </div>
               </div>
