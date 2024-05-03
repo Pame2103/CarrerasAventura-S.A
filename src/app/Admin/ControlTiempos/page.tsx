@@ -181,7 +181,7 @@ function Resultados() {
             </button>
           </div>
     
-          <div style={{ flexGrow: 1, maxHeight: '300px', overflowY: 'auto' }}>
+          <div style={{ flexGrow: 1,  overflowY: 'auto' }}>
           <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
             <thead style={{ backgroundColor: '#B1CEE3' }} className="">
               <tr>
