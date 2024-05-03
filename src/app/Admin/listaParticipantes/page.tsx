@@ -127,17 +127,18 @@ function ListaParticipantes(): JSX.Element {
   
     return () => unsubscribe();
   }, []);
+
   const cargarCarreras = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'Configuracion Carreeras'));
-      console.log("Documentos en la colección:", querySnapshot.docs);
-      const carrerasData = Array.from(new Set(querySnapshot.docs.map(doc => doc.data().nombreCarrera)));
-      console.log("Carreras cargadas:", carrerasData);
-      setCarreras(['Todos', ...carrerasData]);
+      const carrerasData = querySnapshot.docs.map(doc => doc.data().nombreCarrera);
+      setCarreras(prevCarreras => ['Todos', ...Array.from(new Set([...prevCarreras, ...carrerasData]))]);
+
     } catch (error) {
       console.error('Error al cargar las carreras:', error);
     }
   };
+  
   
 
  
