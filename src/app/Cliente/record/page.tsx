@@ -41,7 +41,7 @@ function Records() {
         obtenerRecordsDesdeFirebase();
     }, []);
 
-    // Función para obtener las carreras desde Firebase
+  
     useEffect(() => {
         const obtenerCarrerasDesdeFirebase = async () => {
             try {
@@ -49,7 +49,7 @@ function Records() {
                 const carrerasData: string[] = [];
 
                 querySnapshot.forEach((doc) => {
-                    const nombreCarrera = doc.data().nombre; // Obtener específicamente el campo 'nombre'
+                    const nombreCarrera = doc.data().nombre; 
                     carrerasData.push(nombreCarrera);
                 });
 
@@ -62,17 +62,17 @@ function Records() {
         obtenerCarrerasDesdeFirebase();
     }, []);
 
-    // Función para filtrar los registros según la carrera seleccionada y mostrar solo los 3 mejores tiempos
+    
     const filtrarRecords = () => {
-        // Filtrar registros por carrera seleccionada
+    
         let registrosFiltrados = records.filter(record =>
             (carreraSeleccionada === '' || record.carrera === carreraSeleccionada)
         );
 
-        // Crear un objeto para almacenar los mejores tiempos por categoría
+
         const mejoresTiemposPorCategoria: { [categoria: string]: Record[] } = {};
 
-        // Iterar sobre los registros filtrados y almacenar los mejores tiempos por categoría
+    
         registrosFiltrados.forEach(record => {
             if (!mejoresTiemposPorCategoria[record.categoria]) {
                 mejoresTiemposPorCategoria[record.categoria] = [record];
@@ -81,7 +81,7 @@ function Records() {
             }
         });
 
-        // Ordenar los registros por tiempo en orden ascendente para cada categoría
+     
         Object.keys(mejoresTiemposPorCategoria).forEach(categoria => {
             mejoresTiemposPorCategoria[categoria].sort((a, b) => {
                 const tiempoA = convertirTiempoAMinutos(a.tiempo);
@@ -90,13 +90,12 @@ function Records() {
             });
         });
 
-        // Tomar solo los primeros 3 registros por categoría y combinarlos en un único array
         const mejoresTiempos: Record[] = [];
         Object.keys(mejoresTiemposPorCategoria).forEach(categoria => {
             mejoresTiempos.push(...mejoresTiemposPorCategoria[categoria].slice(0, 3));
         });
 
-        // Ordenar todos los registros combinados por tiempo en orden ascendente
+      
         mejoresTiempos.sort((a, b) => {
             const tiempoA = convertirTiempoAMinutos(a.tiempo);
             const tiempoB = convertirTiempoAMinutos(b.tiempo);
@@ -106,13 +105,12 @@ function Records() {
         return mejoresTiempos;
     };
 
-    // Función para convertir el tiempo de formato "mm:ss" a minutos
+  
     const convertirTiempoAMinutos = (tiempo: string) => {
         const [minutos, segundos] = tiempo.split(':').map(Number);
         return minutos * 60 + segundos;
     };
 
-    // Manejar el cambio de carrera seleccionada
     const handleCarreraSeleccionada = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCarreraSeleccionada(e.target.value);
     };
