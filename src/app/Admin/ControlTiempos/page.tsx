@@ -155,12 +155,10 @@ function Resultados() {
         </nav>
         <br />
         <br />
+      
         <br />
         <br />
-        <br />
-        <br />
-        <br />
-        <div className="container mx-auto p-4" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <div className="container mx-auto p-4" style={{ display: 'flex', flexDirection: 'column',maxHeight: '500px' }}>
           <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Control Tiempos</h2>
           <div className="flex items-center justify-center mb-4">
             <select
@@ -181,7 +179,7 @@ function Resultados() {
             </button>
           </div>
     
-          <div style={{ flexGrow: 1,  overflowY: 'auto' }}>
+          <div style={{ flexGrow: 1, maxHeight: '400px', overflowY: 'auto' }}>
           <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
             <thead style={{ backgroundColor: '#B1CEE3' }} className="">
               <tr>
@@ -232,7 +230,7 @@ function Resultados() {
                 background: rgba(200, 200, 200, 0.7);
               }
               .outer-container {
-                min-height: 100vh;
+                min-height: 80vh;
               }
             `}
           </style>
