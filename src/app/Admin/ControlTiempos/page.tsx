@@ -101,6 +101,7 @@ function Resultados() {
     });
 
     return (
+      
         <div>
         <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
         <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
@@ -152,12 +153,29 @@ function Resultados() {
           </div>
           <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
+       
       </nav>
-          
+      <br />
             <br />
             <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+           
+            <br />
+            <br />
+            <br />
+            <br />
+  
             <div className="container mx-auto p-4">
+              
                 <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Control Tiempos</h2>
+                <br />
+            <br />
+            <br />
+            
                 <div className="flex items-center justify-center mb-4">
                     <select
                         value={carreraSeleccionada}
@@ -174,8 +192,20 @@ function Resultados() {
                     </select>
                     <button onClick={exportToPdf} className="px-3 py-1 bg-green-500 text-white rounded-md ml-2">Exportar a PDF</button>
                 </div>
-               
+                <br />
+            <br />
+            <br />
+            <br />
+        
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
                 <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
+                <br />
+            <br />
+        \
                     <thead style={{ backgroundColor: '#B1CEE3' }} className="">
                         <tr>
                             <th className="border border-gray-500 p-2">Nombre de la carrera</th>
@@ -188,6 +218,8 @@ function Resultados() {
                             <th className="border border-gray-500 p-2">Sexo</th>
                         </tr>
                     </thead>
+                    <br />
+           
                     <tbody>
                         {resultadosFiltradosOrdenados.map((resultado, index) => (
                             <tr key={index}>
