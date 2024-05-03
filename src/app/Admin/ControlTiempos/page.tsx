@@ -176,36 +176,36 @@ function Resultados() {
             </button>
           </div>
     
-          <div style={{ flexGrow: 1, maxHeight: '500px', overflowY: 'auto' }}>
-  <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
-    <thead style={{ backgroundColor: '#B1CEE3' }} className="">
-      <tr>
-        <th className="border border-gray-500 p-2">Nombre de la carrera</th>
-        <th className="border border-gray-500 p-2">Nombre del Atleta</th>
-        <th className="border border-gray-500 p-2">Fecha</th>
-        <th className="border border-gray-500 p-2">Distancia</th>
-        <th className="border border-gray-500 p-2">Categoría</th>
-        <th className="border border-gray-500 p-2">Tiempo</th>
-        <th className="border border-gray-500 p-2">Posición</th>
-        <th className="border border-gray-500 p-2">Sexo</th>
-      </tr>
-    </thead>
+          <div style={{ flexGrow: 1, maxHeight: '300px', overflowY: 'auto' }}>
+          <table id="tabla-resultados" className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
+            <thead style={{ backgroundColor: '#B1CEE3' }} className="">
+              <tr>
+                <th className="border border-gray-500 p-2">Nombre de la carrera</th>
+                <th className="border border-gray-500 p-2">Nombre del Atleta</th>
+                <th className="border border-gray-500 p-2">Fecha</th>
+                <th className="border border-gray-500 p-2">Distancia</th>
+                <th className="border border-gray-500 p-2">Categoría</th>
+                <th className="border border-gray-500 p-2">Tiempo</th>
+                <th className="border border-gray-500 p-2">Posición</th>
+                <th className="border border-gray-500 p-2">Sexo</th>
+              </tr>
+            </thead>
 
-    <tbody>
-      {resultadosFiltradosOrdenados.map((resultado, index) => (
-        <tr key={index}>
-          <td className="border border-gray-500 p-2">{resultado.carrera}</td>
-          <td className="border border-gray-500 p-2">{resultado.nombreAtleta}</td>
-          <td className="border border-gray-500 p-2">{resultado.fecha}</td>
-          <td className="border border-gray-500 p-2">{resultado.distancia}</td>
-          <td className="border border-gray-500 p-2">{resultado.categoria}</td>
-          <td className="border border-gray-500 p-2">{resultado.tiempo}</td>
-          <td className="border border-gray-500 p-2">{resultado.posicion}</td>
-          <td className="border border-gray-500 p-2">{resultado.sexo}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+            <tbody>
+              {resultadosFiltradosOrdenados.map((resultado, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-500 p-2">{resultado.carrera}</td>
+                  <td className="border border-gray-500 p-2">{resultado.nombreAtleta}</td>
+                  <td className="border border-gray-500 p-2">{resultado.fecha}</td>
+                  <td className="border border-gray-500 p-2">{resultado.distancia}</td>
+                  <td className="border border-gray-500 p-2">{resultado.categoria}</td>
+                  <td className="border border-gray-500 p-2">{resultado.tiempo}</td>
+                  <td className="border border-gray-500 p-2">{resultado.posicion}</td>
+                  <td className="border border-gray-500 p-2">{resultado.sexo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           </div>
     
           <style>
