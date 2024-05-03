@@ -154,7 +154,12 @@ function Resultados() {
           </div>
         </nav>
         <br />
-    
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <div className="container mx-auto p-4" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <h2 style={{ textAlign: 'center', fontSize: '2em', fontWeight: 'bold' }}>Control Tiempos</h2>
           <div className="flex items-center justify-center mb-4">
