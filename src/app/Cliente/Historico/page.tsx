@@ -62,6 +62,22 @@ export default function Historico() {
     }
   };
 
+  const carouselImages = [
+    "\Carre.gif",
+    "\Carreras Aventura (1).gif",
+    "\Ca(1).gif",
+  ];
+  <div className="flex justify-center mb-8">
+  {carouselImages.map((image, index) => (
+    <img
+      key={index}
+      src={image}
+      alt={`Descripción de la imagen ${index + 1}`}
+      className="shadow-lg transition-transform hover:scale-110 carousel-image"
+      style={{ width: '350px', height: '250px', borderRadius: '15px', marginRight: '25px' }}
+    />
+  ))}
+</div>
   const renderFilas = () => {
     let filas;
     if (resultados.length > 0) {
