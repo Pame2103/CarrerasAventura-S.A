@@ -52,7 +52,11 @@ export default function Home() {
         location: doc.data().lugar
       }));
 
-      setUpcomingEvents(eventos);
+      // Filtrar eventos que no han pasado de fecha
+      const currentDate = new Date();
+      const filteredEvents = eventos.filter(event => new Date(event.date) > currentDate);
+
+      setUpcomingEvents(filteredEvents);
     }
 
     fetchEvents();
@@ -106,54 +110,67 @@ export default function Home() {
             ))}
           </div>
 
-      
-          <div className="mb-8 mx-auto flex items-center justify-center">
-            <div className="flex justify-center">
-       
-              <div className="w-1/2 p-2 flex flex-col">
-                <h2 className="text-2xl font-bold mb-4">Categorias Femeninas</h2>
-                <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
-                <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
-                <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
-                <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
-                <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
-              </div>
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-4">Próximos Eventos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {upcomingEvents.map((event, index) => (
+                <div
+                
+                  key={index}
+                  className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center event-card">
+                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+                  <p className="text-lg mb-2">Fecha: {event.date}</p>
+                  <p className="text-lg">Ubicación: {event.location}</p>
+                </div>
+                
+              ))}
+            </div>
+      <br />
+      <br />
 
-              {/* División derecha */}
-              <div className="w-1/2 p-2 flex flex-col">
-                <h2 className="text-2xl font-bold mb-4">Categorias Masculinas</h2>
-                <p className="flex-grow">1. Categoría Junior de 18 a 22 años cumplidos.</p>
-                <p className="flex-grow">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
-                <p className="flex-grow">3. Veteranos A de 46 a 50 años cumplidos</p>
-                <p className="flex-grow">4. Veteranos B de 51 a 55 años cumplidos</p>
-                <p className="flex-grow">5. Veteranos C de 56 en adelante.</p>
-              </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center">
+              <h2 className="text-2xl font-bold mb-4">Categorias Femeninas</h2>
+              <p className="text-lg">1. Categoría Junior de 18 a 22 años cumplidos.</p>
+              <img src="\18.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+             
+             <p className="text-lg">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
+             <img src="\26.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">3. Veteranos A de 46 a 50 años cumplidos</p>
+              <img src="\30.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">4. Veteranos B de 51 a 55 años cumplidos</p>
+              <img src="\45.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">5. Veteranos C de 56 en adelante.</p>
+              <img src="\55.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
             </div>
 
-            <div className="text-center">
-              <h2 className="text-4xl font-bold mb-4">Próximos Eventos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {upcomingEvents.map((event, index) => (
-                  <div
-                    key={index}
-                    className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center event-card">
-                    <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-                    <p className="text-lg mb-2">Fecha: {event.date}</p>
-                    <p className="text-lg">Ubicación: {event.location}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center">
+              <h2 className="text-2xl font-bold mb-4">Categorias Masculinas</h2>
+              <p className="text-lg">1. Categoría Junior de 18 a 22 años cumplidos.</p>
+              <img src="\h18.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">2. Categoría Mayor de 23 a 45 años cumplidos.</p>
+              <img src="\h20.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">3. Veteranos A de 46 a 50 años cumplidos</p>
+              <img src="\h45.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">4. Veteranos B de 51 a 55 años cumplidos</p>
+              <img src="\h50.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+              <p className="text-lg">5. Veteranos C de 56 en adelante.</p>
+              <img src="\h65.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
             <div className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center">
+            <img src="\mision.jpg" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
               <h2 className="text-2xl font-bold mb-4">Nuestra Misión</h2>
               <p className="text-lg">
                 En Carrera Aventura, nos dedicamos a fomentar la salud y el bienestar a través del atletismo. Organizamos eventos de primera categoría que buscan inspirar a las personas a ir más allá de sus límites y adoptar un estilo de vida activo. Creemos en la transformación que el deporte puede brindar a la vida de cada individuo. Esta versión resalta la dedicación de Carrera Aventura y enfatiza el impacto positivo que busca generar en la vida de las personas a través del atletismo.
               </p>
             </div>
             <div className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center">
+            <img src="\vision.png" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
               <h2 className="text-2xl font-bold mb-4">Nuestra Visión</h2>
               <p className="text-lg">
                 En Carrera Aventura, aspiramos a ser la plataforma líder a nivel mundial en carreras de atletismo. Nos dedicamos a proporcionar experiencias inolvidables que reúnan a atletas de diversas edades y niveles, tanto de empresas grandes como de pequeñas. Creemos que el deporte es un catalizador poderoso para el crecimiento y la colaboración, y estamos comprometidos a facilitar esta transformación en la comunidad empresarial global.
