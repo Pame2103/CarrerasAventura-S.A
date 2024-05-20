@@ -21,7 +21,6 @@ function Records() {
     const [carreraSeleccionada, setCarreraSeleccionada] = useState<string>('');
     const [carreras, setCarreras] = useState<string[]>([]);
 
-    // Función para obtener los registros desde Firebase
     useEffect(() => {
         const obtenerRecordsDesdeFirebase = async () => {
             try {
@@ -41,7 +40,6 @@ function Records() {
         obtenerRecordsDesdeFirebase();
     }, []);
 
-  
     useEffect(() => {
         const obtenerCarrerasDesdeFirebase = async () => {
             try {
@@ -62,50 +60,42 @@ function Records() {
         obtenerCarrerasDesdeFirebase();
     }, []);
 
-    
     const filtrarRecords = () => {
-    
-        let registrosFiltrados = records.filter(record =>
-            (carreraSeleccionada === '' || record.carrera === carreraSeleccionada)
-        );
+        const registrosFiltrados: { [carrera: string]: { [categoria: string]: Record[] } } = {};
 
-
-        const mejoresTiemposPorCategoria: { [categoria: string]: Record[] } = {};
-
-    
-        registrosFiltrados.forEach(record => {
-            if (!mejoresTiemposPorCategoria[record.categoria]) {
-                mejoresTiemposPorCategoria[record.categoria] = [record];
-            } else {
-                mejoresTiemposPorCategoria[record.categoria].push(record);
+        records.forEach(record => {
+            if (!registrosFiltrados[record.carrera]) {
+                registrosFiltrados[record.carrera] = {};
+            }
+            if (carreraSeleccionada === '' || record.carrera === carreraSeleccionada) {
+                if (!registrosFiltrados[record.carrera][record.categoria]) {
+                    registrosFiltrados[record.carrera][record.categoria] = [record];
+                } else {
+                    registrosFiltrados[record.carrera][record.categoria].push(record);
+                }
             }
         });
 
-     
-        Object.keys(mejoresTiemposPorCategoria).forEach(categoria => {
-            mejoresTiemposPorCategoria[categoria].sort((a, b) => {
-                const tiempoA = convertirTiempoAMinutos(a.tiempo);
-                const tiempoB = convertirTiempoAMinutos(b.tiempo);
-                return tiempoA - tiempoB;
-            });
-        });
+        return registrosFiltrados;
+    };
 
-        const mejoresTiempos: Record[] = [];
-        Object.keys(mejoresTiemposPorCategoria).forEach(categoria => {
-            mejoresTiempos.push(...mejoresTiemposPorCategoria[categoria].slice(0, 3));
-        });
+    const obtenerMejoresTiempos = () => {
+        const mejoresTiempos: { [carrera: string]: { [categoria: string]: Record[] } } = {};
 
-      
-        mejoresTiempos.sort((a, b) => {
-            const tiempoA = convertirTiempoAMinutos(a.tiempo);
-            const tiempoB = convertirTiempoAMinutos(b.tiempo);
-            return tiempoA - tiempoB;
+        Object.keys(filtrarRecords()).forEach(carrera => {
+            if (carrera === carreraSeleccionada || carreraSeleccionada === '') {
+                mejoresTiempos[carrera] = {};
+                Object.keys(filtrarRecords()[carrera]).forEach(categoria => {
+                    const recordsCategoria = filtrarRecords()[carrera][categoria];
+                    recordsCategoria.sort((a, b) => convertirTiempoAMinutos(a.tiempo) - convertirTiempoAMinutos(b.tiempo));
+                    mejoresTiempos[carrera][categoria] = recordsCategoria.slice(0, 3);
+                });
+            }
         });
 
         return mejoresTiempos;
     };
 
-  
     const convertirTiempoAMinutos = (tiempo: string) => {
         const [minutos, segundos] = tiempo.split(':').map(Number);
         return minutos * 60 + segundos;
@@ -116,7 +106,7 @@ function Records() {
     };
 
     return (
-        <div>
+        <div style={{ margin: '20px' }}>
             <Navbar />
             <br />
             <br />
@@ -134,34 +124,44 @@ function Records() {
                     ))}
                 </select>
             </div>
-            <table className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded">
-                <thead style={{ backgroundColor: '#3B79D8' }}>
-                    <tr>
-                        <th className="border border-gray-500 p-2">Nombre de la carrera</th>
-                        <th className="border border-gray-500 p-2">Nombre del Atleta</th>
-                        <th className="border border-gray-500 p-2">Fecha</th>
-                        <th className="border border-gray-500 p-2">Distancia</th>
-                        <th className="border border-gray-500 p-2">Categoría</th>
-                        <th className="border border-gray-500 p-2">Tiempo</th>
-                        <th className="border border-gray-500 p-2">Posición</th>
-                        <th className="border border-gray-500 p-2">Sexo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filtrarRecords().map((record, index) => (
-                        <tr key={index}>
-                            <td className="border border-gray-500 p-2">{record.carrera}</td>
-                            <td className="border border-gray-500 p-2">{record.nombreAtleta}</td>
-                            <td className="border border-gray-500 p-2">{record.fecha}</td>
-                            <td className="border border-gray-500 p-2">{record.distancia}</td>
-                            <td className="border border-gray-500 p-2">{record.categoria}</td>
-                            <td className="border border-gray-500 p-2">{record.tiempo}</td>
-                            <td className="border border-gray-500 p-2">{record.posicion}</td>
-                            <td className="border border-gray-500 p-2">{record.sexo}</td>
-                        </tr>
+            {Object.keys(obtenerMejoresTiempos()).map((carrera, index) => (
+                <div key={index} style={{ marginBottom: '20px' }}>
+                    <div style={{ backgroundColor: '#3B79D8', color: 'white', padding: '10px', marginBottom: '10px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50px' }}>{carrera}</div>
+                    {Object.keys(obtenerMejoresTiempos()[carrera]).map((categoria, idx) => (
+                        <div key={idx} style={{ marginBottom: '20px' }}>
+                            <div style={{ backgroundColor: '#3B79D8', color: 'white', padding: '5px', marginBottom: '5px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '30px' }}>{categoria}</div>
+                            <table className="table-auto w-full border-collapse border border-gray-300 shadow-lg rounded" style={{ marginBottom: '20px' }}>
+                                <thead style={{ backgroundColor: '#3B79D8' }}>
+                                    <tr>
+                                        <th className="border border-gray-500 p-2">Nombre de la carrera</th>
+                                        <th className="border border-gray-500 p-2">Nombre del Atleta</th>
+                                        <th className="border border-gray-500 p-2">Fecha</th>
+                                        <th className="border border-gray-500 p-2">Distancia</th>
+                                        <th className="border border-gray-500 p-2">Categoría</th>
+                                        <th className="border border-gray-500 p-2">Tiempo</th>
+                                        <th className="border border-gray-500 p-2">Posición</th>
+                                        <th className="border border-gray-500 p-2">Sexo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {obtenerMejoresTiempos()[carrera][categoria].map((record, idx) => (
+                                        <tr key={idx}>
+                                            <td className="border border-gray-500 p-2">{record.carrera}</td>
+                                            <td className="border border-gray-500 p-2">{record.nombreAtleta}</td>
+                                            <td className="border border-gray-500 p-2">{record.fecha}</td>
+                                            <td className="border border-gray-500 p-2">{record.distancia}</td>
+                                            <td className="border border-gray-500 p-2">{record.categoria}</td>
+                                            <td className="border border-gray-500 p-2">{record.tiempo}</td>
+                                            <td className="border border-gray-500 p-2">{record.posicion}</td>
+                                            <td className="border border-gray-500 p-2">{record.sexo}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     ))}
-                </tbody>
-            </table>
+                </div>
+            ))}
         </div>
     );
 }
