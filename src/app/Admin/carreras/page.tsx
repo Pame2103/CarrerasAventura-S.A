@@ -20,7 +20,7 @@ interface Carrera {
   costo: string;
   responsable: string;
   contacto: string;
-  cupo: number;
+  cupoDisponible: string;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ link, text, description }) => (
@@ -113,7 +113,7 @@ const Carreras: React.FC = () => {
                 <div className="ml-10 flex items-baseline space-x-4">
                   <Link href="/Admin/administradorCarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaRunning className="mr-1" /> Administrar Carreras
+                      <FaRunning className="mr-1" /> Crear Carreras
                     </span>
                   </Link>
                   <Link href="/Admin/administrarTiempos">
@@ -132,11 +132,10 @@ const Carreras: React.FC = () => {
                     </span>
                   </Link>
                   <Link href="/Admin/ControlTiempos">
-                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                                            <FaTrophy className="mr-1" />Control Tiempos
-                                        </span>
-                                    </Link>
-                
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" />Control Tiempos
+                    </span>
+                  </Link>
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" /> Lista de Participantes
@@ -160,16 +159,16 @@ const Carreras: React.FC = () => {
         </div>
       </nav>
       <br />
-        <br />
+      <br />
       <div className="text-black min-h-screen" style={{ fontFamily: 'Arial', backgroundColor: '#E0E6F3' }}>
         <br />
         <br />
         <br />
         <br />
         <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>ADMINISTRADOR DE CARRERAS</h1>
-    
-    <img src="/idea.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
-      
+
+        <img src="/idea.gif" alt="Descripción de la imagen" className="mx-auto mb-8" style={{ width: '250px', height: '200px' }} />
+
         <div className="grid grid-cols-3 gap-4">
           {Object.keys(carrerasByMonth)
             .sort((a, b) => {
@@ -182,15 +181,15 @@ const Carreras: React.FC = () => {
               const carrerasEnMes = carrerasByMonth[monthName]?.filter(carrera => new Date(carrera.fecha) > today);
               if (carrerasEnMes && carrerasEnMes.length > 0) {
                 return (
-                  <div key={monthName}>
+                  <div key={monthName} className="mb-8">
                     <h2 style={{ textAlign: 'center', textTransform: 'capitalize', fontSize: '24px', marginTop: '20px' }}>{monthName}</h2>
                     {carrerasEnMes.map(carrera => (
-                      <div key={carrera.id} className="bg-white rounded-lg shadow-md p-4">
+                      <div key={carrera.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
                         <div>
                           <h3 className="text-lg font-bold">{carrera.nombre}</h3>
                           <p>{carrera.edicion}</p>
                           <p>{carrera.fecha}</p>
-                          <p>Cupos Disponibles: {carrera.cupo}</p>
+                          <p>Cupos Disponibles: {carrera.cupoDisponible}</p>
                         </div>
                         <div>
                           <p>Distancia: {carrera.distancia}</p>

@@ -101,7 +101,7 @@ const MainMenu = () => {
        <Navbar />
        <br />
        <br />
-       <nav className="bg-white p-10 w-1/5 ml-30"> {/* Ajustar el margen izquierdo */}
+       <nav className="bg-white p-10 w-1/5 ml-30"> 
        <br />
        <br />
      
@@ -109,11 +109,11 @@ const MainMenu = () => {
        <br />
          <div className="flex flex-col space-y-2">
           
-           <Sidebar link="/Admin/administradorCarreras" text="Administrar Carreras" description="" />
+           <Sidebar link="/Admin/administradorCarreras" text="Crear Carreras" description="" />
            <br />
            <Sidebar link="/Admin/administrarTiempos" text="Administrar Tiempos" description="" />
            <br />
-           <Sidebar link="/Admin/carreras" text="Carreras" description="" />
+           <Sidebar link="/Admin/carreras" text="Carreras Disponibles" description="" />
            <br />
            <Sidebar link="/Admin/confirmaciones" text="Confirmación de Pagos" description="" />
            <br />
@@ -123,9 +123,6 @@ const MainMenu = () => {
            <br />
            <Sidebar link="/Admin/listaParticipantes" text="Lista de Participantes" description="" />
            <br />
-         
-         
-          
          </div>
          
        </nav>

@@ -52,11 +52,11 @@ export default function Home() {
         location: doc.data().lugar
       }));
 
-      // Filtrar eventos que no han pasado de fecha
       const currentDate = new Date();
       const filteredEvents = eventos.filter(event => new Date(event.date) > currentDate);
 
-      setUpcomingEvents(filteredEvents);
+   
+      setUpcomingEvents(filteredEvents.slice(0, 3));
     }
 
     fetchEvents();
@@ -115,7 +115,6 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {upcomingEvents.map((event, index) => (
                 <div
-                
                   key={index}
                   className="p-6 bg-white bg-opacity-30 rounded-lg shadow-lg text-center event-card">
                   <h3 className="text-xl font-bold mb-2">{event.title}</h3>
@@ -127,7 +126,6 @@ export default function Home() {
             </div>
       <br />
       <br />
-
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
@@ -181,7 +179,7 @@ export default function Home() {
           <div className="mb-8 text-center">
             <h2 className="text-4xl font-bold mb-4">Preguntas Frecuentes</h2>
             <div className="flex justify-center">
-              {/* División izquierda */}
+             
               <div className="w-1/2 p-4">
                 <div className="flex flex-col items-center">
                   {faqs.map((faq, index) => (
@@ -190,7 +188,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* División derecha */}
+       
               <div className="w-1/2 p-4">
                 <div className="flex flex-col items-center">
                   {faqs.map((faq, index) => (

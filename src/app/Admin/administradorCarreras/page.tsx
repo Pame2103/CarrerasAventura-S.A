@@ -6,6 +6,7 @@ import { db } from '../../../../firebase/firebase';
 import Link from 'next/link';
 import { FaRunning, FaInfoCircle, FaDumbbell, FaEnvelope, FaTrophy, FaSignInAlt } from 'react-icons/fa';
 
+
 interface Carrera {
   nombre: string;
   fecha: string;
@@ -21,7 +22,7 @@ interface Carrera {
 }
 
 function Administradorcarreras() {
-  const [nuevaCarrera, setNuevaCarrera] = useState<Carrera>({
+  const initialState: Carrera = {
     nombre: '',
     fecha: '',
     costo: '',
@@ -33,8 +34,9 @@ function Administradorcarreras() {
     hora: '',
     cupoDisponible: '',
     limiteParticipante: '',
-  });
+  };
 
+  const [nuevaCarrera, setNuevaCarrera] = useState<Carrera>(initialState);
   const [operacionExitosa, setOperacionExitosa] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -46,7 +48,6 @@ function Administradorcarreras() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-  
     const emptyFields = Object.entries(nuevaCarrera).filter(([key, value]) => !value);
 
     if (emptyFields.length > 0) {
@@ -61,12 +62,14 @@ function Administradorcarreras() {
 
       setOperacionExitosa(true);
       setErrorMessage('');
+      setNuevaCarrera(initialState); // Reiniciar los campos de texto
     } catch (error) {
       console.error('Error updating form data in Firebase:', error);
       setOperacionExitosa(false);
       setErrorMessage('Hubo un error al agregar la nueva carrera.');
     }
   };
+
   const updateCarreraInFirebase = async (newCarrera: Carrera) => {
     try {
       const carreraCollectionRef = collection(db, 'Configuracion Carreeras');
@@ -91,7 +94,7 @@ function Administradorcarreras() {
                 <div className="ml-10 flex items-baseline space-x-4">
                   <Link href="/Admin/administradorCarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaRunning className="mr-1" /> Administrar Carreras
+                      <FaRunning className="mr-1" /> Crear Carreras
                     </span>
                   </Link>
                   <Link href="/Admin/administrarTiempos">
@@ -110,22 +113,20 @@ function Administradorcarreras() {
                     </span>
                   </Link>
                   <Link href="/Admin/ControlTiempos">
-                                        <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                                            <FaTrophy className="mr-1" />Control Tiempos
-                                        </span>
-                                    </Link>
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" />Control Tiempos
+                    </span>
+                  </Link>
                   <Link href="/Admin/editarcarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" />Editar Carreras
                     </span>
                   </Link>
-               
                   <Link href="/Admin/listaParticipantes">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
                       <FaTrophy className="mr-1" /> Lista de Participantes
                     </span>
                   </Link>
-                
                 </div>
               </div>
             </div>
@@ -196,6 +197,15 @@ function Administradorcarreras() {
          <br />
         <br />
       <div className="container">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <br />
         <br />
         <br />

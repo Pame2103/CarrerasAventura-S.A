@@ -38,7 +38,7 @@ function Confirmacionespago() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participante | null>(null);
 
-  // New state for the rejection modal
+ 
   const [rejectModalIsOpen, setRejectModalIsOpen] = useState(false);
 
   const handleAprobar = async (id: string): Promise<void> => {
@@ -65,7 +65,7 @@ function Confirmacionespago() {
 
         await handleRechazar(id);
 
-//modal
+
         setModalIsOpen(true);
       } catch (error) {
         console.error("Error al aprobar el participante:", error);
@@ -231,7 +231,7 @@ El equipo de Carreras Aventura`;
                 <div className="ml-10 flex items-baseline space-x-4">
                   <Link href="/Admin/administradorCarreras">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaRunning className="mr-1" /> Administrar Carreras
+                      <FaRunning className="mr-1" /> Crear Carreras
                     </span>
                   </Link>
                   <Link href="/Admin/administrarTiempos">
@@ -241,7 +241,7 @@ El equipo de Carreras Aventura`;
                   </Link>
                   <Link href="/Admin/carreras">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaDumbbell className="mr-1" /> Carreras
+                      <FaDumbbell className="mr-1" /> Carreras Disponibles
                     </span>
                   </Link>
                   <Link href="/Admin/confirmaciones">
@@ -317,7 +317,7 @@ El equipo de Carreras Aventura`;
             <th style={thStyle}>Nombre</th>
             <th style={thStyle}>Apellidos</th>
             <th style={thStyle}>Evento</th>
-            <th style={thStyle}>Email</th> {/* Nueva columna para mostrar el correo electrónico */}
+            <th style={thStyle}>Email</th>
             <th style={thStyle}>Acciones</th>
           </tr>
         </thead>
@@ -335,12 +335,12 @@ El equipo de Carreras Aventura`;
                 <td className="border px-4 py-2">{participante.nombre}</td>
                 <td className="border px-4 py-2">{participante.apellidos}</td>
                 <td className="border px-4 py-2">{participante.evento}</td>
-                <td className="border px-4 py-2">{participante.email}</td> {/* Mostrar el correo electrónico */}
+                <td className="border px-4 py-2">{participante.email}</td> 
                 <td className="border px-4 py-2">
                   <button
                     onClick={() => {
                       setSelectedParticipant(participante);
-                      handleAprobar(participante.id); // Llamar a la función handleAprobar aquí
+                      handleAprobar(participante.id); 
                     }}
                     style={{ backgroundColor: 'blue', color: 'white', marginRight: '5px' }}
                   >

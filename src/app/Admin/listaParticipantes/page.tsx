@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link href="/Admin/administradorCarreras">
                   <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaRunning className="mr-1" /> Administrar Carreras
+                    <FaRunning className="mr-1" /> Crear Carreras
                   </span>
                 </Link>
                 <Link href="/Admin/administrarTiempos">
@@ -70,7 +70,7 @@ const Navbar: React.FC = () => {
                 </Link>
                 <Link href="/Admin/carreras">
                   <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaDumbbell className="mr-1" /> Carreras
+                    <FaDumbbell className="mr-1" /> Carreras Disponibles
                   </span>
                 </Link>
                 <Link href="/Admin/confirmaciones">

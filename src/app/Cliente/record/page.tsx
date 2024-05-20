@@ -31,7 +31,11 @@ function Records() {
                     recordsData.push({ id: doc.id, ...doc.data() } as Record);
                 });
 
-                setRecords(recordsData);
+                // Filtrar registros pasados de fecha
+                const currentDate = new Date();
+                const registrosPasadosDeFecha = recordsData.filter(record => new Date(record.fecha) < currentDate);
+
+                setRecords(registrosPasadosDeFecha);
             } catch (error) {
                 console.error('Error al obtener récords desde Firebase:', error);
             }
