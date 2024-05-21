@@ -104,7 +104,7 @@ function Administradorcarreras() {
                   </Link>
                   <Link href="/Admin/carreras">
                     <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaDumbbell className="mr-1" /> Carreras
+                      <FaDumbbell className="mr-1" /> Carreras Disponibles
                     </span>
                   </Link>
                   <Link href="/Admin/confirmaciones">

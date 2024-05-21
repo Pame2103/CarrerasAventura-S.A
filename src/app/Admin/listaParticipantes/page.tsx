@@ -45,6 +45,7 @@ interface Participante {
   codigoComprobante: string;
   cupoDisponible: string; 
   limiteParticipante: string;
+  nombrePatrocinador: string;
 }
 
 const Navbar: React.FC = () => {
@@ -166,6 +167,7 @@ function ListaParticipantes(): JSX.Element {
       'Telefono Emergencia',
       'Parentesco Emergencia',
       'Beneficiario Poliza',
+      'Nombre Patrocinador',
     ];
 
     worksheet.addRow(headers).font = { bold: true };
@@ -193,6 +195,7 @@ function ListaParticipantes(): JSX.Element {
         participante.telefonoEmergencia || '-',
         participante.parentescoEmergencia || '-',
         participante.beneficiarioPoliza || '-',
+        participante.nombrePatrocinador || '-',
       ]).eachCell((cell) => {
         cell.alignment = { vertical: 'middle', horizontal: 'center' };
         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };

@@ -130,63 +130,66 @@ function Administradorcarreras() {
   const Navbar: React.FC = () => {
     return (
       <nav className="bg-white border-b border-gray-200 fixed w-full z-23 top-0 left-0 h-23">
-      <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
-        <div className="flex items-center justify-between h-full">
-          <div className="flex items-center">
-            <Link href="/">
-              <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" />
-            </Link>
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
-                <Link href="/Admin/administradorCarreras">
-                  <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaRunning className="mr-1" /> Crear Carreras
-                  </span>
-                </Link>
-                <Link href="/Admin/administrarTiempos">
-                  <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaInfoCircle className="mr-1" /> Administrar Tiempos
-                  </span>
-                </Link>
-                <Link href="/Admin/carreras">
-                  <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaDumbbell className="mr-1" /> Carreras Disponibles
-                  </span>
-                </Link>
-                <Link href="/Admin/confirmaciones">
-                  <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaTrophy className="mr-1" /> Confirmación de Pagos
-                  </span>
-                </Link>
-                <Link href="/Admin/ControlTiempos">
-                  <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaTrophy className="mr-1" /> Control Tiempos
-                  </span>
-                </Link>
-                <Link href="/Admin/listaParticipantes">
-                  <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                    <FaTrophy className="mr-1" /> Lista de Participantes
-                  </span>
-                </Link>
-        
+        <div className="max-w-screen-2xl mx-auto px-6 sm:px-7 lg:px-9">
+          <div className="flex items-center justify-between h-full">
+            <div className="flex items-center">
+              <Link href="/">
+                <img src="/LogoC.png" className="h-20 w-auto" alt="Carrera Aventura" />
+              </Link>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <Link href="/Admin/administradorCarreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaRunning className="mr-1" /> Crear Carreras
+                    </span>
+                  </Link>
+                  <Link href="/Admin/administrarTiempos">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaInfoCircle className="mr-1" /> Administrar Tiempos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/carreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaDumbbell className="mr-1" /> Carreras Disponibles
+                    </span>
+                  </Link>
+                  <Link href="/Admin/confirmaciones">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Confirmación de Pagos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/ControlTiempos">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Control Tiempos
+                    </span>
+                  </Link>
+                  <Link href="/Admin/listaParticipantes">
+                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" /> Lista de Participantes
+                    </span>
+                  </Link>
+                </div>
+                <Link href="/Admin/editarcarreras">
+                    <span className="text-gray-600 hover:text-gray-900 px-0 py-0 rounded-md text-sm font-medium flex items-center">
+                      <FaTrophy className="mr-1" />Editar Carreras
+                    </span>
+                  </Link>
               </div>
             </div>
+            <div className="flex">
+              <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
+                <FaSignInAlt className="mr-2" /> Cerrar sesión
+              </Link>
+            </div>
           </div>
-          <div className="flex">
-            <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
-              <FaSignInAlt className="mr-2" /> Cerrar sesión
-            </Link>
-          </div>
+          <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
         </div>
-        <div className="ml-10 text-gray-600 text-sm font-medium">¡Corre hacia tus metas con Carrera Aventura! ¡Cruzando la meta juntos!</div>
-      </div>
-    </nav>
+      </nav>
     );
   }
-
   return (
     <>
-      {/* Estilos */}
+     
       <style>
         {`
           body {
@@ -237,6 +240,9 @@ function Administradorcarreras() {
       </style>
 
       <div className="container">
+        <br />
+        <br />
+        <br />
         <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#333', textAlign: 'center' }}>EDITAR EVENTOS</h1>
         <div className="form-container">
           <form onSubmit={handleSubmit}>

@@ -123,7 +123,7 @@ const Carreras: React.FC = () => {
                   </Link>
                   <Link href="/Admin/carreras">
                     <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaDumbbell className="mr-1" /> Carreras
+                      <FaDumbbell className="mr-1" /> Carreras Disponibles
                     </span>
                   </Link>
                   <Link href="/Admin/confirmaciones">
@@ -141,17 +141,13 @@ const Carreras: React.FC = () => {
                       <FaTrophy className="mr-1" /> Lista de Participantes
                     </span>
                   </Link>
-                  <Link href="/Admin/resultados">
-                    <span className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
-                      <FaEnvelope className="mr-1" /> Resultados
-                    </span>
-                  </Link>
+                  
                 </div>
               </div>
             </div>
             <div className="flex">
               <Link href="/Login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center">
-                <FaSignInAlt className="mr-2" /> Cerrar sesión
+                <FaSignInAlt className="mr-1" /> Cerrar sesión
               </Link>
             </div>
           </div>

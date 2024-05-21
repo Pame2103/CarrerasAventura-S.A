@@ -35,6 +35,7 @@ export default function Inscripciones() {
     pais: '',
     evento: '',
     codigoComprobante: '',
+    nombrePatrocinador: '', 
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -506,32 +507,50 @@ export default function Inscripciones() {
             <h1 style={{ fontWeight: 'bold', marginBottom: '40px' }}>Formas de pago:</h1>
 
             <div style={{ marginBottom: '20px' }}>
-              <label htmlFor="metodoPago" style={{ display: 'inline-block', width: '250px' }}>Método de pago:</label>
-              <select
-                id="metodoPago"
-                name="metodoPago"
-                value={formData.metodoPago}
-                onChange={handleInputChange}
-                style={{ display: 'inline-block' }}
-              >
-                <option value="">Seleccione</option>
-                <option value="sinpe">Sinpe</option>
-                <option value="Patrocinador">Patrocinador</option>
-              </select>
-            </div>
+  <label htmlFor="metodoPago" style={{ display: 'inline-block', width: '250px' }}>Método de pago:</label>
+  <select
+    id="metodoPago"
+    name="metodoPago"
+    value={formData.metodoPago}
+    onChange={handleInputChange}
+    style={{ display: 'inline-block' }}
+  >
+    <option value="">Seleccione</option>
+    <option value="sinpe">Sinpe</option>
+    <option value="Patrocinador">Patrocinador</option>
+  </select>
+</div>
 
-            <div style={{ marginBottom: '20px' }}>
-              <label htmlFor="codigoComprobante" style={{ display: 'inline-block', width: '250px' }}>Código de Comprobante:</label>
-              <input
-                type="text"
-                id="codigoComprobante"
-                name="codigoComprobante"
-                value={formData.codigoComprobante}
-                onChange={handleInputChange}
-                required
-                style={{ display: 'inline-block' }}
-              />
-            </div>
+{formData.metodoPago === 'sinpe' && (
+  <div style={{ marginBottom: '20px' }}>
+    <label htmlFor="codigoComprobante" style={{ display: 'inline-block', width: '250px' }}>Código de Comprobante:</label>
+    <input
+      type="text"
+      id="codigoComprobante"
+      name="codigoComprobante"
+      value={formData.codigoComprobante}
+      onChange={handleInputChange}
+      required
+      style={{ display: 'inline-block' }}
+    />
+  </div>
+)}
+
+{formData.metodoPago === 'Patrocinador' && (
+  <div style={{ marginBottom: '20px' }}>
+    <label htmlFor="nombreAdministrador" style={{ display: 'inline-block', width: '250px' }}>Nombre del Administrador:</label>
+    <input
+      type="text"
+      id="nombreAdministrador"
+      name="nombreAdministrador"
+      value={formData.nombrePatrocinador}
+      onChange={handleInputChange}
+      required
+      style={{ display: 'inline-block' }}
+    />
+  </div>
+)}
+
 
             <br />
 <br />
